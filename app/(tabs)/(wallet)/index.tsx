@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Wallet, Send, ArrowDownToLine, ArrowLeftRight, ExternalLink } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
@@ -7,44 +7,66 @@ import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useWalletStore, type Asset, type Transaction } from '@/store/walletStore';
 import { shortenAddress } from '@/services/scroll/wallet';
-import { formatTransactionTime } from '@/services/scroll/transactions';
+import { formatTransactionTime, fetchTransactions } from '@/services/scroll/transactions';
+import { scrollProvider } from '@/services/scroll/provider';
 
 export default function WalletScreen() {
   const router = useRouter();
-  const { address, balance, assets, transactions, setAssets, setTransactions } = useWalletStore();
+  const { address, balance, assets, transactions, setAssets, setTransactions, setBalance, setLoading } = useWalletStore();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    setAssets([
-      { symbol: 'ETH', name: 'Ethereum', balance: '2.5431', usdValue: '6,357.75', change24h: 2.4, icon: '⟠' },
-      { symbol: 'USDC', name: 'USD Coin', balance: '1,250.00', usdValue: '1,250.00', change24h: 0.0, icon: '💵' },
-      { symbol: 'WBTC', name: 'Wrapped Bitcoin', balance: '0.0842', usdValue: '5,431.20', change24h: 1.8, icon: '₿' },
-    ]);
+    if (address) {
+      loadWalletData();
+    }
+  }, [address]);
 
-    setTransactions([
-      {
-        id: '1',
-        type: 'receive',
-        amount: '1.5',
-        symbol: 'ETH',
-        from: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-        timestamp: Date.now() - 3600000,
-        status: 'confirmed',
-        hash: '0x123abc...',
-        fee: '0.0021',
-      },
-      {
-        id: '2',
-        type: 'send',
-        amount: '0.5',
-        symbol: 'ETH',
-        to: '0x8ba1f109551bD432803012645Ac136ddd64DBA72',
-        timestamp: Date.now() - 7200000,
-        status: 'confirmed',
-        hash: '0x456def...',
-        fee: '0.0018',
-      },
-    ]);
-  }, [setAssets, setTransactions]);
+  const loadWalletData = async () => {
+    if (!address) return;
+    
+    setLoading(true);
+    setIsRefreshing(true);
+    
+    try {
+      // Fetch real ETH balance
+      const ethBalance = await scrollProvider.getBalance(address);
+      const balanceNum = parseFloat(ethBalance);
+      
+      // For now, we'll use a simple USD conversion (you can integrate a price API later)
+      const ethPrice = 2500; // Placeholder - should fetch from API
+      const usdValue = (balanceNum * ethPrice).toLocaleString('en-US', { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+      });
+      
+      // Update total balance
+      setBalance(usdValue);
+      
+      // Set assets with real ETH balance
+      setAssets([
+        { 
+          symbol: 'ETH', 
+          name: 'Ethereum', 
+          balance: balanceNum.toFixed(4), 
+          usdValue: usdValue, 
+          change24h: 2.4, // Placeholder - should fetch from API
+          icon: '⟠' 
+        },
+        // Note: ERC-20 tokens would need additional implementation
+        // { symbol: 'USDC', name: 'USD Coin', balance: '0.00', usdValue: '0.00', change24h: 0.0, icon: '💵' },
+        // { symbol: 'WBTC', name: 'Wrapped Bitcoin', balance: '0.00', usdValue: '0.00', change24h: 0.0, icon: '₿' },
+      ]);
+
+      // Fetch real transactions
+      const txList = await fetchTransactions(address);
+      setTransactions(txList);
+    } catch (error) {
+      console.error('[WalletScreen] Error loading wallet data:', error);
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  };
 
   const renderAsset = ({ item }: { item: Asset }) => (
     <TouchableOpacity style={styles.assetItem}>
@@ -70,7 +92,7 @@ export default function WalletScreen() {
   const renderTransaction = ({ item }: { item: Transaction }) => (
     <TouchableOpacity 
       style={styles.transactionItem}
-      onPress={() => router.push(`/(tabs)/(wallet)/transaction/${item.id}`)}
+      onPress={() => router.push(`/(tabs)/(wallet)/transaction/${item.id}` as any)}
     >
       <View style={[
         styles.transactionIcon,
@@ -161,16 +183,32 @@ export default function WalletScreen() {
           <View style={styles.content}>
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Assets</Text>
-              {assets.map((item) => (
-                <View key={item.symbol}>{renderAsset({ item })}</View>
-              ))}
+              {isRefreshing && assets.length === 0 ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color={colors.accent.neonGreen} />
+                </View>
+              ) : assets.length > 0 ? (
+                assets.map((item) => (
+                  <View key={item.symbol}>{renderAsset({ item })}</View>
+                ))
+              ) : (
+                <Text style={styles.emptyText}>No assets found</Text>
+              )}
             </View>
 
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Recent Activity</Text>
-              {transactions.map((item) => (
-                <View key={item.id}>{renderTransaction({ item })}</View>
-              ))}
+              {isRefreshing && transactions.length === 0 ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color={colors.accent.neonGreen} />
+                </View>
+              ) : transactions.length > 0 ? (
+                transactions.map((item) => (
+                  <View key={item.id}>{renderTransaction({ item })}</View>
+                ))
+              ) : (
+                <Text style={styles.emptyText}>No transactions yet</Text>
+              )}
             </View>
           </View>
         </ScrollView>
@@ -354,5 +392,15 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: spacing.xl * 2,
+  },
+  loadingContainer: {
+    paddingVertical: spacing.xl,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: typography.fontSize.base,
+    color: colors.text.secondary,
+    textAlign: 'center' as const,
+    paddingVertical: spacing.xl,
   },
 });
