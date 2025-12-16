@@ -20,6 +20,10 @@
 
 **Scroll One SuperApp** is a next-generation mobile application that serves as a unified gateway to the Scroll blockchain ecosystem. It combines a secure crypto wallet, decentralized identity management, and an extensive marketplace of mini-applications covering DeFi, NFTs, gaming, social networking, and more.
 
+### 🎥 Demo Video
+
+Watch the V1 demo: [https://youtu.be/BTva_cgqkRI](https://youtu.be/BTva_cgqkRI)
+
 ### Key Highlights
 
 - 🔐 **Secure Wallet**: Built-in wallet with send, receive, and swap functionality
@@ -33,24 +37,28 @@
 ## ✨ Features
 
 ### 💼 Wallet
+
 - **Send & Receive**: Transfer tokens on the Scroll network
 - **Token Swap**: Exchange tokens with integrated DEX functionality
 - **Balance Tracking**: Real-time balance updates and transaction history
 - **Secure Storage**: Private keys encrypted with Expo SecureStore
 
 ### 🆔 Identity
+
 - **Scroll ID**: Unique decentralized identifier
 - **Reputation System**: Earn reputation through app usage
 - **Badges & Achievements**: Collect and display achievements
 - **User Profile**: Customizable profile with stats and history
 
 ### 🔍 Explore
+
 - **Mini-App Discovery**: Browse categorized applications
 - **Featured Apps**: Highlighted popular and verified apps
 - **Category Filtering**: Filter by DeFi, NFT, Gaming, Social, and more
 - **WebView Integration**: Seamless in-app experience for mini-apps
 
 ### 📱 Mini-App Categories
+
 - **DeFi**: ScrollSwap, Scroll Lend, Scroll Trade
 - **Bridge**: Scroll Bridge
 - **Payments**: ZK Pay
@@ -77,17 +85,20 @@
 ### Setup Steps
 
 1. **Clone the repository**
+
    ```bash
    git clone <YOUR_GIT_URL>
    cd Scroll_One_SuperApp
    ```
 
 2. **Install dependencies**
+
    ```bash
    bun install
    ```
 
 3. **Start the development server**
+
    ```bash
    # For web preview
    bun run start-web
@@ -107,6 +118,7 @@
    - [Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent)
 
 2. **Start the development server**:
+
    ```bash
    bun run start
    ```
@@ -252,6 +264,7 @@ bun run lint
 ### Adding a New Mini-App
 
 1. **Register in `miniapps/registry.ts`**:
+
    ```typescript
    {
      id: 'yourapp',
@@ -291,16 +304,20 @@ bun start --dev-client
 ## 🧪 Testing
 
 ### On Device
+
 - Use Expo Go for basic testing
 - Use custom development build for native features
 
 ### Browser Testing
+
 ```bash
 bun run start-web
 ```
+
 Note: Some native features may not be available in browser preview.
 
 ### Simulator/Emulator
+
 - **iOS**: Requires Xcode and iOS Simulator
 - **Android**: Requires Android Studio and Android Emulator
 
@@ -311,21 +328,25 @@ Note: Some native features may not be available in browser preview.
 ### iOS App Store
 
 1. **Install EAS CLI**:
+
    ```bash
    bun i -g @expo/eas-cli
    ```
 
 2. **Configure project**:
+
    ```bash
    eas build:configure
    ```
 
 3. **Build for iOS**:
+
    ```bash
    eas build --platform ios
    ```
 
 4. **Submit to App Store**:
+
    ```bash
    eas submit --platform ios
    ```
@@ -335,11 +356,13 @@ Note: Some native features may not be available in browser preview.
 ### Google Play Store
 
 1. **Build for Android**:
+
    ```bash
    eas build --platform android
    ```
 
 2. **Submit to Google Play**:
+
    ```bash
    eas submit --platform android
    ```
@@ -349,17 +372,20 @@ Note: Some native features may not be available in browser preview.
 ### Web Deployment
 
 1. **Build for web**:
+
    ```bash
    eas build --platform web
    ```
 
 2. **Deploy with EAS Hosting**:
+
    ```bash
    eas hosting:configure
    eas hosting:deploy
    ```
 
 **Alternative platforms**:
+
 - **Vercel**: Connect GitHub repo for automatic deployments
 - **Netlify**: Connect GitHub repo for automatic deployments
 
@@ -425,10 +451,12 @@ We welcome contributions! Please follow these steps:
 
 1. Clear cache: `bunx expo start --clear`
 2. Delete `node_modules` and reinstall:
+
    ```bash
    rm -rf node_modules
    bun install
    ```
+
 3. Check [Expo troubleshooting guide](https://docs.expo.dev/troubleshooting/build-errors/)
 
 ### Native Features Not Working

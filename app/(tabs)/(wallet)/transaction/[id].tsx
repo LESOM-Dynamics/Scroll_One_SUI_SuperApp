@@ -165,7 +165,7 @@ export default function TransactionDetailScreen() {
                     style={styles.addressRow}
                     onPress={() => handleCopy(transaction.to || '')}
                   >
-                    <Text style={styles.detailValue}>{shortenAddr(transaction.to, 8)}</Text>
+                    <Text style={styles.detailValue}>{shortenAddress(transaction.to, 8)}</Text>
                     <Copy color={colors.text.secondary} size={16} />
                   </TouchableOpacity>
                 </View>
