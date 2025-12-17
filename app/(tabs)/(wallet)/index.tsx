@@ -6,20 +6,23 @@ import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useWalletStore, type Asset, type Transaction } from '@/store/walletStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import { shortenAddress } from '@/services/scroll/wallet';
 import { formatTransactionTime, fetchTransactions } from '@/services/scroll/transactions';
 import { scrollProvider } from '@/services/scroll/provider';
+import { getETHPrice } from '@/services/scroll/prices';
 
 export default function WalletScreen() {
   const router = useRouter();
   const { address, balance, assets, transactions, setAssets, setTransactions, setBalance, setLoading } = useWalletStore();
+  const { isTestnet } = useSettingsStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     if (address) {
       loadWalletData();
     }
-  }, [address]);
+  }, [address, isTestnet]); // Refresh when network changes
 
   const loadWalletData = async () => {
     if (!address) return;
@@ -28,12 +31,15 @@ export default function WalletScreen() {
     setIsRefreshing(true);
     
     try {
-      // Fetch real ETH balance
-      const ethBalance = await scrollProvider.getBalance(address);
-      const balanceNum = parseFloat(ethBalance);
+      // Fetch real ETH balance and price in parallel
+      const [ethBalance, ethPriceData] = await Promise.all([
+        scrollProvider.getBalance(address),
+        getETHPrice(),
+      ]);
       
-      // For now, we'll use a simple USD conversion (you can integrate a price API later)
-      const ethPrice = 2500; // Placeholder - should fetch from API
+      const balanceNum = parseFloat(ethBalance);
+      const ethPrice = ethPriceData.price;
+      
       const usdValue = (balanceNum * ethPrice).toLocaleString('en-US', { 
         minimumFractionDigits: 2, 
         maximumFractionDigits: 2 
@@ -42,14 +48,14 @@ export default function WalletScreen() {
       // Update total balance
       setBalance(usdValue);
       
-      // Set assets with real ETH balance
+      // Set assets with real ETH balance and price data
       setAssets([
         { 
           symbol: 'ETH', 
           name: 'Ethereum', 
           balance: balanceNum.toFixed(4), 
           usdValue: usdValue, 
-          change24h: 2.4, // Placeholder - should fetch from API
+          change24h: ethPriceData.change24h,
           icon: '⟠' 
         },
         // Note: ERC-20 tokens would need additional implementation

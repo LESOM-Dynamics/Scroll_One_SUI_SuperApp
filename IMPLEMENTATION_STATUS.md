@@ -13,14 +13,17 @@
 - ✅ WebView container for mini-apps
 - ✅ Basic Scroll RPC provider
 
-### Wallet Features (UI Only)
+### Wallet Features
 
-- ✅ Wallet overview screen with balance display
-- ✅ Send screen UI
+- ✅ Wallet overview screen with real balance display
+- ✅ Send screen with real transaction execution
 - ✅ Receive screen UI (with QR placeholder)
 - ✅ Swap screen UI
-- ✅ Asset list display
-- ✅ Transaction history list
+- ✅ Asset list display with real prices
+- ✅ Transaction history with real blockchain data
+- ✅ Real ETH balance fetching
+- ✅ Real transaction sending and signing
+- ✅ Gas estimation and fee calculation
 
 ### Explore Features
 
@@ -36,6 +39,7 @@
 - ✅ Badges display
 - ✅ Stats (reputation, level)
 - ✅ Settings menu UI
+- ✅ Preferences screen with network switching
 
 ---
 
@@ -45,60 +49,55 @@
 
 #### 1. **Real Wallet Implementation**
 
-- ❌ **No actual crypto library** (ethers.js, viem, or web3.js)
-- ❌ **Mock wallet addresses** - Currently using `Math.random()` to generate addresses
-- ❌ **No real private key generation** - Using placeholder "mock_encrypted_private_key"
-- ❌ **No actual wallet creation** - Need to use libraries like `ethers.Wallet.random()` or `viem.generatePrivateKey()`
-- ❌ **No real transaction signing** - `signTransaction()` and `signMessage()` return mock signatures
+- ✅ **Crypto library installed** - ethers.js is installed and integrated
+- ✅ **Real wallet creation** - Uses `ethers.Wallet` with secure random key generation via `expo-crypto`
+- ✅ **Real private key generation** - Generates 32 random bytes and creates wallet from private key
+- ✅ **Secure private key storage** - Uses `expo-secure-store` for encrypted storage
+- ✅ **Real transaction signing** - `signTransaction()` and `signMessage()` use ethers.js signing
+- ✅ **Real message signing** - Implemented via ethers.js
 
-**Required:**
-
-- Install `ethers` or `viem` package
-- Implement real wallet creation with proper key derivation
-- Implement real transaction signing
-- Secure private key storage (currently just storing mock string)
+**Status:** ✅ **COMPLETED**
 
 #### 2. **Real Transaction Execution**
 
-- ❌ **Send screen** - Only logs to console, doesn't actually send transactions
+- ✅ **Send screen** - Actually sends real transactions via ethers.js
+- ✅ **Transaction service** - `sendTransaction()` sends real transactions to Scroll network
+- ✅ **Real gas estimation** - Uses `estimateGas()` from ethers.js provider
+- ✅ **Real gas price fetching** - Fetches current gas prices from network
+- ✅ **Transaction confirmation** - Waits for transaction confirmation via `waitForTransaction()`
+- ✅ **Transaction signing** - Transactions are signed before sending
+- ⚠️ **Error handling** - Basic error handling implemented, could be enhanced
 - ❌ **Swap screen** - No DEX integration, no real swap execution
-- ❌ **Transaction service** - `sendTransaction()` returns mock transaction
-- ❌ **No gas estimation** - Hardcoded fees
-- ❌ **No transaction confirmation** - No polling for transaction status
 
-**Required:**
+**Remaining:**
 
-- Integrate with Scroll RPC to send real transactions
-- Implement transaction signing before sending
-- Add transaction status polling
-- Handle transaction failures and errors
+- Swap screen DEX integration
+- Enhanced error handling and retry mechanisms
+- Transaction status polling UI updates
 
 #### 3. **Real Balance & Asset Fetching**
 
-- ❌ **Mock balance data** - Hardcoded in wallet screen
-- ❌ **No real token balance fetching** - Only ETH balance partially implemented
-- ❌ **No ERC-20 token support** - Can't fetch USDC, WBTC, etc. balances
-- ❌ **No price fetching** - USD values are hardcoded
-- ❌ **No 24h change data** - Hardcoded percentage changes
+- ✅ **Real ETH balance fetching** - Implemented via ethers.js and Scroll RPC
+- ✅ **Real price fetching** - CoinGecko API integration with caching
+- ✅ **Real 24h change data** - Fetched from CoinGecko API
+- ⚠️ **ERC-20 token support** - Partially implemented (price fetching works, but balance fetching not yet implemented)
+- ❌ **No ERC-20 token balance fetching** - Can't fetch USDC, WBTC, etc. balances yet
 
-**Required:**
+**Remaining:**
 
-- Fetch real ETH balance from Scroll network
-- Implement ERC-20 token balance fetching
-- Integrate price API (CoinGecko, CoinMarketCap, etc.)
-- Calculate real 24h price changes
+- Implement ERC-20 token balance fetching (USDC, WBTC, USDT, etc.)
+- Add support for more tokens in price service
 
 #### 4. **Real Transaction History**
 
-- ❌ **Mock transaction data** - Hardcoded transactions
-- ❌ **No blockchain transaction fetching** - `fetchTransactions()` returns mock data
-- ❌ **No transaction detail screen** - Referenced but doesn't exist
+- ✅ **Real blockchain transaction fetching** - Implemented via ScrollScan API
+- ✅ **Transaction data parsing** - From, to, amount, status, fees, etc.
+- ✅ **Network-aware fetching** - Supports both mainnet and testnet
+- ❌ **No transaction detail screen** - Referenced but doesn't exist (`app/(tabs)/(wallet)/transaction/[id].tsx`)
 
-**Required:**
+**Remaining:**
 
-- Fetch real transactions from Scroll blockchain explorer API
-- Implement transaction detail screen (`app/(tabs)/(wallet)/transaction/[id].tsx`)
-- Parse transaction data (from, to, amount, status, etc.)
+- Implement transaction detail screen
 
 ---
 
@@ -155,16 +154,14 @@
 
 #### 9. **Settings Screens**
 
-- ❌ **No settings implementation** - Identity screen has buttons but no screens
+- ✅ **Preferences screen** - Implemented with network switching
+- ✅ **Settings store** - Network preference persistence via AsyncStorage
 - ❌ **Privacy & Security screen** - Missing
-- ❌ **Preferences screen** - Missing
 - ❌ **Sign out functionality** - Not implemented
 
-**Required:**
+**Remaining:**
 
-- Create settings screens
-- Implement privacy settings
-- Add app preferences
+- Create Privacy & Security screen
 - Implement wallet disconnect/sign out
 
 #### 10. **Favorites Feature**
@@ -215,13 +212,12 @@
 
 #### 14. **Network Switching**
 
-- ❌ **No testnet/mainnet toggle** - Provider supports it but no UI
+- ✅ **Network switching UI** - Implemented in Preferences screen
+- ✅ **Provider network switching** - ScrollProvider supports dynamic network switching
+- ✅ **Persistent network preference** - Saved to AsyncStorage
+- ✅ **Balance refresh on network change** - Automatically updates when switching networks
 
-**Required:**
-
-- Add network selector in settings
-- Allow switching between Scroll mainnet and testnet
-- Update provider based on selection
+**Status:** ✅ **COMPLETED**
 
 #### 15. **Error Handling & Loading States**
 
@@ -240,11 +236,12 @@
 
 ### Phase 1: Core Blockchain Functionality (Critical)
 
-1. Install and integrate crypto library (ethers.js or viem)
-2. Implement real wallet creation and key management
-3. Implement real transaction signing and sending
-4. Fetch real balances and transaction history
+1. ~~Install and integrate crypto library (ethers.js or viem)~~ ✅ **COMPLETED**
+2. ~~Implement real wallet creation and key management~~ ✅ **COMPLETED**
+3. ~~Implement real transaction signing and sending~~ ✅ **COMPLETED**
+4. ~~Fetch real balances and transaction history~~ ✅ **COMPLETED** (ETH balance & transactions)
 5. Add transaction detail screen
+6. Implement ERC-20 token balance fetching
 
 ### Phase 2: Essential Features (Important)
 
@@ -252,14 +249,14 @@
 7. Asset selection UI
 8. Real swap integration
 9. Complete WebView bridge
-10. Settings screens
+10. ~~Settings screens~~ ✅ **COMPLETED** (Preferences screen implemented)
 
 ### Phase 3: Enhancements (Nice to Have)
 
 11. Biometric authentication
 12. Real reputation system
 13. Push notifications
-14. Network switching
+14. ~~Network switching~~ ✅ **COMPLETED**
 15. Enhanced error handling
 
 ---
@@ -269,10 +266,8 @@
 ### Must Install:
 
 ```bash
-# Blockchain library (choose one)
-bun add ethers
-# OR
-bun add viem
+# Blockchain library
+bun add ethers  # ✅ INSTALLED
 
 # QR Code
 bun add react-native-qrcode-svg
@@ -288,10 +283,8 @@ bun add expo-notifications
 ### Optional:
 
 ```bash
-# Price API client
-bun add coingecko-api-v3
-# OR
-bun add axios  # for custom API integration
+# Price API client - ✅ Using native fetch (no additional package needed)
+# CoinGecko API is accessed via native fetch, no package required
 ```
 
 ---
@@ -300,16 +293,38 @@ bun add axios  # for custom API integration
 
 - The app structure is well-organized and ready for real implementation
 - Most UI components are complete and functional
-- The main gap is the blockchain integration layer
-- All mock data needs to be replaced with real API calls
+- ✅ **Blockchain integration progress:**
+  - Real wallet creation and key management via ethers.js ✅
+  - Real wallet balance fetching (ETH) via ethers.js ✅
+  - Real transaction history via ScrollScan API ✅
+  - Real transaction sending and signing ✅
+  - Real price data via CoinGecko API ✅
+  - Network switching (mainnet/testnet) ✅
+  - Preferences screen with persistent settings ✅
+  - Gas estimation and fee calculation ✅
+- ⚠️ **Remaining blockchain work:**
+  - ERC-20 token balance fetching
+  - Transaction detail screen
+  - Swap screen DEX integration
 - Security considerations: Ensure private keys are properly encrypted and never exposed
 
 ---
 
 ## 🎯 Estimated Completion
 
-- **Phase 1 (Critical)**: ~2-3 weeks
-- **Phase 2 (Important)**: ~1-2 weeks  
-- **Phase 3 (Enhancements)**: ~1 week
+- **Phase 1 (Critical)**: ~1-2 weeks (reduced - balance & transaction fetching done)
+- **Phase 2 (Important)**: ~1-2 weeks (reduced - settings screen done)
+- **Phase 3 (Enhancements)**: ~1 week (reduced - network switching done)
 
-**Total remaining work**: ~4-6 weeks of focused development
+**Total remaining work**: ~3-5 weeks of focused development
+
+## 🎉 Recent Completions
+
+- ✅ **Price Service** - CoinGecko API integration with caching
+- ✅ **Preferences Screen** - Network switching with persistent storage
+- ✅ **Settings Store** - Network preference management
+- ✅ **Real Wallet Implementation** - ethers.js integration with secure key storage
+- ✅ **Real ETH Balance** - Fetched from Scroll RPC
+- ✅ **Real Transaction History** - Fetched from ScrollScan API
+- ✅ **Real Transaction Sending** - Full transaction execution with gas estimation
+- ✅ **Network Switching** - Full implementation with UI

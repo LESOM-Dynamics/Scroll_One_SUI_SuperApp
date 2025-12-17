@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { User, Shield, Settings, LogOut } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
@@ -9,6 +9,7 @@ import { useUserStore } from '@/store/userStore';
 
 export default function IdentityScreen() {
   const { profile } = useUserStore();
+  const router = useRouter();
 
   const badges = [
     { id: '1', icon: '🏆', name: 'Early Adopter', earned: true },
@@ -77,7 +78,10 @@ export default function IdentityScreen() {
               
               <View style={styles.menuDivider} />
               
-              <TouchableOpacity style={styles.menuItem}>
+              <TouchableOpacity 
+                style={styles.menuItem}
+                onPress={() => router.push('/(tabs)/(identity)/preferences')}
+              >
                 <View style={styles.menuLeft}>
                   <Settings color={colors.text.secondary} size={20} />
                   <Text style={styles.menuText}>Preferences</Text>

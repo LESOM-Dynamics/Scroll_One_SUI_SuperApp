@@ -31,6 +31,12 @@ export class ScrollProvider {
     console.log(`[ScrollProvider] Initialized with ${this.config.chainName}`);
   }
   
+  switchNetwork(testnet: boolean): void {
+    this.config = testnet ? SCROLL_TESTNET : SCROLL_MAINNET;
+    this.provider = new JsonRpcProvider(this.config.rpcUrl);
+    console.log(`[ScrollProvider] Switched to ${this.config.chainName}`);
+  }
+  
   getProvider(): JsonRpcProvider {
     return this.provider;
   }
@@ -115,4 +121,14 @@ export class ScrollProvider {
   }
 }
 
-export const scrollProvider = new ScrollProvider(false);
+// Create a singleton instance that can be updated dynamically
+let scrollProviderInstance: ScrollProvider | null = null;
+
+export function getScrollProvider(testnet: boolean = false): ScrollProvider {
+  if (!scrollProviderInstance) {
+    scrollProviderInstance = new ScrollProvider(testnet);
+  }
+  return scrollProviderInstance;
+}
+
+export const scrollProvider = getScrollProvider(false);

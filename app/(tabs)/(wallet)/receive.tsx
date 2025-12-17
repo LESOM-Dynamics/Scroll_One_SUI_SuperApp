@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Share } from 'react-native';
+import { View, Text, StyleSheet, Share, Platform } from 'react-native';
 import { Stack } from 'expo-router';
+import QRCode from 'react-native-qrcode-svg';
 import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -47,10 +48,21 @@ export default function ReceiveScreen() {
       <Screen>
         <View style={styles.center}>
           <Card variant="elevated" style={styles.qrCard}>
-            <View style={styles.qrPlaceholder}>
-              <Text style={styles.qrText}>QR Code</Text>
-              <Text style={styles.qrSubtext}>Scan to send</Text>
-            </View>
+            {address ? (
+              <View style={styles.qrContainer}>
+                <QRCode
+                  value={address}
+                  size={240}
+                  color={colors.text.primary}
+                  backgroundColor={colors.background.primary}
+                />
+              </View>
+            ) : (
+              <View style={styles.qrPlaceholder}>
+                <Text style={styles.qrText}>No Address</Text>
+                <Text style={styles.qrSubtext}>Create a wallet first</Text>
+              </View>
+            )}
           </Card>
 
           <Text style={styles.addressLabel}>Your Scroll Address</Text>
@@ -103,6 +115,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: spacing['2xl'],
     marginBottom: spacing.xl,
+    padding: spacing.md,
+  },
+  qrContainer: {
+    width: 240,
+    height: 240,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background.primary,
+    borderRadius: borderRadius.lg,
+    padding: spacing.sm,
   },
   qrPlaceholder: {
     width: 240,

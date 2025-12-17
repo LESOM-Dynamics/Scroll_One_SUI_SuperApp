@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, ActivityIndicator, Modal, TouchableOpacity, Platform } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { isAddress } from 'ethers';
 import { parseEther, formatEther } from 'ethers';
+import { QrCode } from 'lucide-react-native';
 
 import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
@@ -10,6 +12,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { useWalletStore } from '@/store/walletStore';
 import { sendTransaction, estimateTransactionFee } from '@/services/scroll/transactions';
+import { getETHPrice } from '@/services/scroll/prices';
 import * as Haptics from 'expo-haptics';
 
 export default function SendScreen() {
@@ -22,10 +25,26 @@ export default function SendScreen() {
   const [isEstimatingFee, setIsEstimatingFee] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [ethPrice, setEthPrice] = useState(2500);
 
   const ethBalance = assets.find(a => a.symbol === 'ETH')?.balance || '0';
-  const ethPrice = 2500; // Placeholder - should fetch from API
   const usdValue = amount ? (parseFloat(amount) * ethPrice).toFixed(2) : '0.00';
+
+  // Fetch ETH price on mount
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const priceData = await getETHPrice();
+        setEthPrice(priceData.price);
+      } catch (error) {
+        console.error('[SendScreen] Error fetching ETH price:', error);
+        // Keep default fallback price
+      }
+    };
+    fetchPrice();
+  }, []);
 
   // Estimate fee when recipient and amount change
   useEffect(() => {
@@ -79,6 +98,49 @@ export default function SendScreen() {
     return true;
   };
 
+  const handleBarCodeScanned = ({ data }: { data: string }) => {
+    // Extract address from QR code (could be just address or ethereum:address format)
+    let scannedAddress = data.trim();
+    
+    // Handle ethereum: address format
+    if (scannedAddress.startsWith('ethereum:')) {
+      scannedAddress = scannedAddress.replace('ethereum:', '').split('?')[0];
+    }
+    
+    // Handle EIP-681 format (ethereum:0x...@chainId)
+    if (scannedAddress.includes('@')) {
+      scannedAddress = scannedAddress.split('@')[0];
+    }
+    
+    // Validate address
+    if (isAddress(scannedAddress)) {
+      setRecipient(scannedAddress);
+      setShowScanner(false);
+      setError(null);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Alert.alert('Invalid Address', 'The scanned QR code does not contain a valid Ethereum address');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
+
+  const handleOpenScanner = async () => {
+    if (!permission) {
+      const result = await requestPermission();
+      if (!result.granted) {
+        Alert.alert('Permission Required', 'Camera permission is required to scan QR codes');
+        return;
+      }
+    }
+    
+    if (permission && !permission.granted) {
+      Alert.alert('Permission Required', 'Camera permission is required to scan QR codes. Please enable it in settings.');
+      return;
+    }
+    
+    setShowScanner(true);
+  };
+
   const handleSend = async () => {
     setError(null);
 
@@ -127,14 +189,23 @@ export default function SendScreen() {
       <Screen scrollable>
         <Card style={styles.card}>
           <Text style={styles.label}>Recipient Address</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="0x..."
-            placeholderTextColor={colors.text.tertiary}
-            value={recipient}
-            onChangeText={setRecipient}
-            autoCapitalize="none"
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="0x..."
+              placeholderTextColor={colors.text.tertiary}
+              value={recipient}
+              onChangeText={setRecipient}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              style={styles.scanButton}
+              onPress={handleOpenScanner}
+              activeOpacity={0.7}
+            >
+              <QrCode color={colors.accent.neonGreen} size={24} />
+            </TouchableOpacity>
+          </View>
         </Card>
 
         <Card style={styles.card}>
@@ -195,6 +266,37 @@ export default function SendScreen() {
         <Text style={styles.balanceText}>
           Available: {ethBalance} ETH
         </Text>
+
+        {/* QR Scanner Modal */}
+        {showScanner && permission?.granted && (
+          <Modal
+            visible={showScanner}
+            animationType="slide"
+            onRequestClose={() => setShowScanner(false)}
+          >
+            <View style={styles.scannerContainer}>
+              <CameraView
+                style={styles.camera}
+                facing={CameraType.back}
+                onBarcodeScanned={handleBarCodeScanned}
+                barcodeScannerSettings={{
+                  barcodeTypes: ['qr'],
+                }}
+              />
+              <View style={styles.scannerOverlay}>
+                <View style={styles.scannerFrame} />
+                <Text style={styles.scannerText}>Position QR code within frame</Text>
+                <Button
+                  onPress={() => setShowScanner(false)}
+                  variant="outline"
+                  style={styles.closeScannerButton}
+                >
+                  Close Scanner
+                </Button>
+              </View>
+            </View>
+          </Modal>
+        )}
       </Screen>
     </>
   );
@@ -210,13 +312,26 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     fontWeight: typography.fontWeight.medium,
   },
+  inputContainer: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: colors.background.tertiary,
     borderRadius: borderRadius.md,
     padding: spacing.md,
+    paddingRight: 60,
     fontSize: typography.fontSize.base,
     color: colors.text.primary,
     fontFamily: typography.fontFamily.mono,
+  },
+  scanButton: {
+    position: 'absolute',
+    right: spacing.sm,
+    top: '50%',
+    transform: [{ translateY: -12 }],
+    padding: spacing.sm,
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.background.elevated,
   },
   amountContainer: {
     flexDirection: 'row',
@@ -289,5 +404,43 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     textAlign: 'center' as const,
     marginTop: spacing.md,
+  },
+  scannerContainer: {
+    flex: 1,
+    backgroundColor: colors.background.primary,
+  },
+  camera: {
+    flex: 1,
+  },
+  scannerOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  scannerFrame: {
+    width: 250,
+    height: 250,
+    borderWidth: 3,
+    borderColor: colors.accent.neonGreen,
+    borderRadius: borderRadius.lg,
+    backgroundColor: 'transparent',
+  },
+  scannerText: {
+    marginTop: spacing.xl,
+    color: colors.text.primary,
+    fontSize: typography.fontSize.base,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.md,
+  },
+  closeScannerButton: {
+    marginTop: spacing['2xl'],
+    minWidth: 150,
   },
 });

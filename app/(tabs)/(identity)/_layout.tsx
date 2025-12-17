@@ -9,6 +9,13 @@ export default function IdentityLayout() {
       }}
     >
       <Stack.Screen name="index" />
+      <Stack.Screen 
+        name="preferences" 
+        options={{
+          headerShown: true,
+          presentation: 'card',
+        }}
+      />
     </Stack>
   );
 }
