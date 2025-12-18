@@ -9,6 +9,7 @@ import * as SystemUI from 'expo-system-ui';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
 import { colors } from '@/theme';
 import { useAppInitialization } from '@/hooks/useAppInitialization';
+import { useSettingsStore } from '@/store/settingsStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -16,6 +17,11 @@ const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   useAppInitialization();
+  const { loadThemePreference } = useSettingsStore();
+
+  useEffect(() => {
+    loadThemePreference();
+  }, [loadThemePreference]);
   
   return (
     <Stack 
@@ -43,12 +49,14 @@ export default function RootLayout() {
     Inter_600SemiBold,
   });
 
+  const { themeMode } = useSettingsStore();
+
   useEffect(() => {
     if (fontsLoaded) {
       SystemUI.setBackgroundColorAsync(colors.background.primary);
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, themeMode]);
 
   if (!fontsLoaded) {
     // Keep splash screen visible while fonts load

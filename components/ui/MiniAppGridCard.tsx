@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Shield, Star } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { type MiniApp } from '@/store/miniAppStore';
@@ -8,9 +8,6 @@ interface MiniAppGridCardProps {
   app: MiniApp;
   onPress: () => void;
 }
-
-const { width } = Dimensions.get('window');
-const cardWidth = (width - spacing.base * 3) / 2;
 
 export function MiniAppGridCard({ app, onPress }: MiniAppGridCardProps) {
   return (
@@ -52,7 +49,7 @@ export function MiniAppGridCard({ app, onPress }: MiniAppGridCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    width: cardWidth,
+    width: '100%',
     padding: spacing.md,
     backgroundColor: colors.surface,
     borderRadius: borderRadius.lg,

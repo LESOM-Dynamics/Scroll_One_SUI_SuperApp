@@ -93,11 +93,12 @@ export async function getTokenBalance(
   walletAddress: string,
   provider?: JsonRpcProvider
 ): Promise<string> {
-  console.log(`[TokenService] Fetching balance for token ${tokenAddress}`);
+  const normalizedTokenAddress = tokenAddress.trim().toLowerCase();
+  console.log(`[TokenService] Fetching balance for token ${normalizedTokenAddress}`);
   
   try {
     const rpcProvider = provider || scrollProvider.getProvider();
-    const tokenContract = new Contract(tokenAddress, ERC20_ABI, rpcProvider);
+    const tokenContract = new Contract(normalizedTokenAddress, ERC20_ABI, rpcProvider);
     
     // Fetch balance and decimals in parallel
     const [balance, decimals] = await Promise.all([
@@ -123,11 +124,12 @@ export async function getTokenMetadata(
   tokenAddress: string,
   provider?: JsonRpcProvider
 ): Promise<{ symbol: string; name: string; decimals: number } | null> {
-  console.log(`[TokenService] Fetching metadata for token ${tokenAddress}`);
+  const normalizedTokenAddress = tokenAddress.trim().toLowerCase();
+  console.log(`[TokenService] Fetching metadata for token ${normalizedTokenAddress}`);
   
   try {
     const rpcProvider = provider || scrollProvider.getProvider();
-    const tokenContract = new Contract(tokenAddress, ERC20_ABI, rpcProvider);
+    const tokenContract = new Contract(normalizedTokenAddress, ERC20_ABI, rpcProvider);
     
     const [symbol, name, decimals] = await Promise.all([
       tokenContract.symbol(),
@@ -190,7 +192,8 @@ export async function isValidERC20Token(
 ): Promise<boolean> {
   try {
     const rpcProvider = provider || scrollProvider.getProvider();
-    const tokenContract = new Contract(tokenAddress, ERC20_ABI, rpcProvider);
+    const normalizedTokenAddress = tokenAddress.trim().toLowerCase();
+    const tokenContract = new Contract(normalizedTokenAddress, ERC20_ABI, rpcProvider);
     
     // Try to call decimals() - if it works, it's likely an ERC-20 token
     await tokenContract.decimals();

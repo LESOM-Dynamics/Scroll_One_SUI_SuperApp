@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { ArrowLeft, Network } from 'lucide-react-native';
+import { ArrowLeft, Network, Moon } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -11,12 +11,14 @@ import { useWalletStore } from '@/store/walletStore';
 
 export default function PreferencesScreen() {
   const router = useRouter();
-  const { isTestnet, isLoading, setNetwork, loadNetworkPreference } = useSettingsStore();
+  const { isTestnet, isLoading, setNetwork, loadNetworkPreference, themeMode, setTheme, loadThemePreference } = useSettingsStore();
   const { address, setBalance } = useWalletStore();
+  const styles = React.useMemo(() => createStyles(), [themeMode]);
 
   useEffect(() => {
     loadNetworkPreference();
-  }, [loadNetworkPreference]);
+    loadThemePreference();
+  }, [loadNetworkPreference, loadThemePreference]);
 
   const handleNetworkToggle = async (value: boolean) => {
     Alert.alert(
@@ -49,6 +51,10 @@ export default function PreferencesScreen() {
     );
   };
 
+  const handleThemeToggle = async (value: boolean) => {
+    await setTheme(value ? 'dark' : 'light');
+  };
+
   return (
     <>
       <Stack.Screen
@@ -74,6 +80,33 @@ export default function PreferencesScreen() {
       />
       <Screen scrollable>
         <View style={styles.content}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Appearance</Text>
+            <Card style={styles.settingCard}>
+              <View style={styles.settingRow}>
+                <View style={styles.settingLeft}>
+                  <Moon color={colors.accent.secondary} size={24} />
+                  <View style={styles.settingTextContainer}>
+                    <Text style={styles.settingTitle}>Dark Mode</Text>
+                    <Text style={styles.settingDescription}>
+                      {themeMode === 'dark' ? 'On' : 'Off'}
+                    </Text>
+                  </View>
+                </View>
+                <Switch
+                  value={themeMode === 'dark'}
+                  onValueChange={handleThemeToggle}
+                  trackColor={{
+                    false: colors.border.medium,
+                    true: colors.accent.primary + '80',
+                  }}
+                  thumbColor={themeMode === 'dark' ? colors.accent.primary : colors.text.tertiary}
+                  ios_backgroundColor={colors.border.medium}
+                />
+              </View>
+            </Card>
+          </View>
+
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Network Settings</Text>
             <Card style={styles.settingCard}>
@@ -132,82 +165,83 @@ export default function PreferencesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: spacing.base,
-  },
-  section: {
-    marginBottom: spacing.xl,
-  },
-  sectionTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text.primary,
-    marginBottom: spacing.md,
-  },
-  settingCard: {
-    padding: spacing.base,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: spacing.md,
-  },
-  settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  settingTextContainer: {
-    marginLeft: spacing.md,
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: typography.fontSize.base,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.text.primary,
-    marginBottom: spacing.xs / 2,
-  },
-  settingDescription: {
-    fontSize: typography.fontSize.sm,
-    color: colors.text.secondary,
-  },
-  networkInfo: {
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border.subtle,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  infoLabel: {
-    fontSize: typography.fontSize.sm,
-    color: colors.text.secondary,
-    fontWeight: typography.fontWeight.medium,
-  },
-  infoValue: {
-    fontSize: typography.fontSize.sm,
-    color: colors.text.primary,
-    fontFamily: typography.fontFamily.mono,
-    flex: 1,
-    textAlign: 'right',
-    marginLeft: spacing.md,
-  },
-  infoCard: {
-    padding: spacing.base,
-  },
-  infoText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.text.secondary,
-    lineHeight: 20,
-  },
-  headerButton: {
-    marginLeft: spacing.sm,
-    padding: spacing.xs,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    content: {
+      padding: spacing.base,
+    },
+    section: {
+      marginBottom: spacing.xl,
+    },
+    sectionTitle: {
+      fontSize: typography.fontSize.lg,
+      fontWeight: typography.fontWeight.bold,
+      color: colors.text.primary,
+      marginBottom: spacing.md,
+    },
+    settingCard: {
+      padding: spacing.base,
+    },
+    settingRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: spacing.md,
+    },
+    settingLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    settingTextContainer: {
+      marginLeft: spacing.md,
+      flex: 1,
+    },
+    settingTitle: {
+      fontSize: typography.fontSize.base,
+      fontWeight: typography.fontWeight.semibold,
+      color: colors.text.primary,
+      marginBottom: spacing.xs / 2,
+    },
+    settingDescription: {
+      fontSize: typography.fontSize.sm,
+      color: colors.text.secondary,
+    },
+    networkInfo: {
+      marginTop: spacing.md,
+      paddingTop: spacing.md,
+      borderTopWidth: 1,
+      borderTopColor: colors.border.subtle,
+    },
+    infoRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.sm,
+    },
+    infoLabel: {
+      fontSize: typography.fontSize.sm,
+      color: colors.text.secondary,
+      fontWeight: typography.fontWeight.medium,
+    },
+    infoValue: {
+      fontSize: typography.fontSize.sm,
+      color: colors.text.primary,
+      fontFamily: typography.fontFamily.mono,
+      flex: 1,
+      textAlign: 'right',
+      marginLeft: spacing.md,
+    },
+    infoCard: {
+      padding: spacing.base,
+    },
+    infoText: {
+      fontSize: typography.fontSize.sm,
+      color: colors.text.secondary,
+      lineHeight: 20,
+    },
+    headerButton: {
+      marginLeft: spacing.sm,
+      padding: spacing.xs,
+    },
+  });

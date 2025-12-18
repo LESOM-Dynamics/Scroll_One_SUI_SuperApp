@@ -9,6 +9,7 @@ import {
   Animated,
   Platform,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Search, List, Grid } from 'lucide-react-native';
@@ -21,6 +22,7 @@ import { MiniAppListCard } from '@/components/ui/MiniAppListCard';
 import { MiniAppGridCard } from '@/components/ui/MiniAppGridCard';
 
 const ITEMS_PER_PAGE = 6;
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function ExploreScreen() {
   const router = useRouter();
@@ -288,11 +290,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginHorizontal: -spacing.xs,
   },
   gridItem: {
-    width: '48%',
-    marginHorizontal: spacing.xs,
+    width: SCREEN_WIDTH / 2 - spacing.base * 1.5,
     marginBottom: spacing.md,
   },
   footer: {

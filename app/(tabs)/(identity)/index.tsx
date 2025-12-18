@@ -6,10 +6,13 @@ import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useUserStore } from '@/store/userStore';
+import { useSettingsStore } from '@/store/settingsStore';
 
 export default function IdentityScreen() {
   const { profile } = useUserStore();
   const router = useRouter();
+  const { themeMode } = useSettingsStore();
+  const styles = React.useMemo(() => createStyles(), [themeMode]);
 
   const badges = [
     { id: '1', icon: '🏆', name: 'Early Adopter', earned: true },
@@ -104,127 +107,128 @@ export default function IdentityScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: colors.background.primary,
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.lg,
-  },
-  profileSection: {
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 96,
-    height: 96,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.base,
-    ...shadows.sm,
-  },
-  name: {
-    fontSize: typography.fontSize.xl,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.text.primary,
-    marginBottom: spacing.xs,
-  },
-  scrollId: {
-    fontSize: typography.fontSize.base,
-    color: colors.text.secondary,
-    fontFamily: typography.fontFamily.mono,
-    marginBottom: spacing.lg,
-  },
-  stats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statItem: {
-    alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  statValue: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.accent.primary,
-    marginBottom: spacing.xs,
-  },
-  statLabel: {
-    fontSize: typography.fontSize.sm,
-    color: colors.text.secondary,
-  },
-  statDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: colors.border.medium,
-  },
-  content: {
-    flex: 1,
-    backgroundColor: colors.background.secondary,
-  },
-  section: {
-    padding: spacing.base,
-    marginBottom: spacing.base,
-  },
-  sectionTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text.primary,
-    marginBottom: spacing.md,
-  },
-  badgesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-  },
-  badgeCard: {
-    width: '47%',
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-  },
-  badgeCardLocked: {
-    opacity: 0.4,
-  },
-  badgeIcon: {
-    fontSize: 40,
-    marginBottom: spacing.sm,
-  },
-  badgeName: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.medium,
-    color: colors.text.primary,
-    textAlign: 'center' as const,
-  },
-  badgeNameLocked: {
-    color: colors.text.tertiary,
-  },
-  menuCard: {
-    padding: 0,
-  },
-  menuItem: {
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
-  },
-  menuLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  menuText: {
-    fontSize: typography.fontSize.base,
-    color: colors.text.primary,
-    marginLeft: spacing.md,
-    fontWeight: typography.fontWeight.medium,
-  },
-  menuTextDanger: {
-    color: colors.status.error,
-  },
-  menuDivider: {
-    height: 1,
-    backgroundColor: colors.border.subtle,
-    marginHorizontal: spacing.base,
-  },
-  scrollContent: {
-    paddingBottom: spacing.xl * 2,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    header: {
+      backgroundColor: colors.background.primary,
+      paddingHorizontal: spacing.base,
+      paddingTop: spacing.xl,
+      paddingBottom: spacing.lg,
+    },
+    profileSection: {
+      alignItems: 'center',
+    },
+    avatar: {
+      width: 96,
+      height: 96,
+      borderRadius: borderRadius.full,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: spacing.base,
+      ...shadows.sm,
+    },
+    name: {
+      fontSize: typography.fontSize.xl,
+      fontWeight: typography.fontWeight.semibold,
+      color: colors.text.primary,
+      marginBottom: spacing.xs,
+    },
+    scrollId: {
+      fontSize: typography.fontSize.base,
+      color: colors.text.secondary,
+      fontFamily: typography.fontFamily.mono,
+      marginBottom: spacing.lg,
+    },
+    stats: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    statItem: {
+      alignItems: 'center',
+      paddingHorizontal: spacing.xl,
+    },
+    statValue: {
+      fontSize: typography.fontSize['2xl'],
+      fontWeight: typography.fontWeight.semibold,
+      color: colors.accent.primary,
+      marginBottom: spacing.xs,
+    },
+    statLabel: {
+      fontSize: typography.fontSize.sm,
+      color: colors.text.secondary,
+    },
+    statDivider: {
+      width: 1,
+      height: 40,
+      backgroundColor: colors.border.medium,
+    },
+    content: {
+      flex: 1,
+      backgroundColor: colors.background.secondary,
+    },
+    section: {
+      padding: spacing.base,
+      marginBottom: spacing.base,
+    },
+    sectionTitle: {
+      fontSize: typography.fontSize.lg,
+      fontWeight: typography.fontWeight.bold,
+      color: colors.text.primary,
+      marginBottom: spacing.md,
+    },
+    badgesGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.md,
+    },
+    badgeCard: {
+      width: '47%',
+      alignItems: 'center',
+      paddingVertical: spacing.lg,
+    },
+    badgeCardLocked: {
+      opacity: 0.4,
+    },
+    badgeIcon: {
+      fontSize: 40,
+      marginBottom: spacing.sm,
+    },
+    badgeName: {
+      fontSize: typography.fontSize.sm,
+      fontWeight: typography.fontWeight.medium,
+      color: colors.text.primary,
+      textAlign: 'center' as const,
+    },
+    badgeNameLocked: {
+      color: colors.text.tertiary,
+    },
+    menuCard: {
+      padding: 0,
+    },
+    menuItem: {
+      paddingHorizontal: spacing.base,
+      paddingVertical: spacing.md,
+    },
+    menuLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    menuText: {
+      fontSize: typography.fontSize.base,
+      color: colors.text.primary,
+      marginLeft: spacing.md,
+      fontWeight: typography.fontWeight.medium,
+    },
+    menuTextDanger: {
+      color: colors.status.error,
+    },
+    menuDivider: {
+      height: 1,
+      backgroundColor: colors.border.subtle,
+      marginHorizontal: spacing.base,
+    },
+    scrollContent: {
+      paddingBottom: spacing.xl * 2,
+    },
+  });
