@@ -1,11 +1,13 @@
 const lightPalette = {
   background: {
-    primary: '#FAFAFA',
-    secondary: '#FFFFFF',
-    tertiary: '#FFFFFF',
-    elevated: '#FFFFFF',
+    // Seashell peach base
+    primary: '#FFF8F3',  // main app background
+    secondary: '#FFF3EA', // subtle variation
+    tertiary: '#FFE4CC',  // slightly deeper peach
+    elevated: '#FFDEB5',  // elevated surfaces
   },
-  surface: '#FFFFFF',
+  // Default surface for cards/containers
+  surface: '#FFF8F3',
   border: {
     subtle: '#E5E7EB',
     medium: '#E5E7EB',
@@ -39,7 +41,7 @@ const lightPalette = {
     medium: 'rgba(15,23,42,0.12)',
   },
   glass: {
-    background: 'rgba(255,255,255,0.9)',
+    background: 'rgba(255,248,243,0.9)',
     border: 'rgba(148,163,184,0.35)',
   },
 } as const;
