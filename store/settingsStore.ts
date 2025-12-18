@@ -9,19 +9,23 @@ interface SettingsState {
   isTestnet: boolean;
   isLoading: boolean;
   themeMode: ThemeMode;
-  
+  kycSharingEnabled: boolean;
+
   setNetwork: (isTestnet: boolean) => Promise<void>;
   loadNetworkPreference: () => Promise<void>;
 
   setTheme: (mode: ThemeMode) => Promise<void>;
   loadThemePreference: () => Promise<void>;
+
+  setKycSharingEnabled: (enabled: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
   isTestnet: false, // Default to mainnet
   isLoading: true,
   themeMode: 'light',
-  
+  kycSharingEnabled: false,
+
   setNetwork: async (isTestnet: boolean) => {
     try {
       await AsyncStorage.setItem(NETWORK_PREFERENCE_KEY, JSON.stringify(isTestnet));
@@ -59,7 +63,6 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       console.error('[SettingsStore] Error saving theme preference:', error);
     }
   },
-
   loadThemePreference: async () => {
     try {
       const stored = await AsyncStorage.getItem(THEME_PREFERENCE_KEY);
@@ -73,6 +76,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       setThemeMode('light');
       set({ themeMode: 'light' });
     }
+  },
+
+  setKycSharingEnabled: (enabled: boolean) => {
+    set({ kycSharingEnabled: enabled });
+    console.log('[SettingsStore] KYC sharing preference set to:', enabled);
   },
 }));
 

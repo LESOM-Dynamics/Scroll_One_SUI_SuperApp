@@ -72,7 +72,10 @@ export default function IdentityScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Settings</Text>
             <Card style={styles.menuCard}>
-              <TouchableOpacity style={styles.menuItem}>
+              <TouchableOpacity 
+                style={styles.menuItem}
+                onPress={() => router.push('/(tabs)/(identity)/privacy-security')}
+              >
                 <View style={styles.menuLeft}>
                   <Shield color={colors.accent.secondary} size={20} />
                   <Text style={styles.menuText}>Privacy & Security</Text>

@@ -16,6 +16,13 @@ export default function IdentityLayout() {
           presentation: 'card',
         }}
       />
+      <Stack.Screen
+        name="privacy-security"
+        options={{
+          headerShown: true,
+          presentation: 'card',
+        }}
+      />
     </Stack>
   );
 }

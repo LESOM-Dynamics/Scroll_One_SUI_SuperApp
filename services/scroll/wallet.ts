@@ -7,7 +7,6 @@ const PRIVATE_KEY = 'scroll_private_key';
 
 export interface Wallet {
   address: string;
-  publicKey: string;
 }
 
 let cachedWallet: EthersWallet | null = null;
@@ -32,6 +31,19 @@ async function getWalletInstance(): Promise<EthersWallet | null> {
     return cachedWallet;
   } catch (error) {
     console.error('[WalletService] Error getting wallet instance:', error);
+    return null;
+  }
+}
+
+export async function getPrivateKey(): Promise<string | null> {
+  try {
+    const privateKey = await SecureStore.getItemAsync(PRIVATE_KEY);
+    if (!privateKey || !isValidPrivateKey(privateKey)) {
+      return null;
+    }
+    return privateKey;
+  } catch (error) {
+    console.error('[WalletService] Error getting private key:', error);
     return null;
   }
 }
@@ -63,7 +75,6 @@ export async function createWallet(): Promise<Wallet> {
     
     return {
       address,
-      publicKey: wallet.publicKey,
     };
   } catch (error) {
     console.error('[WalletService] Error creating wallet:', error);
@@ -109,7 +120,6 @@ export async function loadWallet(): Promise<Wallet | null> {
     
     return {
       address,
-      publicKey: wallet.publicKey,
     };
   } catch (error) {
     console.error('[WalletService] Error loading wallet:', error);
@@ -133,6 +143,16 @@ export async function deleteWallet(): Promise<void> {
   cachedWallet = null;
   
   console.log('[WalletService] Wallet deleted');
+}
+
+export async function resetWallet(): Promise<Wallet> {
+  console.log('[WalletService] Resetting wallet');
+
+  await deleteWallet();
+  const wallet = await createWallet();
+
+  console.log('[WalletService] Wallet reset complete:', wallet.address);
+  return wallet;
 }
 
 export async function signTransaction(transaction: TransactionRequest, provider?: JsonRpcProvider): Promise<string> {
