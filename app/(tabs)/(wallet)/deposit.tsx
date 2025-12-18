@@ -15,6 +15,7 @@ import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { useWalletStore } from '@/store/walletStore';
+import { useSettingsStore } from '@/store/settingsStore';
 
 type OnrampProviderId = 'ramp' | 'moonpay' | 'transak';
 
@@ -49,10 +50,16 @@ const ONRAMP_PROVIDERS: OnrampProvider[] = [
 export default function DepositScreen() {
   const router = useRouter();
   const { address } = useWalletStore();
+  const { isTestnet } = useSettingsStore();
+
+  const networkLabel = isTestnet ? 'Scroll Sepolia (Testnet)' : 'Scroll Mainnet';
 
   const handleOpenOnramp = (provider: OnrampProvider) => {
     if (!address) {
-      Alert.alert('Wallet not ready', 'Please wait for your wallet to be created or loaded.');
+      Alert.alert(
+        'Wallet not ready',
+        'Your wallet address is still loading. Please go back to Wallet and wait a moment, then try again.',
+      );
       return;
     }
 
@@ -64,6 +71,13 @@ export default function DepositScreen() {
   };
 
   const handleOpenScrollBridge = () => {
+    if (!address) {
+      Alert.alert(
+        'Wallet not ready',
+        'Your wallet address is still loading. Please go back to Wallet and wait a moment, then try again.',
+      );
+      return;
+    }
     router.push('/(tabs)/(wallet)/bridge');
   };
 
@@ -84,6 +98,9 @@ export default function DepositScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
+            <View style={styles.networkPill}>
+              <Text style={styles.networkPillText}>{networkLabel}</Text>
+            </View>
             <Text style={styles.title}>Deposit to Scroll Wallet</Text>
             <Text style={styles.subtitle}>
               Add funds using fiat on-ramps or by sending crypto from another wallet or exchange.
@@ -95,6 +112,24 @@ export default function DepositScreen() {
                 {address || 'Loading wallet address...'}
               </Text>
             </Card>
+
+            {!address && (
+              <Card variant="bordered" style={styles.warningCard}>
+                <Text style={styles.warningTitle}>Wallet still initializing</Text>
+                <Text style={styles.warningText}>
+                  Your wallet address is not ready yet. Go back to the Wallet tab and wait a few
+                  seconds for initialization to complete, then return here.
+                </Text>
+                <Button
+                  variant="outline"
+                  fullWidth
+                  style={styles.warningButton}
+                  onPress={() => router.back()}
+                >
+                  Go back to Wallet
+                </Button>
+              </Card>
+            )}
           </View>
 
           <View style={styles.section}>
@@ -182,6 +217,17 @@ export default function DepositScreen() {
               </Button>
             </Card>
           </View>
+
+          <View style={styles.section}>
+            <Card variant="bordered" style={styles.disclaimerCard}>
+              <Text style={styles.disclaimerTitle}>Important</Text>
+              <Text style={styles.disclaimerText}>
+                On-ramp providers are third-party services. Scroll One does not custody your funds
+                and is not responsible for delays, fees, or issues with those services. Always
+                double-check the network and destination address before confirming a deposit.
+              </Text>
+            </Card>
+          </View>
         </ScrollView>
       </Screen>
     </>
@@ -201,6 +247,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingTop: spacing.xl,
     paddingBottom: spacing.lg,
+  },
+  networkPill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.background.elevated,
+    marginBottom: spacing.sm,
+  },
+  networkPillText: {
+    fontSize: typography.fontSize.xs,
+    color: colors.text.secondary,
+    fontWeight: typography.fontWeight.medium,
   },
   title: {
     fontSize: typography.fontSize['2xl'],
@@ -225,6 +284,23 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.sm,
     color: colors.text.primary,
     fontFamily: typography.fontFamily.mono,
+  },
+  warningCard: {
+    marginTop: spacing.lg,
+  },
+  warningTitle: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.status.warning,
+    marginBottom: spacing.xs,
+  },
+  warningText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.text.secondary,
+    marginBottom: spacing.sm,
+  },
+  warningButton: {
+    marginTop: spacing.xs,
   },
   section: {
     paddingHorizontal: spacing.base,
@@ -294,6 +370,20 @@ const styles = StyleSheet.create({
   },
   stepButton: {
     marginTop: spacing.sm,
+  },
+  disclaimerCard: {
+    marginBottom: spacing.lg,
+  },
+  disclaimerTitle: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  },
+  disclaimerText: {
+    fontSize: typography.fontSize.xs,
+    color: colors.text.secondary,
+    lineHeight: typography.lineHeight.relaxed * typography.fontSize.xs,
   },
 });
 

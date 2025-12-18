@@ -58,13 +58,14 @@
 - Implement real transaction signing
 - Secure private key storage (currently just storing mock string)
 
-#### 2. **Real Transaction Execution**
+#### 2. **Real Transaction Execution / On-Ramp / Bridge**
 
 - ❌ **Send screen** - Only logs to console, doesn't actually send transactions
 - ❌ **Swap screen** - No DEX integration, no real swap execution
 - ❌ **Transaction service** - `sendTransaction()` returns mock transaction
 - ❌ **No gas estimation** - Hardcoded fees
 - ❌ **No transaction confirmation** - No polling for transaction status
+- ✅ **Deposit / On-ramp / Bridge entry points** - Deposit screen implemented with fiat on-ramp and bridge flows rendered inside the app via WebView miniapps
 
 **Required:**
 
@@ -145,6 +146,7 @@
 - ❌ **Incomplete bridge** - WebViewContainer has basic bridge but doesn't handle requests
 - ❌ **No transaction signing from mini-apps** - Bridge receives but doesn't process
 - ❌ **No balance requests** - Bridge doesn't respond to GET_BALANCE
+- ✅ **Internal WebView usage** - On-ramp providers and Scroll Bridge now run inside the app as miniapps using `WebViewContainer`, sharing the same injected context
 
 **Required:**
 

@@ -68,6 +68,36 @@ export const MINIAPPS: MiniApp[] = [
     featured: true,
     verified: true,
   },
+  {
+    id: 'onramp-ramp',
+    name: 'Ramp On-Ramp',
+    url: 'https://ramp.network/buy',
+    icon: '💳',
+    description: 'Buy crypto on Scroll using cards or bank transfers.',
+    category: 'Onramp',
+    featured: false,
+    verified: true,
+  },
+  {
+    id: 'onramp-moonpay',
+    name: 'MoonPay On-Ramp',
+    url: 'https://buy.moonpay.com',
+    icon: '💳',
+    description: 'Global fiat on-ramp for crypto purchases.',
+    category: 'Onramp',
+    featured: false,
+    verified: true,
+  },
+  {
+    id: 'onramp-transak',
+    name: 'Transak On-Ramp',
+    url: 'https://global.transak.com',
+    icon: '💳',
+    description: 'Multi-rail on-ramp with cards and local payment methods.',
+    category: 'Onramp',
+    featured: false,
+    verified: true,
+  },
 
   // --- NFT / Explorers / Tools ---
   {
