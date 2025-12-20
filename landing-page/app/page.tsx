@@ -291,64 +291,126 @@ export default function Home() {
               </motion.div>
             </motion.div>
 
-            {/* Right Side - Creative Visual Element */}
+            {/* Right Side - Smartphone Mockup */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="relative hidden lg:block"
+              className="relative hidden lg:flex items-center justify-center"
             >
-              <div className="relative w-full aspect-square">
-                {/* Animated Geometric Shapes */}
+              <div className="relative w-full max-w-md">
+                {/* Phone Frame */}
                 <motion.div
-                  className="absolute inset-0 flex items-center justify-center"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: 9999, ease: "linear" }}
+                  className="relative mx-auto"
+                  initial={{ scale: 0.8, y: 20 }}
+                  animate={{ scale: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
                 >
-                  <div className="w-64 h-64 border-2 border-accent-primary/20 rounded-3xl rotate-45"></div>
-                </motion.div>
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center"
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 15, repeat: 9999, ease: "linear" }}
-                >
-                  <div className="w-48 h-48 border-2 border-accent-primary/30 rounded-full"></div>
-                </motion.div>
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center"
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 180, 360]
-                  }}
-                  transition={{ duration: 8, repeat: 9999, ease: "easeInOut" }}
-                >
-                  <div className="w-32 h-32 bg-accent-primary/10 rounded-2xl blur-xl"></div>
+                  {/* Phone Outer Frame with Shadow */}
+                  <div className="relative">
+                    {/* Phone Bezel */}
+                    <div className="bg-gradient-to-b from-gray-900 to-black rounded-[3rem] p-2 shadow-2xl">
+                      {/* Phone Screen Border */}
+                      <div className="bg-black rounded-[2.5rem] p-1">
+                        {/* Notch */}
+                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-10"></div>
+                        
+                        {/* Screen Content */}
+                        <div className="relative bg-gradient-to-br from-background-primary via-background-secondary to-background-primary rounded-[2.4rem] overflow-hidden aspect-[9/19.5]">
+                          {/* Status Bar */}
+                          <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black/50 to-transparent z-20 flex items-center justify-between px-6 pt-2">
+                            <div className="text-white text-xs font-semibold">9:41</div>
+                            <div className="flex items-center gap-1">
+                              <div className="w-4 h-2 border border-white/50 rounded-sm"></div>
+                              <div className="w-1 h-1 bg-white rounded-full"></div>
+                            </div>
+                          </div>
+                          
+                          {/* App Screenshot Content */}
+                          <div className="absolute inset-0 pt-12 pb-4 px-2">
+                            {/* Mock App Interface */}
+                            <div className="h-full bg-gradient-to-b from-background-primary to-background-secondary rounded-2xl overflow-hidden relative">
+                              {/* Header with gradient */}
+                              <div className="h-20 bg-gradient-scroll rounded-t-2xl flex items-center justify-center">
+                                <div className="flex items-center gap-2">
+                                  <Zap className="w-6 h-6 text-white" />
+                                  <span className="text-white font-bold text-lg">Scroll One</span>
+                                </div>
+                              </div>
+                              
+                              {/* Tab Navigation */}
+                              <div className="flex items-center justify-around bg-background-tertiary/50 border-b border-border-subtle px-4 py-2">
+                                {['Wallet', 'Explore', 'Identity'].map((tab, i) => (
+                                  <div key={i} className={`text-xs ${i === 1 ? 'text-accent-primary font-semibold' : 'text-text-secondary'}`}>
+                                    {tab}
+                                  </div>
+                                ))}
+                              </div>
+                              
+                              {/* Main Content Area */}
+                              <div className="p-4 space-y-3">
+                                {/* Balance Card */}
+                                <div className="glass rounded-xl p-4 border border-border-subtle backdrop-blur-xl">
+                                  <div className="text-text-tertiary text-xs mb-1">Total Balance</div>
+                                  <div className="text-2xl font-bold text-text-primary">$0.00</div>
+                                  <div className="text-accent-primary text-xs mt-1">0.0 ETH</div>
+                                </div>
+                                
+                                {/* Quick Actions */}
+                                <div className="grid grid-cols-4 gap-2">
+                                  {[
+                                    { icon: ArrowRight, label: 'Send' },
+                                    { icon: Download, label: 'Receive' },
+                                    { icon: Zap, label: 'Swap' },
+                                    { icon: Globe, label: 'Explore' },
+                                  ].map((action, i) => (
+                                    <div key={i} className="flex flex-col items-center gap-1">
+                                      <div className="w-12 h-12 bg-gradient-scroll/20 rounded-xl flex items-center justify-center">
+                                        <action.icon className="w-5 h-5 text-accent-primary" />
+                                      </div>
+                                      <span className="text-xs text-text-secondary">{action.label}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                                
+                                {/* Mini Apps Grid */}
+                                <div className="grid grid-cols-3 gap-2 mt-4">
+                                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                                    <div key={i} className="aspect-square glass rounded-lg border border-border-subtle flex items-center justify-center">
+                                      <div className="text-2xl">🎯</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Glow Effect */}
+                    <div className="absolute inset-0 bg-gradient-scroll/20 rounded-[3rem] blur-2xl -z-10"></div>
+                  </div>
                 </motion.div>
                 
-                {/* Floating Icons */}
-                {[
-                  { icon: Wallet, position: "top-10 left-10", delay: 0 },
-                  { icon: Shield, position: "top-20 right-20", delay: 0.2 },
-                  { icon: Globe, position: "bottom-20 left-20", delay: 0.4 },
-                  { icon: Zap, position: "bottom-10 right-10", delay: 0.6 },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    className={`absolute ${item.position} w-16 h-16 glass rounded-xl flex items-center justify-center border border-accent-primary/30 backdrop-blur-xl`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ 
-                      opacity: 1, 
-                      y: [0, -10, 0]
-                    }}
-                    transition={{ 
-                      delay: item.delay,
-                      y: { duration: 3, repeat: 9999, ease: "easeInOut" }
-                    }}
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                  >
-                    <item.icon className="w-8 h-8 text-accent-primary" />
-                  </motion.div>
-                ))}
+                {/* Floating Decorative Elements */}
+                <motion.div
+                  className="absolute -top-10 -right-10 w-20 h-20 bg-accent-primary/10 rounded-full blur-xl"
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    y: [0, -10, 0]
+                  }}
+                  transition={{ duration: 4, repeat: 9999, ease: "easeInOut" }}
+                />
+                <motion.div
+                  className="absolute -bottom-10 -left-10 w-24 h-24 bg-accent-primary/10 rounded-full blur-xl"
+                  animate={{ 
+                    scale: [1, 1.1, 1],
+                    y: [0, 10, 0]
+                  }}
+                  transition={{ duration: 5, repeat: 9999, ease: "easeInOut" }}
+                />
               </div>
             </motion.div>
           </div>
