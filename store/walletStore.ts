@@ -25,6 +25,7 @@ export interface Transaction {
 interface WalletState {
   address: string | null;
   isConnected: boolean;
+  isUnlocked: boolean;
   balance: string;
   assets: Asset[];
   transactions: Transaction[];
@@ -38,6 +39,7 @@ interface WalletState {
   addTransaction: (transaction: Transaction) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
+  setUnlocked: (isUnlocked: boolean) => void;
   disconnect: () => void;
   reset: () => void;
 }
@@ -45,13 +47,13 @@ interface WalletState {
 export const useWalletStore = create<WalletState>((set) => ({
   address: null,
   isConnected: false,
+  isUnlocked: false,
   balance: '0.00',
   assets: [],
   transactions: [],
   isLoading: false,
   error: null,
-  
-  setAddress: (address) => set({ address, isConnected: true }),
+  setAddress: (address) => set({ address, isConnected: !!address }),
   
   setBalance: (balance) => set({ balance }),
   
@@ -67,10 +69,13 @@ export const useWalletStore = create<WalletState>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   
   setError: (error) => set({ error }),
+
+  setUnlocked: (isUnlocked) => set({ isUnlocked }),
   
   disconnect: () => set({ 
     address: null, 
     isConnected: false,
+    isUnlocked: false,
     balance: '0.00',
     assets: [],
     transactions: [],
@@ -79,6 +84,7 @@ export const useWalletStore = create<WalletState>((set) => ({
   reset: () => set({
     address: null,
     isConnected: false,
+    isUnlocked: false,
     balance: '0.00',
     assets: [],
     transactions: [],

@@ -4,12 +4,14 @@ import { setThemeMode, type ThemeMode } from '@/theme/colors';
 
 const NETWORK_PREFERENCE_KEY = '@scroll_one:network_preference';
 const THEME_PREFERENCE_KEY = '@scroll_one:theme_mode';
+const BIOMETRIC_PREFERENCE_KEY = '@scroll_one:biometric_auth_enabled';
 
 interface SettingsState {
   isTestnet: boolean;
   isLoading: boolean;
   themeMode: ThemeMode;
   kycSharingEnabled: boolean;
+  biometricAuthEnabled: boolean;
 
   setNetwork: (isTestnet: boolean) => Promise<void>;
   loadNetworkPreference: () => Promise<void>;
@@ -18,6 +20,9 @@ interface SettingsState {
   loadThemePreference: () => Promise<void>;
 
   setKycSharingEnabled: (enabled: boolean) => void;
+
+  setBiometricAuthEnabled: (enabled: boolean) => Promise<void>;
+  loadBiometricPreference: () => Promise<void>;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -25,6 +30,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   isLoading: true,
   themeMode: 'light',
   kycSharingEnabled: false,
+  biometricAuthEnabled: false,
 
   setNetwork: async (isTestnet: boolean) => {
     try {
@@ -82,5 +88,29 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     set({ kycSharingEnabled: enabled });
     console.log('[SettingsStore] KYC sharing preference set to:', enabled);
   },
-}));
 
+  setBiometricAuthEnabled: async (enabled: boolean) => {
+    try {
+      await AsyncStorage.setItem(BIOMETRIC_PREFERENCE_KEY, JSON.stringify(enabled));
+      set({ biometricAuthEnabled: enabled });
+      console.log('[SettingsStore] Biometric auth preference set to:', enabled);
+    } catch (error) {
+      console.error('[SettingsStore] Error saving biometric preference:', error);
+    }
+  },
+
+  loadBiometricPreference: async () => {
+    try {
+      const stored = await AsyncStorage.getItem(BIOMETRIC_PREFERENCE_KEY);
+      if (stored !== null) {
+        const enabled = JSON.parse(stored);
+        set({ biometricAuthEnabled: enabled });
+        console.log('[SettingsStore] Biometric auth preference loaded:', enabled);
+      } else {
+        console.log('[SettingsStore] No biometric preference found, defaulting to disabled');
+      }
+    } catch (error) {
+      console.error('[SettingsStore] Error loading biometric preference:', error);
+    }
+  },
+}));

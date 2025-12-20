@@ -1,6 +1,7 @@
 # WebView Bridge Integration - Complete Technical Guide
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Architecture](#architecture)
 3. [Native App Implementation](#native-app-implementation)
@@ -29,7 +30,7 @@ The WebView Bridge enables secure two-way communication between dApps (MiniApps)
 
 ### Communication Flow
 
-```
+```text
 ┌─────────────────┐
 │   dApp (Web)    │
 │  (WebView)      │
@@ -72,7 +73,7 @@ The WebView Bridge enables secure two-way communication between dApps (MiniApps)
 
 ### File Structure
 
-```
+```text
 services/
   bridge/
     bridgeService.ts       # Core bridge logic
@@ -85,6 +86,28 @@ components/
   bridge/
     TransactionApprovalModal.tsx  # Transaction approval UI
 ```
+
+### Wallet Locking, Biometrics, and Settings
+
+The bridge is sensitive to the native wallet lock state and certain privacy settings:
+
+- The native app may require **biometric authentication** (Face ID / Touch ID / fingerprint or device passcode) before loading the wallet.
+- Until the wallet is loaded, the WebView bridge treats the wallet as **locked** and may restrict signing and transaction-related methods.
+- Users can configure these behaviors from the **Privacy & Security** screen in the app.
+
+The injected `window.scrollOne` object currently includes:
+
+```ts
+window.scrollOne = {
+  walletAddress: string;      // '' when wallet is not yet loaded / locked
+  chainId: number;            // e.g. 534352
+  isScrollOne: true;
+  version: string;
+  isWalletLocked: boolean;    // true when no unlocked wallet is available in the host app
+};
+```
+
+> Note: Additional flags (for example, KYC sharing status) may be added in future revisions of the protocol. dApps should treat unknown properties as optional and feature-detect them rather than relying on a fixed shape.
 
 ### 1. Bridge Types (`services/bridge/types.ts`)
 

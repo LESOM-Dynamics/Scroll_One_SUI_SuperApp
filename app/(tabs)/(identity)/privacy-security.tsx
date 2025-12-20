@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert, Platform } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { ArrowLeft, Lock, Key, RefreshCw, ShieldCheck } from 'lucide-react-native';
+import { ArrowLeft, Lock, Key, RefreshCw, ShieldCheck, Fingerprint } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -12,15 +12,23 @@ import { getPrivateKey, resetWallet, shortenAddress } from '@/services/scroll/wa
 import { scrollProvider } from '@/services/scroll/provider';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 export default function PrivacySecurityScreen() {
   const router = useRouter();
   const { address, setAddress, setBalance, setAssets, setTransactions, reset } = useWalletStore();
-  const { kycSharingEnabled, setKycSharingEnabled, themeMode } = useSettingsStore();
+  const {
+    kycSharingEnabled,
+    setKycSharingEnabled,
+    themeMode,
+    biometricAuthEnabled,
+    setBiometricAuthEnabled,
+  } = useSettingsStore();
 
   const [privateKey, setPrivateKey] = useState<string | null>(null);
   const [isRevealingKey, setIsRevealingKey] = useState(false);
   const [isResettingWallet, setIsResettingWallet] = useState(false);
+  const [isUpdatingBiometrics, setIsUpdatingBiometrics] = useState(false);
 
   const styles = React.useMemo(() => createStyles(), [themeMode]);
 
@@ -112,6 +120,40 @@ export default function PrivacySecurityScreen() {
     setKycSharingEnabled(value);
   };
 
+  const handleToggleBiometrics = async (value: boolean) => {
+    if (Platform.OS === 'web') {
+      Alert.alert('Not supported', 'Biometric authentication is only available on iOS and Android devices.');
+      return;
+    }
+
+    setIsUpdatingBiometrics(true);
+
+    try {
+      if (value) {
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+        if (!hasHardware || !isEnrolled) {
+          Alert.alert(
+            'Biometrics Unavailable',
+            'Your device does not support biometrics, or no fingerprint/Face ID is enrolled. Please configure biometrics in your device settings first.'
+          );
+          await setBiometricAuthEnabled(false);
+          return;
+        }
+
+        await setBiometricAuthEnabled(true);
+      } else {
+        await setBiometricAuthEnabled(false);
+      }
+    } catch (error) {
+      console.error('[PrivacySecurity] Error updating biometric setting:', error);
+      Alert.alert('Error', 'Failed to update biometric settings. Please try again.');
+    } finally {
+      setIsUpdatingBiometrics(false);
+    }
+  };
+
   return (
     <>
       <Stack.Screen
@@ -189,6 +231,49 @@ export default function PrivacySecurityScreen() {
                 <Text style={styles.infoText}>
                   This wallet is generated directly from a private key and does not currently expose a seed phrase. 
                   Make sure you securely store your private key backup.
+                </Text>
+              </View>
+            </Card>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>App Lock & Biometrics</Text>
+            <Card style={styles.card}>
+              <View style={styles.row}>
+                <View style={styles.iconCircle}>
+                  <Fingerprint color={colors.accent.secondary} size={22} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitle}>Biometric Unlock</Text>
+                  <Text style={styles.cardDescription}>
+                    Require Face ID / Touch ID / fingerprint (or your device passcode) to unlock your Scroll wallet when the app starts.
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.settingRow}>
+                <View style={styles.settingLeft}>
+                  <Text style={styles.settingTitle}>Use biometrics to unlock wallet</Text>
+                  <Text style={styles.settingSubtitle}>
+                    When enabled, the app will prompt for biometric authentication before loading your wallet and exposing it to mini-apps via the WebView bridge.
+                  </Text>
+                </View>
+                <Switch
+                  value={biometricAuthEnabled}
+                  onValueChange={handleToggleBiometrics}
+                  disabled={isUpdatingBiometrics}
+                  trackColor={{
+                    false: colors.border.medium,
+                    true: colors.accent.primary + '80',
+                  }}
+                  thumbColor={biometricAuthEnabled ? colors.accent.primary : colors.text.tertiary}
+                  ios_backgroundColor={colors.border.medium}
+                />
+              </View>
+
+              <View style={styles.infoBox}>
+                <Text style={styles.infoText}>
+                  Biometric prompts are handled by your device. The Scroll app never receives your fingerprint or Face ID data—only a simple success or failure result.
                 </Text>
               </View>
             </Card>

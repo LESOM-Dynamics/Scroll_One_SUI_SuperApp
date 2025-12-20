@@ -10,6 +10,7 @@ import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '
 import { colors } from '@/theme';
 import { useAppInitialization } from '@/hooks/useAppInitialization';
 import { useSettingsStore } from '@/store/settingsStore';
+import { AuthGuard } from '@/components/auth/AuthGuard';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,21 +25,25 @@ function RootLayoutNav() {
   }, [loadThemePreference]);
   
   return (
-    <Stack 
-      screenOptions={{ 
-        headerBackTitle: "Back",
-        headerStyle: {
-          backgroundColor: colors.background.primary,
-        },
-        headerTintColor: colors.text.primary,
-        contentStyle: {
-          backgroundColor: colors.background.primary,
-        },
-      }}
-    >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="+not-found" />
-    </Stack>
+    <>
+      <AuthGuard />
+      <Stack 
+        screenOptions={{ 
+          headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: colors.background.primary,
+          },
+          headerTintColor: colors.text.primary,
+          contentStyle: {
+            backgroundColor: colors.background.primary,
+          },
+        }}
+      >
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </>
   );
 }
 

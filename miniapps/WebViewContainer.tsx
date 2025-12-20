@@ -3,6 +3,7 @@ import { View, StyleSheet, ActivityIndicator, Text, Platform } from 'react-nativ
 import { WebView as RNWebView, type WebViewMessageEvent } from 'react-native-webview';
 import { colors, spacing, typography } from '@/theme';
 import { useWalletStore } from '@/store/walletStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import { type MiniApp } from '@/store/miniAppStore';
 
 interface WebViewContainerProps {
@@ -14,15 +15,24 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
   const webViewRef = useRef<RNWebView>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { address } = useWalletStore();
+  const { address, isUnlocked } = useWalletStore();
+  const { kycSharingEnabled } = useSettingsStore();
+
+  const isWalletLocked = !isUnlocked || !address;
 
   const injectedJavaScript = `
     (function() {
       window.scrollOne = {
-        walletAddress: '${address || ''}',
+        walletAddress: ${isWalletLocked ? "''" : `'${address || ''}'`},
         chainId: 534352,
         isScrollOne: true,
         version: '1.0.0',
+        // Indicates whether the native wallet is currently locked.
+        // When true, sensitive actions (signing, transactions) may be blocked by the host app.
+        isWalletLocked: ${isWalletLocked ? 'true' : 'false'},
+        // Indicates whether the user has allowed sharing of KYC verification status
+        // with trusted mini-apps. This does NOT expose any personal data or documents.
+        kycSharingEnabled: ${kycSharingEnabled ? 'true' : 'false'},
       };
       
       window.addEventListener('message', function(event) {
