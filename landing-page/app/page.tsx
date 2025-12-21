@@ -31,7 +31,14 @@ import {
   Infinity,
   Cpu,
   Network,
-  Fingerprint
+  Fingerprint,
+  MessageSquare,
+  HelpCircle,
+  Mail,
+  PlayCircle,
+  Quote,
+  Minus,
+  Plus
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 
@@ -39,6 +46,9 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
   
@@ -135,6 +145,10 @@ export default function Home() {
                 Features
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
               </a>
+              <a href="#demo" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
+                Demo
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
+              </a>
               <a href="#ecosystem" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
                 Ecosystem
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
@@ -143,8 +157,8 @@ export default function Home() {
                 Developers
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
               </a>
-              <a href="#download" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
-                Download
+              <a href="#faq" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
+                FAQ
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
               </a>
               <motion.a
@@ -180,8 +194,10 @@ export default function Home() {
           >
             <div className="flex flex-col space-y-4">
               <a href="#features" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Features</a>
+              <a href="#demo" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Demo</a>
               <a href="#ecosystem" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Ecosystem</a>
               <a href="/developers" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Developers</a>
+              <a href="#faq" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
               <a href="#download" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Download</a>
             </div>
           </motion.div>
@@ -523,6 +539,167 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Video Demo Section */}
+      <section id="demo" className="relative py-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mb-16 text-center"
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-primary"></div>
+              <span className="text-accent-primary font-mono text-sm tracking-wider">WATCH DEMO</span>
+              <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6">
+              See It in <span className="gradient-text">Action</span>
+            </h2>
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+              Watch how Scroll One transforms your Web3 experience
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative max-w-5xl mx-auto"
+          >
+            <div className="glass rounded-3xl p-2 border border-border-subtle backdrop-blur-xl overflow-hidden">
+              <div className="relative aspect-video rounded-2xl overflow-hidden">
+                <iframe
+                  className="absolute inset-0 w-full h-full"
+                  src="https://www.youtube.com/embed/BTva_cgqkRI?si=JmHafbqr3YAY6w2_"
+                  title="YouTube video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+            
+            {/* Decorative Elements */}
+            <div className="absolute -top-10 -left-10 w-32 h-32 bg-accent-primary/10 rounded-full blur-2xl"></div>
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-accent-primary/10 rounded-full blur-2xl"></div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="relative py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-background-secondary/50 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mb-16 text-center"
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-primary"></div>
+              <span className="text-accent-primary font-mono text-sm tracking-wider">TESTIMONIALS</span>
+              <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6">
+              ( will be ) Loved by <span className="gradient-text">Users</span>
+            </h2>
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+              See what our community is saying about Scroll One
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Alex Chen",
+                role: "DeFi Trader",
+                avatar: "👤",
+                rating: 5,
+                text: "Scroll One changed how I interact with DeFi. Having everything in one app is a game-changer. The wallet integration is seamless!",
+                verified: true
+              },
+              {
+                name: "Sarah Martinez",
+                role: "NFT Collector",
+                avatar: "👤",
+                rating: 5,
+                text: "I love exploring new mini-apps without leaving the app. The identity system is brilliant - my reputation follows me everywhere.",
+                verified: true
+              },
+              {
+                name: "James Wilson",
+                role: "Web3 Developer",
+                avatar: "👤",
+                rating: 5,
+                text: "As a developer, the SDK is incredibly well-documented. I integrated my dApp in under an hour. The team really knows what they're doing.",
+                verified: true
+              },
+              {
+                name: "Emma Thompson",
+                role: "Crypto Enthusiast",
+                avatar: "👤",
+                rating: 5,
+                text: "Finally, a super app that doesn't compromise on security. My keys stay on my device, and the UI is beautiful. This is the future!",
+                verified: true
+              },
+              {
+                name: "Michael Brown",
+                role: "Gaming Enthusiast",
+                avatar: "👤",
+                rating: 5,
+                text: "The gaming mini-apps are amazing! I can play, earn, and trade all from one place. The Scroll network speed is incredible.",
+                verified: true
+              },
+              {
+                name: "Lisa Anderson",
+                role: "Social Trader",
+                avatar: "👤",
+                rating: 5,
+                text: "The social features combined with trading capabilities make this the perfect app for me. Community is everything in Web3!",
+                verified: true
+              },
+            ].map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="glass rounded-3xl p-8 border border-border-subtle backdrop-blur-xl hover:border-accent-primary/30 transition-all group"
+              >
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-accent-primary text-accent-primary" />
+                  ))}
+                </div>
+                <Quote className="w-8 h-8 text-accent-primary/30 mb-4" />
+                <p className="text-text-secondary mb-6 leading-relaxed">{testimonial.text}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-scroll rounded-full flex items-center justify-center text-2xl">
+                    {testimonial.avatar}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-bold text-text-primary">{testimonial.name}</h4>
+                      {testimonial.verified && (
+                        <div className="w-4 h-4 bg-accent-primary rounded-full flex items-center justify-center">
+                          <Check className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm text-text-tertiary">{testimonial.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Ecosystem - Creative Grid */}
       <section id="ecosystem" className="relative py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-background-secondary/50 to-transparent">
         <div className="max-w-7xl mx-auto">
@@ -674,6 +851,194 @@ export default function Home() {
               </div>
               <span className="text-text-secondary font-semibold text-sm">4.8/5 from 10,000+ users</span>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="relative py-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mb-16 text-center"
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-primary"></div>
+              <span className="text-accent-primary font-mono text-sm tracking-wider">FAQ</span>
+              <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6">
+              Common <span className="gradient-text">Questions</span>
+            </h2>
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+              Everything you need to know about Scroll One
+            </p>
+          </motion.div>
+
+          <div className="space-y-4">
+            {[
+              {
+                question: "What is Scroll One SuperApp?",
+                answer: "Scroll One is a comprehensive super app built on the Scroll blockchain that combines a secure crypto wallet, decentralized identity management, and an extensive marketplace of 20+ mini-applications. It's your all-in-one gateway to the Scroll ecosystem."
+              },
+              {
+                question: "Is Scroll One free to use?",
+                answer: "Yes! Scroll One is completely free to download and use. You only pay network fees for blockchain transactions, which are minimal on the Scroll network. There are no subscription fees or hidden costs."
+              },
+              {
+                question: "How secure is my wallet?",
+                answer: "Security is our top priority. Your private keys are encrypted and stored locally on your device using your device's secure keychain. We never have access to your keys, and all transactions require your explicit approval. We also support biometric authentication for added security."
+              },
+              {
+                question: "What is Scroll ID?",
+                answer: "Scroll ID is your decentralized identity on the Scroll network. It's a unique identifier that you own and control, complete with a reputation system, badges, and achievements. Your Scroll ID is portable and can be used across different applications in the ecosystem."
+              },
+              {
+                question: "Can I use my existing wallet?",
+                answer: "Yes! You can import your existing wallet using your seed phrase or private key. Scroll One supports standard Ethereum-compatible wallets, so you can bring your existing assets and continue using them seamlessly."
+              },
+              {
+                question: "What mini-apps are available?",
+                answer: "Scroll One features 20+ mini-apps across categories including DeFi (trading, lending, swapping), NFTs (marketplaces, galleries), Gaming, Social networking, Governance, AI tools, and more. New apps are added regularly based on community feedback."
+              },
+              {
+                question: "Is Scroll One available on all platforms?",
+                answer: "Scroll One is available on iOS, Android, and Web. Your data syncs across all platforms, so you can access your wallet and identity from any device. The experience is consistent across all platforms."
+              },
+              {
+                question: "How do I integrate my dApp?",
+                answer: "We provide a comprehensive SDK and WebView bridge for developers. Check out our Developers page for documentation, code examples, and integration guides. The process is straightforward and well-documented."
+              },
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="glass rounded-2xl border border-border-subtle backdrop-blur-xl overflow-hidden"
+              >
+                <button
+                  onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
+                  className="w-full p-6 flex items-center justify-between text-left hover:bg-background-secondary/50 transition-colors"
+                >
+                  <h3 className="text-lg font-bold text-text-primary pr-4">{faq.question}</h3>
+                  <motion.div
+                    animate={{ rotate: openFAQ === index ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex-shrink-0"
+                  >
+                    {openFAQ === index ? (
+                      <Minus className="w-5 h-5 text-accent-primary" />
+                    ) : (
+                      <Plus className="w-5 h-5 text-text-secondary" />
+                    )}
+                  </motion.div>
+                </button>
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: openFAQ === index ? "auto" : 0,
+                    opacity: openFAQ === index ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-6 pb-6 text-text-secondary leading-relaxed">
+                    {faq.answer}
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Signup */}
+      <section id="newsletter" className="relative py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-background-secondary/50 to-transparent">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-primary"></div>
+              <span className="text-accent-primary font-mono text-sm tracking-wider">NEWSLETTER</span>
+              <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6">
+              Stay <span className="gradient-text">Updated</span>
+            </h2>
+            <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
+              Get the latest updates, new features, and exclusive content delivered to your inbox
+            </p>
+
+            {!emailSubmitted ? (
+              <motion.form
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  // Here you would integrate with your email service (e.g., Mailchimp, ConvertKit, etc.)
+                  setEmailSubmitted(true);
+                  setEmail("");
+                }}
+                className="glass rounded-3xl p-8 border border-border-subtle backdrop-blur-xl max-w-2xl mx-auto"
+              >
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    required
+                    className="flex-1 px-6 py-4 bg-background-secondary border border-border-subtle rounded-xl text-text-primary placeholder-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+                  />
+                  <motion.button
+                    type="submit"
+                    className="px-8 py-4 bg-gradient-scroll text-white rounded-xl font-bold flex items-center justify-center space-x-2 shadow-lg shadow-accent-primary/30 hover:shadow-accent-primary/50 transition-all"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>Subscribe</span>
+                    <Mail className="w-5 h-5" />
+                  </motion.button>
+                </div>
+                <p className="text-xs text-text-tertiary mt-4 text-center">
+                  We respect your privacy. Unsubscribe at any time.
+                </p>
+              </motion.form>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="glass rounded-3xl p-8 border border-accent-primary/30 backdrop-blur-xl max-w-2xl mx-auto"
+              >
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-scroll rounded-full flex items-center justify-center">
+                    <Check className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-text-primary">Thanks for subscribing!</h3>
+                  <p className="text-text-secondary text-center">
+                    Check your email to confirm your subscription. We'll keep you updated with the latest from Scroll One.
+                  </p>
+                  <button
+                    onClick={() => setEmailSubmitted(false)}
+                    className="text-accent-primary hover:text-accent-secondary transition-colors text-sm"
+                  >
+                    Subscribe another email
+                  </button>
+                </div>
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </section>
