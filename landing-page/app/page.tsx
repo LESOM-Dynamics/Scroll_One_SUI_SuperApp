@@ -50,8 +50,16 @@ export default function Home() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [typedText, setTypedText] = useState("");
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
+  
+  const textToType = "Super";
+  const typingDelay = 150; // milliseconds between each character when typing
+  const deleteDelay = 100; // milliseconds between each character when deleting (faster)
+  const startDelay = 1000; // initial delay before starting
+  const pauseAfterComplete = 2000; // pause after typing completes (2 seconds)
+  const pauseBeforeRestart = 500; // pause before restarting after deletion (0.5 seconds)
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -71,6 +79,59 @@ export default function Home() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
+
+  // Typing effect for "Super" - loops continuously with backspace
+  useEffect(() => {
+    let currentIndex = 0;
+    let timeoutId: NodeJS.Timeout | null = null;
+    let intervalId: NodeJS.Timeout | null = null;
+    
+    const deleteBackward = () => {
+      const deleteNextChar = () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          setTypedText(textToType.slice(0, currentIndex));
+          intervalId = setTimeout(deleteNextChar, deleteDelay);
+        } else {
+          // Deletion complete, wait then restart typing
+          timeoutId = setTimeout(() => {
+            startTyping();
+          }, pauseBeforeRestart);
+        }
+      };
+      
+      deleteNextChar();
+    };
+    
+    const startTyping = () => {
+      currentIndex = 0;
+      
+      const typeNextChar = () => {
+        if (currentIndex < textToType.length) {
+          currentIndex++;
+          setTypedText(textToType.slice(0, currentIndex));
+          intervalId = setTimeout(typeNextChar, typingDelay);
+        } else {
+          // Typing complete, wait then start deleting backward
+          timeoutId = setTimeout(() => {
+            deleteBackward();
+          }, pauseAfterComplete);
+        }
+      };
+      
+      typeNextChar();
+    };
+    
+    // Initial delay before first typing starts
+    timeoutId = setTimeout(() => {
+      startTyping();
+    }, startDelay);
+    
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (intervalId) clearTimeout(intervalId);
+    };
+  }, []);
 
   if (!mounted) return null;
 
@@ -328,7 +389,30 @@ export default function Home() {
                 transition={{ delay: 0.2 }}
                 className="text-6xl md:text-7xl lg:text-8xl font-black mb-6 leading-[0.95] tracking-tight"
               >
-                <span className="block">One app.</span>
+                <span className="block">
+                  One{" "}
+                  <span className="gradient-text inline-block">
+                    {typedText}
+                    {typedText.length < textToType.length && (
+                      <motion.span
+                        key="cursor"
+                        animate={{ 
+                          opacity: [1, 1, 0, 0]
+                        }}
+                        transition={{ 
+                          duration: 1,
+                          times: [0, 0.5, 0.5, 1],
+                          repeat: 9999,
+                          ease: "linear"
+                        }}
+                        className="inline-block ml-1"
+                      >
+                        |
+                      </motion.span>
+                    )}
+                  </span>
+                  App
+                </span>
                 <span className="block gradient-text">Infinite</span>
                 <span className="block">possibilities.</span>
               </motion.h1>
