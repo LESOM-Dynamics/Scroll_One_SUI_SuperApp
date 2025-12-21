@@ -512,80 +512,16 @@ export default function Home() {
                         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-10"></div>
                         
                         {/* Screen Content */}
-                        <div className="relative bg-gradient-to-br from-background-primary via-background-secondary to-background-primary rounded-[2.4rem] overflow-hidden aspect-[9/19.5]">
-                          {/* Status Bar */}
-                          <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black/50 to-transparent z-20 flex items-center justify-between px-6 pt-2">
-                            <div className="text-white text-xs font-semibold">9:41</div>
-                            <div className="flex items-center gap-1">
-                              <div className="w-4 h-2 border border-white/50 rounded-sm"></div>
-                              <div className="w-1 h-1 bg-white rounded-full"></div>
-                            </div>
-                          </div>
-                          
-                          {/* App Screenshot Content */}
-                          <div className="absolute inset-0 pt-12 pb-4 px-2">
-                            {/* Mock App Interface */}
-                            <div className="h-full bg-gradient-to-b from-background-primary to-background-secondary rounded-2xl overflow-hidden relative">
-                              {/* Header with gradient */}
-                              <div className="h-20 bg-gradient-scroll rounded-t-2xl flex items-center justify-center">
-                                <div className="flex items-center gap-2">
-                                  <Image 
-                                    src="/logo.png" 
-                                    alt="Scroll One Logo" 
-                                    width={24} 
-                                    height={24}
-                                    className="object-contain"
-                                  />
-                                  <span className="text-white font-bold text-lg">Scroll One</span>
-                                </div>
-                              </div>
-                              
-                              {/* Tab Navigation */}
-                              <div className="flex items-center justify-around bg-background-tertiary/50 border-b border-border-subtle px-4 py-2">
-                                {['Wallet', 'Explore', 'Identity'].map((tab, i) => (
-                                  <div key={i} className={`text-xs ${i === 1 ? 'text-accent-primary font-semibold' : 'text-text-secondary'}`}>
-                                    {tab}
-                                  </div>
-                                ))}
-                              </div>
-                              
-                              {/* Main Content Area */}
-                              <div className="p-4 space-y-3">
-                                {/* Balance Card */}
-                                <div className="glass rounded-xl p-4 border border-border-subtle backdrop-blur-xl">
-                                  <div className="text-text-tertiary text-xs mb-1">Total Balance</div>
-                                  <div className="text-2xl font-bold text-text-primary">$0.00</div>
-                                  <div className="text-accent-primary text-xs mt-1">0.0 ETH</div>
-                                </div>
-                                
-                                {/* Quick Actions */}
-                                <div className="grid grid-cols-4 gap-2">
-                                  {[
-                                    { icon: ArrowRight, label: 'Send' },
-                                    { icon: Download, label: 'Receive' },
-                                    { icon: Zap, label: 'Swap' },
-                                    { icon: Globe, label: 'Explore' },
-                                  ].map((action, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-1">
-                                      <div className="w-12 h-12 bg-gradient-scroll/20 rounded-xl flex items-center justify-center">
-                                        <action.icon className="w-5 h-5 text-accent-primary" />
-                                      </div>
-                                      <span className="text-xs text-text-secondary">{action.label}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                                
-                                {/* Mini Apps Grid */}
-                                <div className="grid grid-cols-3 gap-2 mt-4">
-                                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                                    <div key={i} className="aspect-square glass rounded-lg border border-border-subtle flex items-center justify-center">
-                                      <div className="text-2xl">🎯</div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                        <div className="relative bg-black rounded-[2.4rem] overflow-hidden aspect-[9/19.5]">
+                          {/* App Screenshot */}
+                          <Image
+                            src="/app-screenshot.png"
+                            alt="Scroll One SuperApp Screenshot"
+                            fill
+                            className="object-cover object-top rounded-[2.4rem]"
+                            priority
+                            quality={90}
+                          />
                         </div>
                       </div>
                     </div>
