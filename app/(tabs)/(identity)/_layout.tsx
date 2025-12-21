@@ -23,6 +23,14 @@ export default function IdentityLayout() {
           presentation: 'card',
         }}
       />
+      <Stack.Screen
+        name="developer-settings"
+        options={{
+          headerShown: true,
+          presentation: 'card',
+          title: 'Developer Settings',
+        }}
+      />
     </Stack>
   );
 }

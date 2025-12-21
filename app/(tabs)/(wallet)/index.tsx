@@ -12,6 +12,7 @@ import { formatTransactionTime, fetchTransactions } from '@/services/scroll/tran
 import { scrollProvider } from '@/services/scroll/provider';
 import { getETHPrice, getTokenPrice } from '@/services/scroll/prices';
 import { getTokenBalances, getAvailableTokens, getTokenInfo } from '@/services/scroll/tokens';
+import { WalletSelectionModal } from '@/components/wallet/WalletSelectionModal';
 
 // TEMPORARY: Mock data for demonstration
 const MOCK_ASSETS: Asset[] = [
@@ -115,32 +116,40 @@ const MOCK_TRANSACTIONS: Transaction[] = [
 export default function WalletScreen() {
   const router = useRouter();
   const { address, balance, assets, transactions, setAssets, setTransactions, setBalance, setLoading } = useWalletStore();
-  const { isTestnet } = useSettingsStore();
+  const { isTestnet, useMockData, loadMockDataPreference } = useSettingsStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [assetsExpanded, setAssetsExpanded] = useState(true);
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
-  // TEMPORARY: Load mock data on mount
+  // Load mock data preference on mount
   useEffect(() => {
-    // Set mock balance
-    const totalBalance = MOCK_ASSETS.reduce((sum, asset) => {
-      return sum + parseFloat(asset.usdValue.replace(/,/g, ''));
-    }, 0);
-    setBalance(totalBalance.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }));
-    
-    // Set mock assets and transactions
-    setAssets(MOCK_ASSETS);
-    setTransactions(MOCK_TRANSACTIONS);
-  }, []);
+    loadMockDataPreference();
+  }, [loadMockDataPreference]);
+
+  // Load mock data if enabled
+  useEffect(() => {
+    if (useMockData) {
+      // Set mock balance
+      const totalBalance = MOCK_ASSETS.reduce((sum, asset) => {
+        return sum + parseFloat(asset.usdValue.replace(/,/g, ''));
+      }, 0);
+      setBalance(totalBalance.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }));
+      
+      // Set mock assets and transactions
+      setAssets(MOCK_ASSETS);
+      setTransactions(MOCK_TRANSACTIONS);
+    }
+  }, [useMockData, setBalance, setAssets, setTransactions]);
 
   useEffect(() => {
-    // TEMPORARY: Commented out real data loading
-    // if (address) {
-    //   loadWalletData();
-    // }
-  }, [address, isTestnet]); // Refresh when network changes
+    // Only load real data if mock data is disabled and address exists
+    if (!useMockData && address) {
+      loadWalletData();
+    }
+  }, [address, isTestnet, useMockData]); // Refresh when network changes or mock data setting changes
 
   const loadWalletData = async () => {
     if (!address) return;
@@ -309,7 +318,13 @@ export default function WalletScreen() {
         >
           <View style={styles.header}>
             <View style={styles.headerTop}>
-              <Wallet color={colors.text.primary} size={24} />
+              <TouchableOpacity 
+                onPress={() => setShowWalletModal(true)}
+                activeOpacity={0.7}
+                style={styles.walletIconButton}
+              >
+                <Wallet color={colors.text.primary} size={24} />
+              </TouchableOpacity>
               <TouchableOpacity>
                 <ExternalLink color={colors.text.secondary} size={20} />
               </TouchableOpacity>
@@ -420,6 +435,11 @@ export default function WalletScreen() {
           </View>
         </ScrollView>
       </Screen>
+
+      <WalletSelectionModal
+        visible={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+      />
     </>
   );
 }
@@ -490,11 +510,25 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: spacing.xl,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
   sectionTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
     color: colors.text.primary,
-    marginBottom: spacing.md,
+  },
+  sectionToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  sectionToggleText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.text.secondary,
   },
   assetItem: {
     flexDirection: 'row',
@@ -609,5 +643,8 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     textAlign: 'center' as const,
     paddingVertical: spacing.xl,
+  },
+  walletIconButton: {
+    padding: spacing.xs,
   },
 });

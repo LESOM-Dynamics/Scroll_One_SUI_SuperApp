@@ -11,7 +11,15 @@ import { useWalletStore } from '@/store/walletStore';
 
 export default function PreferencesScreen() {
   const router = useRouter();
-  const { isTestnet, isLoading, setNetwork, loadNetworkPreference, themeMode, setTheme, loadThemePreference } = useSettingsStore();
+  const { 
+    isTestnet, 
+    isLoading, 
+    setNetwork, 
+    loadNetworkPreference, 
+    themeMode, 
+    setTheme, 
+    loadThemePreference,
+  } = useSettingsStore();
   const { address, setBalance } = useWalletStore();
   const styles = React.useMemo(() => createStyles(), [themeMode]);
 

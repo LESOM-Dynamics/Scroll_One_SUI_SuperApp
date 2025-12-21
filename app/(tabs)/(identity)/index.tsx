@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { User, Shield, Settings, LogOut } from 'lucide-react-native';
+import { User, Shield, Settings, LogOut, Code } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -91,6 +91,18 @@ export default function IdentityScreen() {
                 <View style={styles.menuLeft}>
                   <Settings color={colors.text.secondary} size={20} />
                   <Text style={styles.menuText}>Preferences</Text>
+                </View>
+              </TouchableOpacity>
+              
+              <View style={styles.menuDivider} />
+              
+              <TouchableOpacity 
+                style={styles.menuItem}
+                onPress={() => router.push('/(tabs)/(identity)/developer-settings')}
+              >
+                <View style={styles.menuLeft}>
+                  <Code color={colors.text.secondary} size={20} />
+                  <Text style={styles.menuText}>Developer Settings</Text>
                 </View>
               </TouchableOpacity>
               
