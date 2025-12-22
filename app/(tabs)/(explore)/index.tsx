@@ -14,6 +14,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import { Search, List, Grid, Shield } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
@@ -26,6 +27,63 @@ import { MiniAppGridCard } from '@/components/ui/MiniAppGridCard';
 
 const ITEMS_PER_PAGE = 6;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+const isImageUrl = (icon: string): boolean => {
+  const trimmed = icon.trim();
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+};
+
+interface FeaturedCarouselItemProps {
+  item: MiniApp;
+  onPress: (app: MiniApp) => void;
+}
+
+function FeaturedCarouselItem({ item, onPress }: FeaturedCarouselItemProps) {
+  const [imageError, setImageError] = useState(false);
+  const isUrl = isImageUrl(item.icon);
+
+  return (
+    <View style={styles.featuredCarouselItem}>
+      <TouchableOpacity
+        style={styles.featuredCard}
+        onPress={() => onPress(item)}
+        activeOpacity={0.9}
+      >
+        <View style={styles.featuredCardContent}>
+          <View style={styles.featuredIconContainer}>
+            {isUrl && !imageError ? (
+              <Image 
+                source={{ uri: item.icon.trim() }} 
+                style={styles.featuredIconImage}
+                contentFit="contain"
+                onError={() => setImageError(true)}
+                transition={200}
+              />
+            ) : (
+              <Text style={styles.featuredIcon}>{item.icon}</Text>
+            )}
+            {item.verified && (
+              <View style={styles.featuredVerifiedBadge}>
+                <Shield
+                  color={colors.accent.secondary}
+                  size={16}
+                  fill={colors.accent.secondary}
+                />
+              </View>
+            )}
+          </View>
+          <Text style={styles.featuredName} numberOfLines={2}>
+            {item.name}
+          </Text>
+          <Text style={styles.featuredDescription} numberOfLines={3}>
+            {item.description}
+          </Text>
+          <Text style={styles.featuredCategory}>{item.category}</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 export default function ExploreScreen() {
   const router = useRouter();
@@ -105,35 +163,7 @@ export default function ExploreScreen() {
   };
 
   const renderFeaturedCarouselItem = ({ item }: { item: MiniApp }) => (
-    <View style={styles.featuredCarouselItem}>
-      <TouchableOpacity
-        style={styles.featuredCard}
-        onPress={() => navigateToApp(item)}
-        activeOpacity={0.9}
-      >
-        <View style={styles.featuredCardContent}>
-          <View style={styles.featuredIconContainer}>
-            <Text style={styles.featuredIcon}>{item.icon}</Text>
-            {item.verified && (
-              <View style={styles.featuredVerifiedBadge}>
-                <Shield
-                  color={colors.accent.secondary}
-                  size={16}
-                  fill={colors.accent.secondary}
-                />
-              </View>
-            )}
-          </View>
-          <Text style={styles.featuredName} numberOfLines={2}>
-            {item.name}
-          </Text>
-          <Text style={styles.featuredDescription} numberOfLines={3}>
-            {item.description}
-          </Text>
-          <Text style={styles.featuredCategory}>{item.category}</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+    <FeaturedCarouselItem item={item} onPress={navigateToApp} />
   );
 
   const renderFeaturedPagination = () => {
@@ -398,6 +428,10 @@ const styles = StyleSheet.create({
   },
   featuredIcon: {
     fontSize: 40,
+  },
+  featuredIconImage: {
+    width: 40,
+    height: 40,
   },
   featuredVerifiedBadge: {
     position: 'absolute' as const,

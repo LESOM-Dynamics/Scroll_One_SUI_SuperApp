@@ -255,7 +255,7 @@ export default function PrivacySecurityScreen() {
                 <View style={styles.settingLeft}>
                   <Text style={styles.settingTitle}>Use biometrics to unlock wallet</Text>
                   <Text style={styles.settingSubtitle}>
-                    When enabled, the app will prompt for biometric authentication before loading your wallet and exposing it to mini-apps via the WebView bridge.
+                    When enabled, the app will prompt for biometric authentication before loading your wallet and exposing it to mini-apps via the ScrollOne bridge.
                   </Text>
                 </View>
                 <Switch

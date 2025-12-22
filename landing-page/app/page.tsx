@@ -1031,7 +1031,7 @@ export default function Home() {
               },
               {
                 question: "How do I integrate my dApp?",
-                answer: "We provide a comprehensive SDK and WebView bridge for developers. Check out our Developers page for documentation, code examples, and integration guides. The process is straightforward and well-documented."
+                answer: "We provide a comprehensive SDK and ScrollOne bridge for developers. Check out our Developers page for documentation, code examples, and integration guides. The process is straightforward and well-documented."
               },
             ].map((faq, index) => (
               <motion.div

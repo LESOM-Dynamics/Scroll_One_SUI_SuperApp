@@ -47,7 +47,7 @@ registerMiniApp({
   category: 'DeFi',
   verified: true
 });`,
-    bridge: `// WebView Bridge Integration
+    bridge: `// ScrollOne Bridge Integration
 window.scrollOne = {
   wallet: {
     getAddress: () => Promise<string>,
@@ -244,7 +244,7 @@ const balance = await sdk.wallet.getBalance();`
               {
                 step: "03",
                 title: "Integrate Bridge",
-                description: "Connect your app with WebView bridge",
+                description: "Connect your app with ScrollOne bridge",
                 icon: Webhook,
                 color: "from-green-500 to-emerald-500"
               },
@@ -298,7 +298,7 @@ const balance = await sdk.wallet.getBalance();`
                 id: "integration"
               },
               {
-                title: "WebView Bridge API",
+                title: "ScrollOne Bridge API",
                 description: "Access wallet and identity features from your WebView",
                 code: codeExamples.bridge,
                 id: "bridge"
@@ -373,7 +373,7 @@ const balance = await sdk.wallet.getBalance();`
               },
               {
                 icon: Webhook,
-                title: "WebView Bridge",
+                title: "ScrollOne Bridge",
                 description: "Seamless communication between your app and Scroll One",
                 features: ["Wallet integration", "Identity access", "Event handling"]
               },
@@ -466,8 +466,8 @@ const balance = await sdk.wallet.getBalance();`
                 external: false
               },
               {
-                title: "WebView Bridge Guide",
-                description: "Learn how to integrate with the WebView bridge",
+                title: "ScrollOne Bridge Guide",
+                description: "Learn how to integrate with the ScrollOne bridge",
                 href: "#",
                 icon: Webhook,
                 external: false

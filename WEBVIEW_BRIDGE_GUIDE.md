@@ -92,7 +92,7 @@ components/
 The bridge is sensitive to the native wallet lock state and certain privacy settings:
 
 - The native app may require **biometric authentication** (Face ID / Touch ID / fingerprint or device passcode) before loading the wallet.
-- Until the wallet is loaded, the WebView bridge treats the wallet as **locked** and may restrict signing and transaction-related methods.
+- Until the wallet is loaded, the ScrollOne WebView bridge treats the wallet as **locked** and may restrict signing and transaction-related methods.
 - Users can configure these behaviors from the **Privacy & Security** screen in the app.
 
 The injected `window.scrollOne` object currently includes:

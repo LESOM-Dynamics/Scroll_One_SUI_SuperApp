@@ -20,6 +20,9 @@ export interface Transaction {
   status: 'pending' | 'confirmed' | 'failed';
   hash: string;
   fee: string;
+  network?: string; // e.g., 'Scroll Mainnet', 'Scroll Sepolia', 'Ethereum'
+  crossChain?: boolean; // Indicates if this is a cross-chain transaction
+  gasUsed?: string; // Gas used in the transaction
 }
 
 interface WalletState {

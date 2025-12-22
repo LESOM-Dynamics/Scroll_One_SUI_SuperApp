@@ -62,6 +62,8 @@ const MOCK_TRANSACTIONS: Transaction[] = [
     status: 'confirmed',
     hash: '0xabc123...def456',
     fee: '0.002',
+    network: 'Scroll Mainnet',
+    gasUsed: '21,000',
   },
   {
     id: 'mock-2',
@@ -74,6 +76,8 @@ const MOCK_TRANSACTIONS: Transaction[] = [
     status: 'confirmed',
     hash: '0xdef456...abc123',
     fee: '0.001',
+    network: 'Scroll Mainnet',
+    gasUsed: '65,000',
   },
   {
     id: 'mock-3',
@@ -86,18 +90,23 @@ const MOCK_TRANSACTIONS: Transaction[] = [
     status: 'confirmed',
     hash: '0x789abc...def123',
     fee: '0.005',
+    network: 'Scroll Mainnet',
+    crossChain: true,
+    gasUsed: '120,000',
   },
   {
     id: 'mock-4',
-    type: 'receive',
+    type: 'contract',
     amount: '0.25',
     symbol: 'WBTC',
     to: '0x1234...5678',
     from: '0x5678...9012',
     timestamp: Date.now() - 259200000, // 3 days ago
-    status: 'confirmed',
+    status: 'pending',
     hash: '0x456def...789abc',
     fee: '0.003',
+    network: 'Scroll Sepolia',
+    gasUsed: '45,000',
   },
   {
     id: 'mock-5',
@@ -107,9 +116,11 @@ const MOCK_TRANSACTIONS: Transaction[] = [
     to: '0x3456...7890',
     from: '0x1234...5678',
     timestamp: Date.now() - 345600000, // 4 days ago
-    status: 'confirmed',
+    status: 'failed',
     hash: '0x123abc...456def',
     fee: '0.0025',
+    network: 'Scroll Mainnet',
+    gasUsed: '21,000',
   },
 ];
 
@@ -419,13 +430,23 @@ export default function WalletScreen() {
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Recent Activity</Text>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Recent Activity</Text>
+                {transactions.length > 0 && (
+                  <TouchableOpacity
+                    onPress={() => router.push('/(tabs)/(wallet)/activity' as any)}
+                    style={styles.viewAllButton}
+                  >
+                    <Text style={styles.viewAllText}>View All</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
               {isRefreshing && transactions.length === 0 ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="small" color={colors.accent.primary} />
                 </View>
               ) : transactions.length > 0 ? (
-                transactions.map((item) => (
+                transactions.slice(0, 5).map((item) => (
                   <View key={item.id}>{renderTransaction({ item })}</View>
                 ))
               ) : (
@@ -520,6 +541,15 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
     color: colors.text.primary,
+  },
+  viewAllButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  viewAllText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.accent.primary,
+    fontWeight: typography.fontWeight.semibold,
   },
   sectionToggle: {
     flexDirection: 'row',

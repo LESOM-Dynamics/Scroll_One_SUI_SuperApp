@@ -139,7 +139,10 @@ export default function TransactionDetailScreen() {
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Type</Text>
               <Text style={styles.detailValue}>
-                {transaction.type === 'send' ? 'Send' : transaction.type === 'receive' ? 'Receive' : 'Swap'}
+                {transaction.type === 'send' ? 'Send' : 
+                 transaction.type === 'receive' ? 'Receive' : 
+                 transaction.type === 'swap' ? 'Swap' : 
+                 transaction.type === 'contract' ? 'Contract Interaction' : 'Transaction'}
               </Text>
             </View>
 
@@ -175,7 +178,7 @@ export default function TransactionDetailScreen() {
             <View style={styles.divider} />
 
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Transaction Hash</Text>
+              <Text style={styles.detailLabel}>Tx Hash</Text>
               <TouchableOpacity 
                 style={styles.addressRow}
                 onPress={() => handleCopy(transaction.hash)}
@@ -187,10 +190,44 @@ export default function TransactionDetailScreen() {
 
             <View style={styles.divider} />
 
+            {transaction.network && (
+              <>
+                <View style={styles.divider} />
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Network</Text>
+                  <Text style={styles.detailValue}>{transaction.network}</Text>
+                </View>
+              </>
+            )}
+
+            {transaction.crossChain && (
+              <>
+                <View style={styles.divider} />
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Type</Text>
+                  <View style={styles.crossChainBadge}>
+                    <Text style={styles.crossChainText}>🌉 Cross-Chain Transaction</Text>
+                  </View>
+                </View>
+              </>
+            )}
+
+            <View style={styles.divider} />
+
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Network Fee</Text>
               <Text style={styles.detailValue}>{transaction.fee} ETH</Text>
             </View>
+
+            {transaction.gasUsed && (
+              <>
+                <View style={styles.divider} />
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Gas Used</Text>
+                  <Text style={styles.detailValue}>{transaction.gasUsed}</Text>
+                </View>
+              </>
+            )}
           </Card>
 
           {/* View on Explorer Button */}
@@ -289,5 +326,13 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.base,
     color: colors.accent.primary,
     fontWeight: typography.fontWeight.semibold,
+  },
+  crossChainBadge: {
+    alignSelf: 'flex-end',
+  },
+  crossChainText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.accent.primary,
+    fontWeight: typography.fontWeight.medium,
   },
 });

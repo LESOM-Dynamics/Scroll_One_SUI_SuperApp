@@ -18,7 +18,7 @@ export const MINIAPPS: MiniApp[] = [
     id: 'skydrome',
     name: 'Skydrome',
     url: 'https://app.skydrome.finance',
-    icon: '💧',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN-4lLZkgb1n_lJHm_EzEGBbefbp0OeUgDMg&s',
     description: 've(3,3) DEX powering incentivized liquidity on Scroll.',
     category: 'DeFi',
     featured: true,

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { Shield, Star } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { type MiniApp } from '@/store/miniAppStore';
@@ -9,7 +10,15 @@ interface MiniAppListCardProps {
   onPress: () => void;
 }
 
+const isImageUrl = (icon: string): boolean => {
+  const trimmed = icon.trim();
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+};
+
 export function MiniAppListCard({ app, onPress }: MiniAppListCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const isUrl = isImageUrl(app.icon);
+
   return (
     <TouchableOpacity
       style={styles.card}
@@ -17,7 +26,17 @@ export function MiniAppListCard({ app, onPress }: MiniAppListCardProps) {
       activeOpacity={0.8}
     >
       <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{app.icon}</Text>
+        {isUrl && !imageError ? (
+          <Image 
+            source={{ uri: app.icon.trim() }} 
+            style={styles.iconImage}
+            contentFit="contain"
+            onError={() => setImageError(true)}
+            transition={200}
+          />
+        ) : (
+          <Text style={styles.icon}>{app.icon}</Text>
+        )}
       </View>
       <View style={styles.info}>
         <View style={styles.header}>
@@ -72,6 +91,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 32,
+  },
+  iconImage: {
+    width: 32,
+    height: 32,
   },
   info: {
     flex: 1,
