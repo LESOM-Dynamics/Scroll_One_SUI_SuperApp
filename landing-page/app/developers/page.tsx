@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { 
   Code,
   Book,
@@ -35,43 +36,70 @@ export default function DevelopersPage() {
   };
 
   const codeExamples = {
-    integration: `// Register your mini-app
-import { registerMiniApp } from '@scroll-one/sdk';
+    integration: `// Add your dApp to miniapps/registry.ts
+import { type MiniApp } from '@/store/miniAppStore';
 
-registerMiniApp({
-  id: 'your-app-id',
-  name: 'Your App Name',
-  url: 'https://yourapp.com',
-  icon: '🎯',
-  description: 'Your app description',
-  category: 'DeFi',
-  verified: true
-});`,
-    bridge: `// ScrollOne Bridge Integration
-window.scrollOne = {
-  wallet: {
-    getAddress: () => Promise<string>,
-    signMessage: (message: string) => Promise<string>,
-    sendTransaction: (tx: Transaction) => Promise<string>
+export const MINIAPPS: MiniApp[] = [
+  // ... existing apps
+  {
+    id: 'your-app-id',
+    name: 'Your App Name',
+    url: 'https://yourapp.com',
+    icon: '🎯', // Emoji or image URL
+    description: 'Your app description',
+    category: 'DeFi', // DeFi, Lending, Bridge, NFT, Tools, etc.
+    featured: false, // Set to true for featured apps
+    verified: true, // Set to true after verification
   },
-  identity: {
-    getScrollId: () => Promise<string>,
-    getReputation: () => Promise<number>
-  }
-};`,
-    sdk: `// Install SDK
-npm install @scroll-one/sdk
-
-// Initialize
-import { ScrollOneSDK } from '@scroll-one/sdk';
-
-const sdk = new ScrollOneSDK({
-  network: 'scroll-mainnet'
+];`,
+    bridge: `// ScrollOne Bridge API (automatically injected)
+// Wait for bridge to be ready
+window.addEventListener('scrollOneReady', () => {
+  initializeApp();
 });
 
-// Use wallet
-const address = await sdk.wallet.getAddress();
-const balance = await sdk.wallet.getBalance();`
+async function initializeApp() {
+  // Get connected account
+  const account = await window.scrollOne.getAccount();
+  console.log('Address:', account.address);
+  
+  // Get balance
+  const balance = await window.scrollOne.getBalance();
+  console.log('Balance:', balance.formatted, balance.symbol);
+  
+  // Sign and send transaction
+  const result = await window.scrollOne.signTransaction({
+    to: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    value: '0.01', // ETH amount as string
+  });
+  console.log('Transaction hash:', result.hash);
+  
+  // Listen for events
+  window.scrollOne.on('accountChanged', (data) => {
+    console.log('Account changed:', data.address);
+  });
+}`,
+    sdk: `// Your dApp automatically has access to window.scrollOne
+// No installation needed - bridge is injected by Scroll One
+
+// Check if bridge is available
+if (window.scrollOne?.isScrollOne) {
+  // Get account
+  const account = await window.scrollOne.getAccount();
+  
+  // Get network info
+  const network = await window.scrollOne.getNetwork();
+  console.log('Chain ID:', network.chainId);
+  
+  // Estimate gas before sending
+  const gasEstimate = await window.scrollOne.estimateGas({
+    to: '0x...',
+    value: '0.1',
+  });
+  
+  // Sign message
+  const signature = await window.scrollOne.signMessage('Hello, Scroll!');
+}`
   };
 
   return (
@@ -105,11 +133,18 @@ const balance = await sdk.wallet.getBalance();`
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center space-x-3 group">
               <motion.div 
-                className="w-10 h-10 bg-gradient-scroll rounded-xl flex items-center justify-center shadow-lg shadow-accent-primary/30 relative overflow-hidden"
-                whileHover={{ rotate: 180, scale: 1.1 }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-accent-primary/30 relative overflow-hidden"
+                whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.5 }}
               >
-                <Zap className="w-6 h-6 text-white relative z-10" />
+                <Image 
+                  src="/logo.png" 
+                  alt="Scroll One Logo" 
+                  width={40} 
+                  height={40}
+                  className="object-contain"
+                  priority
+                />
               </motion.div>
               <div>
                 <span className="text-2xl font-bold gradient-text block">Scroll One</span>
@@ -229,23 +264,23 @@ const balance = await sdk.wallet.getBalance();`
             {[
               {
                 step: "01",
-                title: "Install SDK",
-                description: "Add Scroll One SDK to your project",
-                icon: Terminal,
+                title: "Add to Registry",
+                description: "Add your dApp to the Scroll One registry",
+                icon: FileCode,
                 color: "from-blue-500 to-cyan-500"
               },
               {
                 step: "02",
-                title: "Register App",
-                description: "Register your mini-app in the registry",
-                icon: FileCode,
+                title: "Integrate Bridge",
+                description: "Use window.scrollOne API in your dApp",
+                icon: Webhook,
                 color: "from-purple-500 to-pink-500"
               },
               {
                 step: "03",
-                title: "Integrate Bridge",
-                description: "Connect your app with ScrollOne bridge",
-                icon: Webhook,
+                title: "Test & Deploy",
+                description: "Test your integration and deploy",
+                icon: Terminal,
                 color: "from-green-500 to-emerald-500"
               },
             ].map((item, index) => (
@@ -269,8 +304,103 @@ const balance = await sdk.wallet.getBalance();`
         </div>
       </section>
 
-      {/* Code Examples */}
+      {/* Onboarding Process */}
       <section className="relative py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-background-secondary/50 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mb-16"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
+              <span className="text-accent-primary font-mono text-sm tracking-wider">ONBOARDING</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-accent-primary/20"></div>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6">
+              Add Your <span className="gradient-text">dApp</span>
+            </h2>
+            <p className="text-xl text-text-secondary max-w-3xl mb-12">
+              To add your dApp to Scroll One SuperApp, follow these steps:
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {[
+              {
+                step: "1",
+                title: "Prepare Your dApp",
+                description: "Ensure your dApp is live on Scroll network and integrates with window.scrollOne bridge API",
+                details: [
+                  "dApp must be accessible via HTTPS",
+                  "Must work in WebView environment",
+                  "Should integrate with ScrollOne bridge for wallet features"
+                ]
+              },
+              {
+                step: "2",
+                title: "Submit for Review",
+                description: "Contact us with your dApp details for verification",
+                details: [
+                  "Email: dev@scrollone.app",
+                  "Include: App name, URL, description, category",
+                  "We'll review and add to the registry"
+                ]
+              },
+              {
+                step: "3",
+                title: "Registry Addition",
+                description: "Once approved, your dApp is added to the MiniApp registry",
+                details: [
+                  "Added to miniapps/registry.ts",
+                  "Appears in Explore tab",
+                  "Available to all Scroll One users"
+                ]
+              },
+              {
+                step: "4",
+                title: "Verification Badge",
+                description: "Verified dApps get a verification badge and featured placement",
+                details: [
+                  "Verified badge displayed",
+                  "Eligible for featured section",
+                  "Higher visibility in search"
+                ]
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="glass rounded-3xl p-8 border border-border-subtle backdrop-blur-xl hover:border-accent-primary/30 transition-all"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-gradient-scroll rounded-xl flex items-center justify-center text-white font-black text-xl">
+                    {item.step}
+                  </div>
+                  <h3 className="text-2xl font-bold text-text-primary">{item.title}</h3>
+                </div>
+                <p className="text-text-secondary mb-4">{item.description}</p>
+                <ul className="space-y-2">
+                  {item.details.map((detail, i) => (
+                    <li key={i} className="flex items-start text-sm text-text-secondary">
+                      <div className="w-1.5 h-1.5 rounded-full bg-accent-primary mr-2 mt-1.5 flex-shrink-0"></div>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Code Examples */}
+      <section className="relative py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -292,20 +422,20 @@ const balance = await sdk.wallet.getBalance();`
           <div className="space-y-8">
             {[
               {
-                title: "Register Your Mini-App",
-                description: "Add your dApp to the Scroll One ecosystem",
+                title: "Add Your dApp to Registry",
+                description: "Register your dApp in the Scroll One MiniApp registry",
                 code: codeExamples.integration,
                 id: "integration"
               },
               {
                 title: "ScrollOne Bridge API",
-                description: "Access wallet and identity features from your WebView",
+                description: "Access wallet features from your dApp using window.scrollOne",
                 code: codeExamples.bridge,
                 id: "bridge"
               },
               {
-                title: "SDK Usage",
-                description: "Use the Scroll One SDK in your application",
+                title: "Bridge Integration",
+                description: "Complete example of integrating with the ScrollOne bridge",
                 code: codeExamples.sdk,
                 id: "sdk"
               },
@@ -367,15 +497,15 @@ const balance = await sdk.wallet.getBalance();`
             {[
               {
                 icon: Code,
-                title: "Simple SDK",
-                description: "Easy-to-use JavaScript SDK with TypeScript support",
-                features: ["Type-safe APIs", "Full documentation", "Examples included"]
+                title: "No Installation Required",
+                description: "window.scrollOne is automatically injected into your dApp",
+                features: ["Zero dependencies", "Automatic initialization", "Type-safe APIs"]
               },
               {
                 icon: Webhook,
                 title: "ScrollOne Bridge",
-                description: "Seamless communication between your app and Scroll One",
-                features: ["Wallet integration", "Identity access", "Event handling"]
+                description: "Seamless communication between your dApp and Scroll One wallet",
+                features: ["Wallet integration", "Transaction signing", "Event handling"]
               },
               {
                 icon: Shield,
@@ -459,15 +589,15 @@ const balance = await sdk.wallet.getBalance();`
                 external: true
               },
               {
-                title: "SDK Reference",
-                description: "Full API reference for Scroll One SDK",
-                href: "#",
+                title: "SDK Documentation",
+                description: "Complete ScrollOne SDK v1 documentation and API reference",
+                href: "https://github.com/scroll-one/sdk",
                 icon: Code,
-                external: false
+                external: true
               },
               {
-                title: "ScrollOne Bridge Guide",
-                description: "Learn how to integrate with the ScrollOne bridge",
+                title: "Bridge Integration Guide",
+                description: "Complete guide to integrating with the ScrollOne bridge",
                 href: "#",
                 icon: Webhook,
                 external: false
@@ -550,8 +680,14 @@ const balance = await sdk.wallet.getBalance();`
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-scroll rounded-xl flex items-center justify-center shadow-lg shadow-accent-primary/30">
-                  <Zap className="w-6 h-6 text-white" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-accent-primary/30">
+                  <Image 
+                    src="/logo.png" 
+                    alt="Scroll One Logo" 
+                    width={40} 
+                    height={40}
+                    className="object-contain"
+                  />
                 </div>
                 <div>
                   <span className="text-2xl font-bold gradient-text block">Scroll One</span>

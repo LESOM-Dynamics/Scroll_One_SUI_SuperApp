@@ -1,10 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ActivityIndicator, Text, Platform } from 'react-native';
 import { WebView as RNWebView, type WebViewMessageEvent } from 'react-native-webview';
 import { colors, spacing, typography } from '@/theme';
 import { useWalletStore } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { type MiniApp } from '@/store/miniAppStore';
+import { bridgeService } from '@/services/bridge/bridgeService';
+import { BridgeMethod } from '@/scrollone-sdk';
+import { scrollProvider } from '@/services/scroll/provider';
+import { TransactionApprovalModal } from '@/components/bridge/TransactionApprovalModal';
+import type { TransactionRequest } from '@/scrollone-sdk';
 
 interface WebViewContainerProps {
   app: MiniApp;
@@ -15,50 +20,161 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
   const webViewRef = useRef<RNWebView>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pendingTransaction, setPendingTransaction] = useState<{
+    id: string;
+    request: TransactionRequest;
+  } | null>(null);
   const { address, isUnlocked } = useWalletStore();
-  const { kycSharingEnabled } = useSettingsStore();
+  const { kycSharingEnabled, isTestnet } = useSettingsStore();
 
   const isWalletLocked = !isUnlocked || !address;
+  const config = scrollProvider.getConfig();
 
-  const injectedJavaScript = `
-    (function() {
-      window.scrollOne = {
-        walletAddress: ${isWalletLocked ? "''" : `'${address || ''}'`},
-        chainId: 534352,
-        isScrollOne: true,
-        version: '1.0.0',
-        // Indicates whether the native wallet is currently locked.
-        // When true, sensitive actions (signing, transactions) may be blocked by the host app.
-        isWalletLocked: ${isWalletLocked ? 'true' : 'false'},
-        // Indicates whether the user has allowed sharing of KYC verification status
-        // with trusted mini-apps. This does NOT expose any personal data or documents.
-        kycSharingEnabled: ${kycSharingEnabled ? 'true' : 'false'},
-      };
-      
-      window.addEventListener('message', function(event) {
-        console.log('Message received in WebView:', event.data);
-      });
-      
-      console.log('Scroll One bridge initialized');
-      
-      true;
-    })();
-  `;
+  // Generate injected script using SDK
+  const generateInjectedScript = useCallback(() => {
+    return bridgeService.generateInjectedScript({
+      walletAddress: isWalletLocked ? null : address,
+      chainId: config.chainId,
+      isWalletLocked,
+      kycSharingEnabled,
+    });
+  }, [address, isWalletLocked, kycSharingEnabled, config.chainId]);
 
-  const handleMessage = (event: WebViewMessageEvent) => {
+  // Handle messages from WebView
+  const handleMessage = useCallback(async (event: WebViewMessageEvent) => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
-      console.log('[WebViewContainer] Message from WebView:', data);
       
-      if (data.type === 'SIGN_TRANSACTION') {
-        console.log('[WebViewContainer] Sign transaction request:', data.payload);
-      } else if (data.type === 'GET_BALANCE') {
-        console.log('[WebViewContainer] Get balance request');
+      // Only handle bridge messages
+      if (!data.id || !data.type || data.source !== 'web') {
+        return;
       }
+
+      console.log('[WebViewContainer] Bridge message from WebView:', data);
+
+      // Create handler context
+      const context = {
+        walletAddress: isWalletLocked ? null : address,
+        isWalletLocked,
+        chainId: config.chainId,
+        origin: app.url,
+      };
+
+      // Handle message
+      const response = await bridgeService.handleMessage(data, context);
+
+      // Check if transaction requires approval
+      if (data.type === BridgeMethod.SIGN_TRANSACTION && response.success && response.data?.requiresApproval) {
+        // Store pending transaction
+        bridgeService.storePendingTransaction(
+          data.id,
+          data.payload as TransactionRequest,
+          (result) => {
+            sendResponseToWebView({
+              id: data.id,
+              success: true,
+              data: result,
+            });
+          },
+          (error) => {
+            sendResponseToWebView({
+              id: data.id,
+              success: false,
+              error: {
+                code: error.code || 'EXECUTION_ERROR',
+                message: error.message || 'Unknown error',
+              },
+            });
+          }
+        );
+        
+        // Show approval modal
+        setPendingTransaction({
+          id: data.id,
+          request: data.payload as TransactionRequest,
+        });
+        return;
+      }
+
+      // Send response
+      sendResponseToWebView(response);
     } catch (error) {
-      console.error('[WebViewContainer] Error parsing message:', error);
+      console.error('[WebViewContainer] Error handling message:', error);
+      sendResponseToWebView({
+        id: 'unknown',
+        success: false,
+        error: {
+          code: 'EXECUTION_ERROR',
+          message: error instanceof Error ? error.message : 'Unknown error',
+        },
+      });
     }
-  };
+  }, [address, isWalletLocked, config.chainId, app.url]);
+
+  // Send response to WebView
+  const sendResponseToWebView = useCallback((response: any) => {
+    if (webViewRef.current) {
+      const message = {
+        type: 'BRIDGE_RESPONSE',
+        payload: response,
+      };
+      webViewRef.current.postMessage(JSON.stringify(message));
+    }
+  }, []);
+
+  // Send event to WebView
+  const sendEventToWebView = useCallback((event: string, data: any) => {
+    if (webViewRef.current) {
+      const message = {
+        type: 'BRIDGE_EVENT',
+        event,
+        data,
+      };
+      webViewRef.current.postMessage(JSON.stringify(message));
+    }
+  }, []);
+
+  // Handle transaction approval
+  const handleTransactionApproval = useCallback(async (approved: boolean) => {
+    if (!pendingTransaction) return;
+
+    const context = {
+      walletAddress: isWalletLocked ? null : address,
+      isWalletLocked,
+      chainId: config.chainId,
+      origin: app.url,
+    };
+
+    try {
+      await bridgeService.executePendingTransaction(
+        pendingTransaction.id,
+        approved,
+        context
+      );
+    } catch (error) {
+      console.error('[WebViewContainer] Error executing transaction:', error);
+    }
+
+    setPendingTransaction(null);
+  }, [pendingTransaction, address, isWalletLocked, config.chainId, app.url]);
+
+  // Update bridge state when wallet/network changes
+  useEffect(() => {
+    if (!isLoading && webViewRef.current) {
+      const updateScript = `
+        if (window.scrollOne && window.scrollOne._updateState) {
+          window.scrollOne._updateState({
+            walletAddress: ${isWalletLocked ? 'null' : (address ? `'${address}'` : 'null')},
+            chainId: ${config.chainId},
+            isWalletLocked: ${isWalletLocked},
+            kycSharingEnabled: ${kycSharingEnabled},
+          });
+        }
+        true;
+      `;
+      webViewRef.current.injectJavaScript(updateScript);
+    }
+  }, [address, isWalletLocked, config.chainId, kycSharingEnabled, isLoading]);
 
   const handleError = () => {
     setError('Failed to load the app');
@@ -95,6 +211,13 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
 
   return (
     <View style={styles.container}>
+      {pendingTransaction && (
+        <TransactionApprovalModal
+          transaction={pendingTransaction.request}
+          onApprove={() => handleTransactionApproval(true)}
+          onReject={() => handleTransactionApproval(false)}
+        />
+      )}
       {isLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.accent.primary} />
@@ -105,7 +228,7 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
         ref={webViewRef}
         source={{ uri: app.url }}
         style={styles.webView}
-        injectedJavaScript={injectedJavaScript}
+        injectedJavaScript={generateInjectedScript()}
         onMessage={handleMessage}
         onError={handleError}
         onLoadEnd={handleLoadEnd}
