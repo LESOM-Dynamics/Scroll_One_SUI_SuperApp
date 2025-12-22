@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Scroll One SuperApp](https://img.shields.io/badge/Scroll-One%20SuperApp-00D9FF?style=for-the-badge&logo=ethereum&logoColor=white)
+![Scroll One SuperApp](https://img.shields.io/badge/Scroll_One-SuperApp-00D9FF?style=for-the-badge&logo=ethereum&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web-lightgrey?style=for-the-badge)
 ![React Native](https://img.shields.io/badge/React%20Native-0.81.5-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![Expo](https://img.shields.io/badge/Expo-~54.0.27-000020?style=for-the-badge&logo=expo&logoColor=white)
