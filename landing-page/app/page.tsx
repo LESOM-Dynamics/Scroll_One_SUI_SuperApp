@@ -42,6 +42,7 @@ import {
   Plus
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -661,14 +662,14 @@ export default function Home() {
       </section>
 
       {/* Video Demo Section */}
-      <section id="demo" className="relative py-32 px-4 sm:px-6 lg:px-8">
+      <section id="demo" className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="mb-16 text-center"
+            className="mb-8 text-center"
           >
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-primary"></div>
@@ -683,30 +684,26 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative max-w-5xl mx-auto"
+          <ContainerScroll
+            titleComponent={
+              <>
+              </>
+            }
           >
-            <div className="glass rounded-3xl p-2 border border-border-subtle backdrop-blur-xl overflow-hidden">
-              <div className="relative aspect-video rounded-2xl overflow-hidden">
-                <iframe
-                  className="absolute inset-0 w-full h-full"
-                  src="https://www.youtube.com/embed/BTva_cgqkRI?si=JmHafbqr3YAY6w2_"
-                  title="YouTube video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              </div>
+            <div className="relative w-full h-full flex items-center justify-center">
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/BTva_cgqkRI?si=n0auRf3gngqAakFR"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="w-full h-full max-w-4xl aspect-video rounded-2xl"
+              />
             </div>
-            
-            {/* Decorative Elements */}
-            <div className="absolute -top-10 -left-10 w-32 h-32 bg-accent-primary/10 rounded-full blur-2xl"></div>
-            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-accent-primary/10 rounded-full blur-2xl"></div>
-          </motion.div>
+          </ContainerScroll>
         </div>
       </section>
 
