@@ -2,6 +2,8 @@ import { formatEther, parseEther, TransactionResponse } from 'ethers';
 import { type Transaction } from '@/store/walletStore';
 import { scrollProvider } from './provider';
 import { sendTransaction as sendWalletTransaction } from './wallet';
+import { notificationService } from '../notifications/notificationService';
+import { useWalletStore } from '@/store/walletStore';
 
 // Scroll blockchain explorer API (using ScrollScan)
 const SCROLLSCAN_API = 'https://api.scrollscan.com/api';
@@ -107,11 +109,43 @@ export async function sendTransaction(
     
     // Wait for confirmation in background (don't block)
     scrollProvider.waitForTransaction(txResponse.hash, 1)
-      .then((receipt) => {
+      .then(async (receipt) => {
         console.log('[TransactionService] Transaction confirmed:', receipt?.hash);
+        
+        // Update transaction status in store
+        const { transactions, setTransactions } = useWalletStore.getState();
+        const updatedTransactions = transactions.map(tx => 
+          tx.id === txResponse.hash 
+            ? { ...tx, status: 'confirmed' as const }
+            : tx
+        );
+        setTransactions(updatedTransactions);
+        
+        // Get the updated transaction for notification
+        const confirmedTx = updatedTransactions.find(tx => tx.id === txResponse.hash);
+        if (confirmedTx) {
+          // Send notification
+          await notificationService.notifyTransactionConfirmed(confirmedTx);
+        }
       })
-      .catch((error) => {
+      .catch(async (error) => {
         console.error('[TransactionService] Transaction failed:', error);
+        
+        // Update transaction status in store
+        const { transactions, setTransactions } = useWalletStore.getState();
+        const updatedTransactions = transactions.map(tx => 
+          tx.id === txResponse.hash 
+            ? { ...tx, status: 'failed' as const }
+            : tx
+        );
+        setTransactions(updatedTransactions);
+        
+        // Get the failed transaction for notification
+        const failedTx = updatedTransactions.find(tx => tx.id === txResponse.hash);
+        if (failedTx) {
+          // Send notification
+          await notificationService.notifyTransactionFailed(failedTx);
+        }
       });
     
     return transaction;

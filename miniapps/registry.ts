@@ -120,6 +120,19 @@ export const MINIAPPS: MiniApp[] = [
     featured: false,
     verified: true,
   },
+
+  // --- AI / Assistant ---
+  // Example: Add your AI mini-app here
+  // {
+  //   id: 'scrollone-ai',
+  //   name: 'ScrollOne AI',
+  //   url: 'https://your-ai-service.com', // Replace with your AI service URL
+  //   icon: '🤖',
+  //   description: 'AI-powered assistant for Web3, DeFi, and Scroll ecosystem guidance.',
+  //   category: 'AI',
+  //   featured: true,
+  //   verified: true,
+  // },
 ];
 
 export function getMiniAppById(id: string): MiniApp | undefined {

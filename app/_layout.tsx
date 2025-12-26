@@ -1,6 +1,6 @@
 // template
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
@@ -11,6 +11,8 @@ import { colors } from '@/theme';
 import { useAppInitialization } from '@/hooks/useAppInitialization';
 import { useSettingsStore } from '@/store/settingsStore';
 import { AuthGuard } from '@/components/auth/AuthGuard';
+import { notificationService, type NotificationData } from '@/services/notifications/notificationService';
+import * as Notifications from 'expo-notifications';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,10 +21,40 @@ const queryClient = new QueryClient();
 function RootLayoutNav() {
   useAppInitialization();
   const { loadThemePreference } = useSettingsStore();
+  const router = useRouter();
 
   useEffect(() => {
     loadThemePreference();
   }, [loadThemePreference]);
+
+  // Setup notifications
+  useEffect(() => {
+    // Request notification permissions on app start
+    notificationService.requestPermissions();
+
+    // Setup notification listeners
+    const subscriptions = notificationService.setupListeners(
+      // Handle notification received while app is open
+      (notification) => {
+        console.log('[App] Notification received:', notification);
+      },
+      // Handle notification tap
+      (response) => {
+        console.log('[App] Notification tapped:', response);
+        const data = response.notification.request.content.data as NotificationData;
+        
+        if (data.transactionId) {
+          // Navigate to transaction detail screen
+          router.push(`/(tabs)/(wallet)/transaction/${data.transactionId}`);
+        }
+      }
+    );
+
+    // Cleanup listeners on unmount
+    return () => {
+      notificationService.removeListeners(subscriptions);
+    };
+  }, [router]);
   
   return (
     <>

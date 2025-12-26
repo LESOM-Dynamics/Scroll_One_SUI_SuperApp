@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Wallet, Send, ArrowDownToLine, ArrowLeftRight, ExternalLink, ChevronDown, ChevronUp, Banknote } from 'lucide-react-native';
+import { Wallet, Send, ArrowDownToLine, ArrowLeftRight, ExternalLink, ChevronDown, ChevronUp, Banknote, Eye, EyeOff } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -131,6 +131,7 @@ export default function WalletScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [assetsExpanded, setAssetsExpanded] = useState(true);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [isBalanceMasked, setIsBalanceMasked] = useState(false);
 
   // Load mock data preference on mount
   useEffect(() => {
@@ -343,7 +344,22 @@ export default function WalletScreen() {
             
             <Card variant="elevated" style={styles.balanceCard}>
               <Text style={styles.balanceLabel}>Total Balance</Text>
-              <Text style={styles.balance}>${balance}</Text>
+              <View style={styles.balanceRow}>
+                <Text style={styles.balance}>
+                  {isBalanceMasked ? '••••••' : `$${balance}`}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setIsBalanceMasked(!isBalanceMasked)}
+                  style={styles.eyeIconButton}
+                  activeOpacity={0.7}
+                >
+                  {isBalanceMasked ? (
+                    <EyeOff color={colors.text.secondary} size={20} />
+                  ) : (
+                    <Eye color={colors.text.secondary} size={20} />
+                  )}
+                </TouchableOpacity>
+              </View>
               {address && (
                 <Text style={styles.address}>{shortenAddress(address, 6)}</Text>
               )}
@@ -487,11 +503,20 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     marginBottom: spacing.xs,
   },
+  balanceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.sm,
+    gap: spacing.sm,
+  },
   balance: {
     fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.semibold,
     color: colors.text.primary,
-    marginBottom: spacing.sm,
+  },
+  eyeIconButton: {
+    padding: spacing.xs,
   },
   address: {
     fontSize: typography.fontSize.sm,

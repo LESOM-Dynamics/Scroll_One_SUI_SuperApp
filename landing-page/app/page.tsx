@@ -318,20 +318,15 @@ export default function Home() {
                 FAQ
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
               </a>
-              <motion.a
-                href="#download"
-                className="px-6 py-2.5 bg-gradient-scroll text-white rounded-lg font-semibold text-sm relative overflow-hidden group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <motion.div
+                className="px-6 py-2.5 bg-background-secondary/50 text-text-secondary rounded-lg font-semibold text-sm relative overflow-hidden group border border-border-subtle cursor-not-allowed"
+                title="Launching Soon - We're putting on the final touches"
               >
-                <span className="relative z-10">Get Started</span>
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-accent-secondary to-accent-primary"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.a>
+                <span className="relative z-10 flex items-center gap-2">
+                  <span>Launching Soon</span>
+                  <Sparkles className="w-3 h-3 text-accent-primary" />
+                </span>
+              </motion.div>
             </motion.div>
 
             <button
@@ -355,7 +350,7 @@ export default function Home() {
               <a href="#ecosystem" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Ecosystem</a>
               <a href="/developers" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Developers</a>
               <a href="#faq" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
-              <a href="#download" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Download</a>
+              <a href="#download" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Coming Soon</a>
             </div>
           </motion.div>
         )}
@@ -376,7 +371,7 @@ export default function Home() {
                 whileHover={{ scale: 1.05 }}
               >
                 <Sparkles className="w-3 h-3" />
-                <span>Now Live on iOS & Android</span>
+                <span>Launching Soon</span>
                 <motion.div
                   className="w-2 h-2 rounded-full bg-accent-primary"
                   animate={{ opacity: [1, 0.3, 1] }}
@@ -433,21 +428,15 @@ export default function Home() {
                 transition={{ delay: 0.6 }}
                 className="flex flex-col sm:flex-row gap-4 mb-16"
               >
-                <motion.a
-                  href="#download"
-                  className="group px-8 py-4 bg-gradient-scroll text-white rounded-2xl font-bold text-lg flex items-center justify-center space-x-3 shadow-2xl shadow-accent-primary/30 relative overflow-hidden"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
+                <motion.div
+                  className="group px-8 py-4 bg-background-secondary/50 text-text-secondary rounded-2xl font-bold text-lg flex items-center justify-center space-x-3 shadow-lg border border-border-subtle relative overflow-hidden cursor-not-allowed"
+                  title="Early Access Opening Soon - We're in final development"
                 >
-                  <span className="relative z-10">Start Exploring</span>
-                  <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-accent-secondary to-accent-primary"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.a>
+                  <span className="relative z-10 flex items-center gap-2">
+                    <span>Early Access Opening Soon</span>
+                    <Sparkles className="w-4 h-4 text-accent-primary" />
+                  </span>
+                </motion.div>
                 <motion.a
                   href="#features"
                   className="px-8 py-4 glass border-2 border-border-subtle text-text-primary rounded-2xl font-semibold text-lg flex items-center justify-center space-x-3 hover:border-accent-primary/50 transition-all backdrop-blur-xl"
@@ -893,11 +882,15 @@ export default function Home() {
               <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
             </div>
             <h2 className="text-5xl md:text-7xl font-black mb-6">
-              Ready to <span className="gradient-text">explore</span>?
+              Almost <span className="gradient-text">here</span>
             </h2>
-            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              Pick your platform and dive in
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto mb-4">
+              We're putting on the final touches
             </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-accent-primary/30 text-accent-primary text-sm font-semibold mb-6 backdrop-blur-xl">
+              <Sparkles className="w-4 h-4" />
+              <span>Currently in active development</span>
+            </div>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
@@ -905,53 +898,52 @@ export default function Home() {
               {
                 platform: "iOS",
                 icon: Apple,
-                href: "https://apps.apple.com/app/scroll-one-superapp",
                 gradient: "from-gray-800 to-gray-900",
-                description: "App Store"
+                description: "App Store",
+                status: "Coming Soon"
               },
               {
                 platform: "Android",
                 icon: Play,
-                href: "https://play.google.com/store/apps/details?id=app.rork.scroll_one_superapp",
                 gradient: "from-green-600 to-green-700",
-                description: "Google Play"
+                description: "Google Play",
+                status: "Coming Soon"
               },
               {
                 platform: "APK",
                 icon: Package,
-                href: "/downloads/scroll-one-superapp.apk",
                 gradient: "from-scroll to-scroll-dark",
-                description: "Direct Download"
+                description: "Direct Download",
+                status: "Coming Soon"
               },
             ].map((item, index) => (
-              <motion.a
+              <motion.div
                 key={index}
-                href={item.href}
-                target={item.href.startsWith("http") ? "_blank" : undefined}
-                rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                download={item.platform === "APK"}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="group relative glass rounded-3xl p-10 text-center border border-border-subtle hover:border-accent-primary/50 transition-all backdrop-blur-xl overflow-hidden"
+                className="group relative glass rounded-3xl p-10 text-center border border-border-subtle backdrop-blur-xl overflow-hidden cursor-not-allowed opacity-75"
+                title={`${item.platform} - ${item.status}`}
               >
                 <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 transition-opacity`}
+                  className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-5`}
                 />
                 <motion.div
-                  className={`w-20 h-20 bg-gradient-to-br ${item.gradient} rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-2xl relative z-10`}
+                  className={`w-20 h-20 bg-gradient-to-br ${item.gradient} rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl relative z-10 opacity-60`}
                 >
                   <item.icon className="w-10 h-10 text-white" />
                 </motion.div>
                 <h3 className="text-2xl font-bold mb-2 text-text-primary relative z-10">{item.platform}</h3>
-                <p className="text-text-secondary mb-6 relative z-10">{item.description}</p>
-                <div className="flex items-center justify-center space-x-2 text-accent-primary font-semibold relative z-10">
-                  <Download className="w-5 h-5" />
-                  <span>Download</span>
+                <p className="text-text-secondary mb-4 relative z-10">{item.description}</p>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background-secondary/50 border border-border-subtle mb-4 relative z-10">
+                  <span className="text-xs font-semibold text-text-tertiary">{item.status}</span>
                 </div>
-              </motion.a>
+                <div className="flex items-center justify-center space-x-2 text-text-tertiary font-semibold relative z-10">
+                  <Download className="w-5 h-5" />
+                  <span>Unavailable</span>
+                </div>
+              </motion.div>
             ))}
           </div>
 
@@ -959,16 +951,15 @@ export default function Home() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-center"
+            className="text-center space-y-4"
           >
-            <div className="inline-flex items-center gap-3 glass rounded-full px-6 py-3 border border-border-subtle backdrop-blur-xl">
-              <div className="flex -space-x-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-accent-primary text-accent-primary" />
-                ))}
-              </div>
-              <span className="text-text-secondary font-semibold text-sm">4.8/5 from 10,000+ users</span>
+            <div className="inline-flex items-center gap-3 glass rounded-full px-6 py-3 border border-accent-primary/30 backdrop-blur-xl">
+              <Sparkles className="w-4 h-4 text-accent-primary" />
+              <span className="text-text-secondary font-semibold text-sm">Join the waitlist to be notified when we launch</span>
             </div>
+            <p className="text-text-tertiary text-sm max-w-md mx-auto">
+              We're working hard to deliver the best experience. Sign up for our newsletter to get early access.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -1004,7 +995,7 @@ export default function Home() {
               },
               {
                 question: "Is Scroll One free to use?",
-                answer: "Yes! Scroll One is completely free to download and use. You only pay network fees for blockchain transactions, which are minimal on the Scroll network. There are no subscription fees or hidden costs."
+                answer: "Yes! Scroll One will be completely free to download and use once it launches. You'll only pay network fees for blockchain transactions, which are minimal on the Scroll network. There are no subscription fees or hidden costs. We're currently in active development and putting on the final touches before launch."
               },
               {
                 question: "How secure is my wallet?",
@@ -1024,7 +1015,7 @@ export default function Home() {
               },
               {
                 question: "Is Scroll One available on all platforms?",
-                answer: "Scroll One is available on iOS, Android, and Web. Your data syncs across all platforms, so you can access your wallet and identity from any device. The experience is consistent across all platforms."
+                answer: "Scroll One will be available on iOS, Android, and Web when we launch. Your data will sync across all platforms, so you can access your wallet and identity from any device. The experience will be consistent across all platforms. We're currently in final development and will announce launch dates soon."
               },
               {
                 question: "How do I integrate my dApp?",
@@ -1091,10 +1082,13 @@ export default function Home() {
               <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
             </div>
             <h2 className="text-5xl md:text-7xl font-black mb-6">
-              Stay <span className="gradient-text">Updated</span>
+              Be the <span className="gradient-text">First</span>
             </h2>
-            <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-              Get the latest updates, new features, and exclusive content delivered to your inbox
+            <p className="text-xl text-text-secondary mb-4 max-w-2xl mx-auto">
+              Get notified when we launch and receive early access
+            </p>
+            <p className="text-sm text-text-tertiary mb-10 max-w-2xl mx-auto">
+              Join our waitlist to be among the first to experience Scroll One
             </p>
 
             {!emailSubmitted ? (
@@ -1260,7 +1254,7 @@ export default function Home() {
               <ul className="space-y-3 text-sm text-text-secondary">
                 <li><a href="#features" className="hover:text-accent-primary transition-colors">Features</a></li>
                 <li><a href="#ecosystem" className="hover:text-accent-primary transition-colors">Ecosystem</a></li>
-                <li><a href="#download" className="hover:text-accent-primary transition-colors">Download</a></li>
+                <li><a href="#download" className="hover:text-accent-primary transition-colors">Coming Soon</a></li>
               </ul>
             </div>
             <div>
