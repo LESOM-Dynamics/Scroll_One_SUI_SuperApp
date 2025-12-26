@@ -13,6 +13,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { notificationService, type NotificationData } from '@/services/notifications/notificationService';
 import * as Notifications from 'expo-notifications';
+import * as Clarity from '@microsoft/react-native-clarity';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -87,6 +88,13 @@ export default function RootLayout() {
   });
 
   const { themeMode } = useSettingsStore();
+
+  // Initialize Microsoft Clarity
+  useEffect(() => {
+    Clarity.initialize('urm4valmet', {
+      logLevel: Clarity.LogLevel.None, // Use "LogLevel.Verbose" while testing to debug initialization issues
+    });
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded) {
