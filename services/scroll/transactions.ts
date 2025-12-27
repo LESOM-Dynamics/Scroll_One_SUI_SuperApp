@@ -4,6 +4,7 @@ import { scrollProvider } from './provider';
 import { sendTransaction as sendWalletTransaction } from './wallet';
 import { notificationService } from '../notifications/notificationService';
 import { useWalletStore } from '@/store/walletStore';
+import { useSettingsStore } from '@/store/settingsStore';
 
 // Scroll blockchain explorer API (using ScrollScan)
 const SCROLLSCAN_API = 'https://api.scrollscan.com/api';
@@ -124,8 +125,11 @@ export async function sendTransaction(
         // Get the updated transaction for notification
         const confirmedTx = updatedTransactions.find(tx => tx.id === txResponse.hash);
         if (confirmedTx) {
-          // Send notification
-          await notificationService.notifyTransactionConfirmed(confirmedTx);
+          // Send notification if enabled
+          const { notificationsEnabled } = useSettingsStore.getState();
+          if (notificationsEnabled) {
+            await notificationService.notifyTransactionConfirmed(confirmedTx);
+          }
         }
       })
       .catch(async (error) => {
@@ -143,8 +147,11 @@ export async function sendTransaction(
         // Get the failed transaction for notification
         const failedTx = updatedTransactions.find(tx => tx.id === txResponse.hash);
         if (failedTx) {
-          // Send notification
-          await notificationService.notifyTransactionFailed(failedTx);
+          // Send notification if enabled
+          const { notificationsEnabled } = useSettingsStore.getState();
+          if (notificationsEnabled) {
+            await notificationService.notifyTransactionFailed(failedTx);
+          }
         }
       });
     

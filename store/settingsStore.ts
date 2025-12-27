@@ -6,6 +6,7 @@ const NETWORK_PREFERENCE_KEY = '@scroll_one:network_preference';
 const THEME_PREFERENCE_KEY = '@scroll_one:theme_mode';
 const BIOMETRIC_PREFERENCE_KEY = '@scroll_one:biometric_auth_enabled';
 const MOCK_DATA_PREFERENCE_KEY = '@scroll_one:use_mock_data';
+const NOTIFICATIONS_ENABLED_KEY = '@scroll_one:notifications_enabled';
 
 interface SettingsState {
   isTestnet: boolean;
@@ -14,6 +15,7 @@ interface SettingsState {
   kycSharingEnabled: boolean;
   biometricAuthEnabled: boolean;
   useMockData: boolean;
+  notificationsEnabled: boolean;
 
   setNetwork: (isTestnet: boolean) => Promise<void>;
   loadNetworkPreference: () => Promise<void>;
@@ -28,6 +30,9 @@ interface SettingsState {
 
   setUseMockData: (enabled: boolean) => Promise<void>;
   loadMockDataPreference: () => Promise<void>;
+
+  setNotificationsEnabled: (enabled: boolean) => Promise<void>;
+  loadNotificationsPreference: () => Promise<void>;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -37,6 +42,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   kycSharingEnabled: false,
   biometricAuthEnabled: false,
   useMockData: false,
+  notificationsEnabled: true, // Default to enabled
 
   setNetwork: async (isTestnet: boolean) => {
     try {
@@ -142,6 +148,35 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       }
     } catch (error) {
       console.error('[SettingsStore] Error loading mock data preference:', error);
+    }
+  },
+
+  setNotificationsEnabled: async (enabled: boolean) => {
+    try {
+      await AsyncStorage.setItem(NOTIFICATIONS_ENABLED_KEY, JSON.stringify(enabled));
+      set({ notificationsEnabled: enabled });
+      console.log('[SettingsStore] Notifications preference saved:', enabled);
+    } catch (error) {
+      console.error('[SettingsStore] Error saving notifications preference:', error);
+    }
+  },
+
+  loadNotificationsPreference: async () => {
+    try {
+      const stored = await AsyncStorage.getItem(NOTIFICATIONS_ENABLED_KEY);
+      if (stored !== null) {
+        const enabled = JSON.parse(stored);
+        set({ notificationsEnabled: enabled });
+        console.log('[SettingsStore] Notifications preference loaded:', enabled);
+      } else {
+        console.log('[SettingsStore] No notifications preference found, defaulting to enabled');
+        // Default to enabled if not set
+        set({ notificationsEnabled: true });
+      }
+    } catch (error) {
+      console.error('[SettingsStore] Error loading notifications preference:', error);
+      // Default to enabled on error
+      set({ notificationsEnabled: true });
     }
   },
 }));

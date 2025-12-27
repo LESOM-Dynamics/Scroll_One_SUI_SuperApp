@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Animated } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Wallet, Send, ArrowDownToLine, ArrowLeftRight, ExternalLink, ChevronDown, ChevronUp, Banknote, Eye, EyeOff } from 'lucide-react-native';
+import { Wallet, Send, ArrowDownToLine, ArrowLeftRight, ExternalLink, ChevronDown, ChevronUp, Banknote, Eye, EyeOff, Copy, RefreshCw } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -13,6 +13,8 @@ import { scrollProvider } from '@/services/scroll/provider';
 import { getETHPrice, getTokenPrice } from '@/services/scroll/prices';
 import { getTokenBalances, getAvailableTokens, getTokenInfo } from '@/services/scroll/tokens';
 import { WalletSelectionModal } from '@/components/wallet/WalletSelectionModal';
+import * as Clipboard from 'expo-clipboard';
+import * as Haptics from 'expo-haptics';
 
 // TEMPORARY: Mock data for demonstration
 const MOCK_ASSETS: Asset[] = [
@@ -132,6 +134,7 @@ export default function WalletScreen() {
   const [assetsExpanded, setAssetsExpanded] = useState(true);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [isBalanceMasked, setIsBalanceMasked] = useState(false);
+  const rotateAnim = useRef(new Animated.Value(0)).current;
 
   // Load mock data preference on mount
   useEffect(() => {
@@ -162,6 +165,28 @@ export default function WalletScreen() {
       loadWalletData();
     }
   }, [address, isTestnet, useMockData]); // Refresh when network changes or mock data setting changes
+
+  // Animation effect for refresh icon
+  useEffect(() => {
+    if (isRefreshing) {
+      const rotation = Animated.loop(
+        Animated.timing(rotateAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        })
+      );
+      rotation.start();
+      return () => rotation.stop();
+    } else {
+      rotateAnim.setValue(0);
+    }
+  }, [isRefreshing, rotateAnim]);
+
+  const rotation = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
 
   const loadWalletData = async () => {
     if (!address) return;
@@ -265,6 +290,55 @@ export default function WalletScreen() {
     }
   };
 
+  const handleCopyAddress = async () => {
+    if (address) {
+      await Clipboard.setStringAsync(address);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      console.log('[WalletScreen] Address copied to clipboard');
+    }
+  };
+
+  const handleRefresh = async () => {
+    if (!address || isRefreshing) return;
+    
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
+    try {
+      if (useMockData) {
+        // Refresh mock data - recalculate balance
+        setIsRefreshing(true);
+        
+        const totalBalance = MOCK_ASSETS.reduce((sum, asset) => {
+          return sum + parseFloat(asset.usdValue.replace(/,/g, ''));
+        }, 0);
+        setBalance(totalBalance.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }));
+        
+        // Re-set mock assets and transactions
+        setAssets(MOCK_ASSETS);
+        setTransactions(MOCK_TRANSACTIONS);
+        
+        // Small delay for better UX
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        setIsRefreshing(false);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        console.log('[WalletScreen] Wallet data refreshed successfully');
+      } else {
+        // Refresh real wallet data - loadWalletData manages isRefreshing state
+        await loadWalletData();
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        console.log('[WalletScreen] Wallet data refreshed successfully');
+      }
+    } catch (error) {
+      console.error('[WalletScreen] Error refreshing wallet data:', error);
+      setIsRefreshing(false);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
+
   const renderAsset = ({ item }: { item: Asset }) => (
     <TouchableOpacity style={styles.assetItem}>
       <View style={styles.assetLeft}>
@@ -337,9 +411,24 @@ export default function WalletScreen() {
               >
                 <Wallet color={colors.text.primary} size={24} />
               </TouchableOpacity>
-              <TouchableOpacity>
-                <ExternalLink color={colors.text.secondary} size={20} />
-              </TouchableOpacity>
+              <View style={styles.headerRight}>
+                <TouchableOpacity
+                  onPress={handleRefresh}
+                  disabled={isRefreshing || !address}
+                  activeOpacity={0.7}
+                  style={styles.refreshButton}
+                >
+                  <Animated.View style={{ transform: [{ rotate: rotation }] }}>
+                    <RefreshCw 
+                      color={isRefreshing ? colors.accent.primary : colors.text.secondary} 
+                      size={20}
+                    />
+                  </Animated.View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <ExternalLink color={colors.text.secondary} size={20} />
+                </TouchableOpacity>
+              </View>
             </View>
             
             <Card variant="elevated" style={styles.balanceCard}>
@@ -361,7 +450,16 @@ export default function WalletScreen() {
                 </TouchableOpacity>
               </View>
               {address && (
-                <Text style={styles.address}>{shortenAddress(address, 6)}</Text>
+                <View style={styles.addressRow}>
+                  <Text style={styles.address}>{shortenAddress(address, 6)}</Text>
+                  <TouchableOpacity
+                    onPress={handleCopyAddress}
+                    style={styles.copyIconButton}
+                    activeOpacity={0.7}
+                  >
+                    <Copy color={colors.text.secondary} size={16} />
+                  </TouchableOpacity>
+                </View>
               )}
             </Card>
 
@@ -494,6 +592,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.lg,
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  refreshButton: {
+    padding: spacing.xs,
+  },
   balanceCard: {
     alignItems: 'center',
     marginBottom: spacing.lg,
@@ -518,10 +624,19 @@ const styles = StyleSheet.create({
   eyeIconButton: {
     padding: spacing.xs,
   },
+  addressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+  },
   address: {
     fontSize: typography.fontSize.sm,
     color: colors.text.secondary,
     fontFamily: typography.fontFamily.mono,
+  },
+  copyIconButton: {
+    padding: spacing.xs,
   },
   actions: {
     flexDirection: 'row',

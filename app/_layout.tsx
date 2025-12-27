@@ -13,6 +13,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { notificationService, type NotificationData } from '@/services/notifications/notificationService';
 import * as Notifications from 'expo-notifications';
+import * as Haptics from 'expo-haptics';
 import * as Clarity from '@microsoft/react-native-clarity';
 
 SplashScreen.preventAutoHideAsync();
@@ -30,19 +31,36 @@ function RootLayoutNav() {
 
   // Setup notifications
   useEffect(() => {
-    // Request notification permissions on app start
-    notificationService.requestPermissions();
+    // Clear badge count on app open
+    notificationService.clearBadgeCount();
+
+    // Request notification permissions on app start (if enabled)
+    const { notificationsEnabled } = useSettingsStore.getState();
+    if (notificationsEnabled) {
+      notificationService.requestPermissions();
+    }
 
     // Setup notification listeners
     const subscriptions = notificationService.setupListeners(
       // Handle notification received while app is open
       (notification) => {
         console.log('[App] Notification received:', notification);
+        const data = notification.request.content.data as NotificationData;
+        
+        // Trigger haptic feedback based on notification type
+        if (data.type === 'transaction_confirmed') {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } else if (data.type === 'transaction_failed') {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        }
       },
       // Handle notification tap
       (response) => {
         console.log('[App] Notification tapped:', response);
         const data = response.notification.request.content.data as NotificationData;
+        
+        // Light haptic when tapping notification
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         
         if (data.transactionId) {
           // Navigate to transaction detail screen

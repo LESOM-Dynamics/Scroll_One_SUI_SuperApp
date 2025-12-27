@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useFocusEffect } from 'expo-router';
 import { ArrowLeft, Send, ArrowDownToLine, ArrowLeftRight, FileCode, Filter, X } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
@@ -9,6 +9,7 @@ import { useWalletStore, type Transaction } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { shortenAddress } from '@/services/scroll/wallet';
 import { formatTransactionTime } from '@/services/scroll/transactions';
+import { notificationService } from '@/services/notifications/notificationService';
 
 type FilterType = 'all' | 'pending' | 'failed' | 'contract' | 'cross-chain';
 
@@ -18,6 +19,13 @@ export default function ActivityScreen() {
   const { isTestnet } = useSettingsStore();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [showFilters, setShowFilters] = useState(false);
+
+  // Clear badge count when activity screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      notificationService.clearBadgeCount();
+    }, [])
+  );
 
   const filteredTransactions = useMemo(() => {
     let filtered = [...transactions];

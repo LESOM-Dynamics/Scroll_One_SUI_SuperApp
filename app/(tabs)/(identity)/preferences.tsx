@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { ArrowLeft, Network, Moon } from 'lucide-react-native';
+import { ArrowLeft, Network, Moon, Bell } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useSettingsStore } from '@/store/settingsStore';
 import { scrollProvider } from '@/services/scroll/provider';
 import { useWalletStore } from '@/store/walletStore';
+import { notificationService } from '@/services/notifications/notificationService';
 
 export default function PreferencesScreen() {
   const router = useRouter();
@@ -19,6 +20,9 @@ export default function PreferencesScreen() {
     themeMode, 
     setTheme, 
     loadThemePreference,
+    notificationsEnabled,
+    setNotificationsEnabled,
+    loadNotificationsPreference,
   } = useSettingsStore();
   const { address, setBalance } = useWalletStore();
   const styles = React.useMemo(() => createStyles(), [themeMode]);
@@ -26,7 +30,8 @@ export default function PreferencesScreen() {
   useEffect(() => {
     loadNetworkPreference();
     loadThemePreference();
-  }, [loadNetworkPreference, loadThemePreference]);
+    loadNotificationsPreference();
+  }, [loadNetworkPreference, loadThemePreference, loadNotificationsPreference]);
 
   const handleNetworkToggle = async (value: boolean) => {
     Alert.alert(
@@ -61,6 +66,24 @@ export default function PreferencesScreen() {
 
   const handleThemeToggle = async (value: boolean) => {
     await setTheme(value ? 'dark' : 'light');
+  };
+
+  const handleNotificationsToggle = async (value: boolean) => {
+    if (value) {
+      // Request permissions when enabling
+      const hasPermissions = await notificationService.hasPermissions();
+      if (!hasPermissions) {
+        const granted = await notificationService.requestPermissions();
+        if (!granted) {
+          Alert.alert(
+            'Permissions Required',
+            'Please enable notifications in your device settings to receive transaction notifications.'
+          );
+          return;
+        }
+      }
+    }
+    await setNotificationsEnabled(value);
   };
 
   return (
@@ -109,6 +132,33 @@ export default function PreferencesScreen() {
                     true: colors.accent.primary + '80',
                   }}
                   thumbColor={themeMode === 'dark' ? colors.accent.primary : colors.text.tertiary}
+                  ios_backgroundColor={colors.border.medium}
+                />
+              </View>
+            </Card>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Notifications</Text>
+            <Card style={styles.settingCard}>
+              <View style={styles.settingRow}>
+                <View style={styles.settingLeft}>
+                  <Bell color={colors.accent.secondary} size={24} />
+                  <View style={styles.settingTextContainer}>
+                    <Text style={styles.settingTitle}>Transaction Notifications</Text>
+                    <Text style={styles.settingDescription}>
+                      {notificationsEnabled ? 'Enabled' : 'Disabled'}
+                    </Text>
+                  </View>
+                </View>
+                <Switch
+                  value={notificationsEnabled}
+                  onValueChange={handleNotificationsToggle}
+                  trackColor={{
+                    false: colors.border.medium,
+                    true: colors.accent.primary + '80',
+                  }}
+                  thumbColor={notificationsEnabled ? colors.accent.primary : colors.text.tertiary}
                   ios_backgroundColor={colors.border.medium}
                 />
               </View>

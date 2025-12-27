@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import * as Haptics from 'expo-haptics';
 import type { Transaction } from '@/store/walletStore';
 import { shortenAddress } from '@/services/scroll/wallet';
 
@@ -99,6 +100,9 @@ class NotificationService {
       ? `You sent ${transaction.amount} ${transaction.symbol} to ${shortenAddress(transaction.to || '', 4)}`
       : `You received ${transaction.amount} ${transaction.symbol}`;
 
+    // Trigger haptic feedback for success
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
     await Notifications.scheduleNotificationAsync({
       content: {
         title,
@@ -118,6 +122,9 @@ class NotificationService {
    * Send local notification for transaction failure
    */
   async notifyTransactionFailed(transaction: Transaction): Promise<void> {
+    // Trigger haptic feedback for error
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
     await Notifications.scheduleNotificationAsync({
       content: {
         title: 'Transaction Failed',
@@ -175,6 +182,43 @@ class NotificationService {
    */
   removeListeners(subscriptions: Notifications.Subscription[]): void {
     subscriptions.forEach((subscription) => subscription.remove());
+  }
+
+  /**
+   * Clear the app badge count
+   */
+  async clearBadgeCount(): Promise<void> {
+    try {
+      await Notifications.setBadgeCountAsync(0);
+      console.log('[NotificationService] Badge count cleared');
+    } catch (error) {
+      console.error('[NotificationService] Error clearing badge count:', error);
+    }
+  }
+
+  /**
+   * Set the app badge count
+   */
+  async setBadgeCount(count: number): Promise<void> {
+    try {
+      await Notifications.setBadgeCountAsync(count);
+      console.log('[NotificationService] Badge count set to:', count);
+    } catch (error) {
+      console.error('[NotificationService] Error setting badge count:', error);
+    }
+  }
+
+  /**
+   * Get the current badge count
+   */
+  async getBadgeCount(): Promise<number> {
+    try {
+      const count = await Notifications.getBadgeCountAsync();
+      return count;
+    } catch (error) {
+      console.error('[NotificationService] Error getting badge count:', error);
+      return 0;
+    }
   }
 }
 
