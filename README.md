@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Scroll One SuperApp](https://img.shields.io/badge/Scroll-One%20SuperApp-00D9FF?style=for-the-badge&logo=ethereum&logoColor=white)
+![Scroll One SuperApp](https://img.shields.io/badge/Scroll_One-SuperApp-00D9FF?style=for-the-badge&logo=ethereum&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web-lightgrey?style=for-the-badge)
 ![React Native](https://img.shields.io/badge/React%20Native-0.81.5-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![Expo](https://img.shields.io/badge/Expo-~54.0.27-000020?style=for-the-badge&logo=expo&logoColor=white)
@@ -18,7 +18,7 @@
 
 ## 📖 Overview
 
-**Scroll One SuperApp** is a next-generation mobile application that serves as a unified gateway to the Scroll blockchain ecosystem. It combines a secure crypto wallet, decentralized identity management, and an extensive marketplace of mini-applications covering DeFi, NFTs, gaming, social networking, and more.
+**Scroll One SuperApp** is a mobile-first crypto SuperApp built exclusively on the Scroll blockchain (Ethereum L2). It serves as a unified gateway to the Scroll ecosystem, combining a self-custodial wallet with real blockchain integration, a WebView-based dApp marketplace, and decentralized identity management.
 
 ### 🎥 Demo Video
 
@@ -26,11 +26,13 @@ Watch the V1 demo: [https://youtu.be/BTva_cgqkRI](https://youtu.be/BTva_cgqkRI)
 
 ### Key Highlights
 
-- 🔐 **Secure Wallet**: Built-in wallet with send, receive, and swap functionality
+- 🔐 **Self-Custodial Wallet**: Real blockchain integration using ethers.js v6 with secure private key management
+- 🌉 **WebView Bridge SDK**: Custom SDK (`scrollone-sdk`) enabling secure communication between native wallet and WebView-hosted dApps
 - 🆔 **Decentralized Identity**: User profiles with reputation, badges, and achievements
-- 🎯 **Mini-App Ecosystem**: Discover and use 20+ integrated applications
+- 🎯 **Mini-App Ecosystem**: Discover and use real Scroll-native dApps (SyncSwap, Skydrome, LayerBank, Aave v3, etc.)
 - 🌐 **Cross-Platform**: Native iOS, Android, and Web support
-- ⚡ **Modern Stack**: React Native, Expo, TypeScript, and Zustand
+- ⚡ **Modern Stack**: React Native, Expo, TypeScript, Zustand, and React Query
+- ⛓️ **Scroll-Native**: Built exclusively for Scroll blockchain with Scroll-specific RPC endpoints and integrations
 
 ---
 
@@ -38,10 +40,15 @@ Watch the V1 demo: [https://youtu.be/BTva_cgqkRI](https://youtu.be/BTva_cgqkRI)
 
 ### 💼 Wallet
 
-- **Send & Receive**: Transfer tokens on the Scroll network
-- **Token Swap**: Exchange tokens with integrated DEX functionality
-- **Balance Tracking**: Real-time balance updates and transaction history
-- **Secure Storage**: Private keys encrypted with Expo SecureStore
+- **Real Blockchain Integration**: Wallet creation, signing, and transaction sending using ethers.js v6
+- **Send & Receive**: Transfer ETH and tokens on the Scroll network
+- **Transaction History**: Real-time transaction tracking via ScrollScan API
+- **Multi-Wallet Support**: Create and manage multiple wallets
+- **Gas Estimation**: Real-time gas estimation before transactions
+- **Activity Tracking**: Detailed transaction history with status polling
+- **Secure Storage**: Private keys encrypted with Expo SecureStore (device keychain/keystore)
+- **Bridge Integration**: Native bridge support for Ethereum ↔ Scroll transfers
+- **On-Ramp Support**: Integrated fiat on-ramp providers (Ramp, MoonPay, Transak)
 
 ### 🆔 Identity
 
@@ -59,17 +66,21 @@ Watch the V1 demo: [https://youtu.be/BTva_cgqkRI](https://youtu.be/BTva_cgqkRI)
 
 ### 📱 Mini-App Categories
 
-- **DeFi**: ScrollSwap, Scroll Lend, Scroll Trade
-- **Bridge**: Scroll Bridge
-- **Payments**: ZK Pay
-- **NFT**: Scroll NFT, Scroll Photo
-- **Gaming**: Scroll Gaming, Scroll Pets
-- **Social**: Scroll Social, Scroll Chat
-- **Governance**: Scroll DAO, Scroll Vote
-- **AI**: Scroll AI
-- **Entertainment**: Scroll Music, Scroll Tickets
-- **Education**: Scroll Learn
-- **Health**: Scroll Health, Scroll Fitness
+The app integrates real Scroll-native dApps from the official Scroll ecosystem:
+
+- **DeFi DEXes**: SyncSwap, Skydrome, iZiSwap
+- **Lending**: LayerBank, Aave v3 (Scroll)
+- **Bridge**: Scroll Bridge (official)
+- **On-Ramp**: Ramp, MoonPay, Transak
+- **NFT**: NFTScan (Scroll)
+- **Tools**: ScrollScan (block explorer)
+
+### 🌉 WebView Bridge SDK
+
+- **Custom SDK**: Framework-agnostic `scrollone-sdk` for secure dApp integration
+- **Bridge Methods**: GET_ACCOUNT, GET_BALANCE, SIGN_TRANSACTION, SIGN_MESSAGE, GET_NETWORK, ESTIMATE_GAS
+- **Transaction Approval**: Native modal for user transaction approvals
+- **Secure Communication**: PostMessage-based bridge with origin validation
 
 ---
 
@@ -151,59 +162,96 @@ bun run start -- --android
 
 ```
 Scroll_One_SuperApp/
-├── app/                          # Expo Router screens
-│   ├── (tabs)/                   # Tab navigation
-│   │   ├── (wallet)/            # Wallet tab
-│   │   │   ├── index.tsx        # Wallet overview
+├── app/                          # Expo Router screens (file-based routing)
+│   ├── (auth)/                   # Authentication screens
+│   │   ├── login.tsx
+│   │   └── signup.tsx
+│   ├── (tabs)/                   # Main tab navigation
+│   │   ├── (wallet)/            # Wallet tab screens
+│   │   │   ├── index.tsx        # Wallet overview (balance, assets)
 │   │   │   ├── send.tsx         # Send tokens
-│   │   │   ├── receive.tsx      # Receive tokens
-│   │   │   └── swap.tsx         # Token swap
-│   │   ├── (explore)/           # Explore tab
-│   │   │   ├── index.tsx        # Mini-apps list
-│   │   │   └── [appId].tsx      # Mini-app detail
+│   │   │   ├── receive.tsx      # Receive (QR code)
+│   │   │   ├── swap.tsx         # Token swap (UI)
+│   │   │   ├── bridge.tsx       # Bridge to Ethereum (WebView)
+│   │   │   ├── deposit.tsx      # Deposit/on-ramp (WebView)
+│   │   │   ├── activity.tsx     # Transaction history
+│   │   │   └── transaction/[id].tsx  # Transaction detail
+│   │   ├── (explore)/           # Explore tab (mini-apps)
+│   │   │   ├── index.tsx        # Mini-app discovery
+│   │   │   └── [appId].tsx      # Mini-app detail/WebView
 │   │   ├── (identity)/          # Identity tab
-│   │   │   └── index.tsx        # User profile
+│   │   │   ├── index.tsx        # Profile, badges, reputation
+│   │   │   ├── privacy-security.tsx  # Privacy settings
+│   │   │   ├── preferences.tsx  # App preferences
+│   │   │   └── developer-settings.tsx  # Developer tools
 │   │   └── _layout.tsx          # Tab layout config
-│   ├── _layout.tsx              # Root layout
+│   ├── _layout.tsx              # Root layout (QueryClient, AuthGuard)
 │   └── +not-found.tsx           # 404 screen
-├── components/                   # Reusable components
-│   ├── layout/                  # Layout components
-│   │   └── Screen.tsx
-│   └── ui/                      # UI components
-│       ├── Button.tsx
-│       ├── Card.tsx
-│       ├── Header.tsx
-│       ├── Loading.tsx
-│       ├── CategoryTabs.tsx
-│       ├── MiniAppGridCard.tsx
-│       └── MiniAppListCard.tsx
-├── constants/                    # App constants
-│   └── color.ts
-├── hooks/                        # Custom React hooks
-│   └── useAppInitialization.ts
-├── miniapps/                     # Mini-app integration
-│   ├── registry.ts              # Mini-app registry
-│   └── WebViewContainer.tsx     # WebView wrapper
-├── services/                     # Business logic
-│   └── scroll/                  # Scroll blockchain services
-│       ├── provider.ts          # Scroll RPC provider
-│       ├── wallet.ts            # Wallet operations
-│       └── transactions.ts      # Transaction handling
-├── store/                        # State management (Zustand)
-│   ├── walletStore.ts           # Wallet state
-│   ├── userStore.ts             # User/identity state
-│   └── miniAppStore.ts          # Mini-app state
-├── theme/                        # Design system
-│   ├── colors.ts                # Color palette
-│   ├── typography.ts            # Font styles
-│   ├── spacing.ts               # Spacing scale
-│   ├── shadows.ts               # Shadow presets
-│   └── index.ts                 # Theme exports
-├── assets/                       # Static assets
-│   └── images/                  # Icons and images
-├── app.json                      # Expo configuration
-├── package.json                  # Dependencies
-└── tsconfig.json                 # TypeScript config
+├── components/                   # Reusable React components
+│   ├── auth/
+│   │   └── AuthGuard.tsx        # Route protection, wallet check
+│   ├── bridge/
+│   │   └── TransactionApprovalModal.tsx  # Transaction approval UI
+│   ├── layout/
+│   │   └── Screen.tsx           # Screen wrapper component
+│   ├── ui/                      # UI primitives
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   ├── Header.tsx
+│   │   ├── Loading.tsx
+│   │   ├── CategoryTabs.tsx
+│   │   ├── MiniAppGridCard.tsx
+│   │   └── MiniAppListCard.tsx
+│   └── wallet/
+│       └── WalletSelectionModal.tsx  # Multi-wallet selection
+├── constants/
+│   └── color.ts                 # Legacy color constants (use theme/ instead)
+├── hooks/
+│   └── useAppInitialization.ts  # App startup logic (wallet loading)
+├── landing-page/                # Separate Next.js landing page
+│   ├── app/                     # Next.js app directory
+│   ├── components/
+│   └── package.json             # Separate package.json
+├── miniapps/
+│   ├── registry.ts              # Mini-app registry (Scroll-native dApps)
+│   └── WebViewContainer.tsx     # WebView wrapper with bridge integration
+├── scrollone-sdk/               # Custom WebView bridge SDK
+│   ├── core/                    # Protocol, validation, errors
+│   ├── web/                     # window.scrollOne implementation
+│   ├── native/                  # Native bridge router
+│   ├── types/                   # TypeScript types
+│   └── README.md                # SDK documentation
+├── services/                     # Business logic layer (no React)
+│   ├── bridge/
+│   │   ├── bridgeService.ts    # Bridge service singleton
+│   │   └── handlers.ts         # Bridge method handlers
+│   └── scroll/
+│       ├── provider.ts         # Scroll RPC provider
+│       ├── wallet.ts           # Wallet operations (create, sign, send)
+│       ├── transactions.ts     # Transaction fetching, sending
+│       ├── tokens.ts           # ERC-20 token operations
+│       └── prices.ts           # CoinGecko price fetching
+├── store/                       # Zustand state stores
+│   ├── walletStore.ts          # Wallet state (address, balance, transactions)
+│   ├── userStore.ts            # User/identity state
+│   ├── miniAppStore.ts         # Mini-app state (favorites, recent)
+│   └── settingsStore.ts        # App settings (theme, network, KYC)
+├── theme/                       # Design system
+│   ├── colors.ts
+│   ├── typography.ts
+│   ├── spacing.ts
+│   ├── shadows.ts
+│   └── index.ts
+├── assets/                      # Static assets
+├── backend/                     # Optional backend API (separate service)
+│   ├── src/
+│   └── docs/
+├── app.json                     # Expo configuration
+├── package.json                 # Main dependencies
+├── tsconfig.json                # TypeScript config
+├── WEB3_ENGINEER_ONBOARDING.md  # Detailed onboarding guide
+├── WEBVIEW_BRIDGE_GUIDE.md      # Bridge integration guide
+└── IMPLEMENTATION_STATUS.md     # Feature completion status
 ```
 
 ---
@@ -213,27 +261,70 @@ Scroll_One_SuperApp/
 ### Tech Stack
 
 - **Framework**: React Native 0.81.5 with Expo ~54.0.27
-- **Routing**: Expo Router (file-based routing)
-- **Language**: TypeScript 5.9.2
-- **State Management**: Zustand 5.0.2
-- **Server State**: React Query (@tanstack/react-query)
+- **Routing**: Expo Router (file-based routing, similar to Next.js)
+- **Language**: TypeScript 5.9.2 (strict mode)
+- **State Management**: 
+  - Zustand 5.0.2 (client state: wallet, user, mini-apps, settings)
+  - React Query (@tanstack/react-query) for server state
+- **Blockchain**: ethers.js v6.0.0 (wallet operations, signing, transactions)
 - **Icons**: Lucide React Native
-- **Storage**: Expo SecureStore (encrypted), AsyncStorage
-- **WebView**: React Native WebView
+- **Storage**: 
+  - Expo SecureStore (encrypted private keys, wallet data)
+  - AsyncStorage (non-sensitive preferences)
+- **WebView**: React Native WebView 13.15.0
+- **UI Components**: Custom design system in `theme/`
+
+### Backend/Services Architecture
+
+**No traditional backend.** This is a fully client-side application with:
+
+- **Blockchain RPC**: Direct calls to Scroll RPC endpoints
+- **External APIs**:
+  - CoinGecko API for token prices
+  - ScrollScan API for transaction history
+- **Local Storage**: Encrypted SecureStore for sensitive data
 
 ### State Management
 
-The app uses **Zustand** for client-side state management with three main stores:
+The app uses **Zustand** for client-side state management with four main stores:
 
-- **`walletStore`**: Wallet address, balance, transaction history
+- **`walletStore`**: Wallet address, balance, transaction history, multi-wallet support
 - **`userStore`**: User profile, badges, reputation, Scroll ID
 - **`miniAppStore`**: Mini-app favorites, recent apps, usage stats
+- **`settingsStore`**: App settings (theme, network, KYC status)
 
 ### Blockchain Integration
 
-- **Scroll Provider**: Custom RPC provider for Scroll network
-- **Wallet Service**: Secure wallet creation and management
-- **Transaction Service**: Send, receive, and swap operations
+**Scroll-Native Implementation:**
+
+- **Scroll Provider**: Custom RPC provider with Scroll-specific endpoints
+  - Mainnet: `https://rpc.scroll.io` (chainId: 534352)
+  - Testnet: `https://sepolia-rpc.scroll.io` (chainId: 534351)
+- **Wallet Service**: Real wallet creation, signing, and sending using ethers.js
+- **Transaction Service**: Real transaction sending and history fetching via ScrollScan API
+- **Token Service**: ERC-20 token balance fetching and metadata
+- **Price Service**: CoinGecko integration for real-time token prices
+
+### WebView Bridge Architecture
+
+The app includes a custom **WebView Bridge SDK** (`scrollone-sdk`) that enables secure communication between native wallet functionality and WebView-hosted dApps:
+
+- **Protocol**: PostMessage-based communication with validation
+- **Security**: Origin validation, method allow-list, wallet lock checks
+- **Methods**: GET_ACCOUNT, GET_BALANCE, SIGN_TRANSACTION, SIGN_MESSAGE, GET_NETWORK, ESTIMATE_GAS
+- **Flow**: dApp (WebView) → `window.scrollOne` API → postMessage → WebViewContainer → bridgeService → handlers → wallet/transaction services → Scroll blockchain
+
+### Component Communication Flow
+
+```
+React Components (app/, components/)
+    ↓
+Zustand Stores (store/)
+    ↓
+Services Layer (services/scroll/, services/bridge/)
+    ↓
+Blockchain / External APIs (Scroll RPC, CoinGecko, ScrollScan)
+```
 
 ---
 
@@ -279,6 +370,18 @@ bun run lint
    ```
 
 2. **The app will automatically appear** in the Explore tab
+
+### Adding a New Bridge Method
+
+If you need to add new functionality that dApps can call:
+
+1. **Add method to enum** in `scrollone-sdk/core/constants.ts` (`BridgeMethod`)
+2. **Create handler** in `services/bridge/handlers.ts`
+3. **Register handler** in `services/bridge/bridgeService.ts::registerHandlers()`
+4. **Add to web SDK** in `scrollone-sdk/web/webBridge.ts` (if needed)
+5. **Update types** in `scrollone-sdk/types/` if needed
+
+See [WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md) for detailed bridge integration documentation.
 
 ### Custom Development Builds
 
@@ -393,10 +496,28 @@ Note: Some native features may not be available in browser preview.
 
 ## 🔒 Security
 
-- **Private Keys**: Encrypted with Expo SecureStore
-- **Secure Storage**: Uses device keychain/keystore
-- **Biometric Auth**: Face ID/Touch ID support (requires custom build)
+- **Private Keys**: 
+  - Generated using cryptographically secure `expo-crypto.getRandomBytes(32)`
+  - Encrypted with Expo SecureStore (device keychain/keystore)
+  - Never leave the device (no cloud backup)
+  - Never logged or exposed
+- **Secure Storage**: Uses device keychain/keystore via Expo SecureStore
+- **Biometric Auth**: Face ID/Touch ID support (library installed, requires custom build for full integration)
 - **Network Security**: HTTPS-only for all API calls
+- **Bridge Security**: 
+  - Origin validation (configurable)
+  - Method allow-list (configurable)
+  - Wallet lock checks before signing
+  - Transaction approval modal for user confirmation
+- **Transaction Safety**: 
+  - Gas estimation before sending
+  - User approval required for all transactions
+  - Address validation before transactions
+
+**Note**: The app is currently in pre-launch. Before production launch:
+- Token addresses need to be replaced with real Scroll mainnet addresses
+- Security audit recommended
+- Seed phrase backup implementation recommended
 
 ---
 
@@ -424,10 +545,20 @@ We welcome contributions! Please follow these steps:
 
 ### Key Concepts
 
-- **Scroll Blockchain**: Layer 2 Ethereum scaling solution
-- **Mini-Apps**: Web-based applications integrated via WebView
+- **Scroll Blockchain**: Layer 2 Ethereum scaling solution (Ethereum L2)
+- **Mini-Apps**: Web-based applications integrated via WebView with bridge SDK
+- **WebView Bridge**: Custom SDK enabling dApps to securely request wallet operations
 - **Scroll ID**: Decentralized identity on Scroll network
 - **Reputation**: User reputation earned through app usage
+- **Self-Custodial Wallet**: Users control their private keys, stored encrypted on device
+
+### Project Documentation
+
+- **[WEB3_ENGINEER_ONBOARDING.md](./WEB3_ENGINEER_ONBOARDING.md)** - Comprehensive onboarding guide for Web3 engineers
+- **[WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md)** - Detailed guide for WebView bridge integration
+- **[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)** - Feature completion status
+- **[scrollone-sdk/README.md](./scrollone-sdk/README.md)** - WebView bridge SDK documentation
+- **[backend/README.md](./backend/README.md)** - Optional backend API documentation (if using)
 
 ### External Resources
 
@@ -435,6 +566,8 @@ We welcome contributions! Please follow these steps:
 - [React Native Documentation](https://reactnative.dev/)
 - [Scroll Documentation](https://docs.scroll.io/)
 - [Expo Router Guide](https://docs.expo.dev/router/introduction/)
+- [ethers.js v6 Documentation](https://docs.ethers.org/v6/)
+- [Zustand Documentation](https://zustand-demo.pmnd.rs/)
 
 ---
 
@@ -461,9 +594,21 @@ We welcome contributions! Please follow these steps:
 
 ### Native Features Not Working
 
-- Ensure you're using a custom development build (not Expo Go)
+- Ensure you're using a custom development build (not Expo Go) for native features like biometric auth
 - Check that required permissions are configured in `app.json`
 - Verify native modules are properly installed
+
+### Wallet Issues
+
+- **Transaction failing**: Check you have sufficient ETH for gas fees
+- **Balance not updating**: Ensure RPC endpoint is accessible and correct
+- **Bridge not working**: Verify dApp is using `window.scrollOne` API correctly
+
+### WebView Bridge Issues
+
+- **dApp can't connect**: Ensure dApp is loading `scrollone-sdk` and calling `window.scrollOne` API
+- **Transaction not approving**: Check bridge origin validation settings
+- See [WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md) for detailed troubleshooting
 
 ---
 
@@ -483,9 +628,23 @@ This project is private and proprietary. All rights reserved.
 
 ## 📞 Support
 
-- **Documentation**: Check the [Expo docs](https://docs.expo.dev/)
+- **Documentation**: 
+  - Check the [Expo docs](https://docs.expo.dev/)
+  - Review [WEB3_ENGINEER_ONBOARDING.md](./WEB3_ENGINEER_ONBOARDING.md) for detailed technical information
 - **Issues**: Open an issue on GitHub
 - **Community**: Join the Scroll community
+
+## ⚠️ Pre-Launch Status
+
+This app is currently in **pre-launch** status. Before production launch, ensure:
+
+- ✅ Replace placeholder token addresses with real Scroll mainnet addresses
+- ✅ Remove any mock data from wallet screens
+- ✅ Complete security audit
+- ✅ Test all critical flows (wallet creation, transactions, bridge communication)
+- ✅ Implement error handling and user-friendly error messages
+
+See [WEB3_ENGINEER_ONBOARDING.md](./WEB3_ENGINEER_ONBOARDING.md) for detailed pre-launch checklist.
 
 ---
 
