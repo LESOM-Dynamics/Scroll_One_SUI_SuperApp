@@ -22,6 +22,9 @@ import { scrollProvider } from '../scroll/provider';
 import { signMessage, sendTransaction } from '../scroll/wallet';
 import { formatEther, parseEther } from 'ethers';
 import { BridgeErrorCode, createBridgeError } from '@/scrollone-sdk';
+import * as Notifications from 'expo-notifications';
+import { notificationService } from '../notifications/notificationService';
+import { useSettingsStore } from '@/store/settingsStore';
 
 /**
  * Get account handler
@@ -282,6 +285,116 @@ export function createEstimateGasHandler() {
       throw createBridgeError(
         BridgeErrorCode.GAS_ESTIMATION_FAILED,
         `Gas estimation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error : undefined
+      );
+    }
+  };
+}
+
+// Rate limiting for notifications per origin
+const notificationRateLimit = new Map<string, { count: number; resetAt: number }>();
+const MAX_NOTIFICATIONS_PER_MINUTE = 5;
+
+/**
+ * Request notification handler
+ * Allows mini-apps to request notifications from the SuperApp
+ */
+export function createRequestNotificationHandler() {
+  return async (
+    payload: {
+      title: string;
+      body: string;
+      data?: Record<string, any>;
+      badge?: number;
+      sound?: boolean;
+    },
+    context: HandlerContext
+  ): Promise<{ success: boolean; notificationId?: string }> => {
+    console.log('[Handler:REQUEST_NOTIFICATION] Handler invoked with payload:', payload);
+    
+    // Check if notifications are enabled
+    const { notificationsEnabled } = useSettingsStore.getState();
+    if (!notificationsEnabled) {
+      console.warn('[Handler:REQUEST_NOTIFICATION] Notifications disabled in settings');
+      throw createBridgeError(
+        BridgeErrorCode.UNSUPPORTED_METHOD,
+        'Notifications are disabled in settings'
+      );
+    }
+
+    // Validate payload
+    if (!payload.title || !payload.body) {
+      console.error('[Handler:REQUEST_NOTIFICATION] Validation failed: missing title or body');
+      throw createBridgeError(
+        BridgeErrorCode.INVALID_PAYLOAD,
+        'Notification title and body are required'
+      );
+    }
+
+    // Rate limiting per origin
+    const origin = context.origin || 'unknown';
+    const now = Date.now();
+    const limit = notificationRateLimit.get(origin);
+    
+    if (limit && limit.resetAt > now) {
+      if (limit.count >= MAX_NOTIFICATIONS_PER_MINUTE) {
+        console.warn('[Handler:REQUEST_NOTIFICATION] Rate limit exceeded for origin:', origin);
+        throw createBridgeError(
+          BridgeErrorCode.RATE_LIMIT_EXCEEDED,
+          'Notification rate limit exceeded. Please wait before requesting more notifications.'
+        );
+      }
+      limit.count++;
+    } else {
+      notificationRateLimit.set(origin, { count: 1, resetAt: now + 60000 }); // 1 minute window
+    }
+
+    // Security: Limit notification payload size and sanitize
+    const title = String(payload.title).slice(0, 100); // Max 100 chars
+    const body = String(payload.body).slice(0, 500); // Max 500 chars
+    
+    // Sanitize data (only allow safe keys, add origin tracking)
+    const safeData: Record<string, any> = {
+      origin: context.origin || 'unknown',
+      timestamp: Date.now(),
+      type: 'miniapp_notification',
+    };
+    
+    // Merge user data if provided, but sanitize it
+    if (payload.data && typeof payload.data === 'object') {
+      Object.keys(payload.data).slice(0, 10).forEach(key => {
+        // Only allow string, number, boolean values
+        const value = payload.data![key];
+        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+          safeData[key] = String(value).slice(0, 100); // Limit each value to 100 chars
+        }
+      });
+    }
+
+    try {
+      // Schedule notification
+      const notificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title,
+          body,
+          data: safeData,
+          sound: payload.sound !== false, // Default to true
+          badge: payload.badge,
+        },
+        trigger: null, // Show immediately
+      });
+
+      console.log('[Handler:REQUEST_NOTIFICATION] Notification scheduled:', notificationId);
+      
+      return {
+        success: true,
+        notificationId: notificationId.toString(),
+      };
+    } catch (error) {
+      console.error('[Handler:REQUEST_NOTIFICATION] Error scheduling notification:', error);
+      throw createBridgeError(
+        BridgeErrorCode.EXECUTION_ERROR,
+        `Failed to schedule notification: ${error instanceof Error ? error.message : 'Unknown error'}`,
         error instanceof Error ? error : undefined
       );
     }

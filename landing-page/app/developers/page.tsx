@@ -99,6 +99,18 @@ async function initializeApp() {
     const signature = await window.scrollOne.signMessage('Hello, Scroll!');
     console.log('Signature:', signature.signature);
     
+    // Request notification from mini-app
+    const notification = await window.scrollOne.requestNotification({
+      title: 'DeFi Position Updated',
+      body: 'Your liquidity position has been updated',
+      data: {
+        type: 'defi_update',
+        poolId: '0x123...',
+      },
+      sound: true, // Optional, defaults to true
+    });
+    console.log('Notification sent:', notification.success);
+    
     // Listen for events
     window.scrollOne.on('accountChanged', (data) => {
       console.log('Account changed:', data.address);
@@ -527,6 +539,12 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 example: "const result = await window.scrollOne.signTransaction({ to: '0x...', value: '0.1' });"
               },
               {
+                method: "requestNotification(notification)",
+                description: "Request a notification from mini-app",
+                returns: "{ success: boolean, notificationId?: string }",
+                example: "const result = await window.scrollOne.requestNotification({ title: 'Update', body: 'Message' });"
+              },
+              {
                 method: "signMessage(message)",
                 description: "Sign an arbitrary message",
                 returns: "{ signature: string }",
@@ -726,6 +744,8 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                   { code: 'TIMEOUT', desc: 'Request timeout' },
                   { code: 'INVALID_MESSAGE', desc: 'Invalid message format' },
                   { code: 'UNSUPPORTED_METHOD', desc: 'Method not supported' },
+                  { code: 'RATE_LIMIT_EXCEEDED', desc: 'Notification rate limit exceeded (max 5/min)' },
+                  { code: 'INVALID_PAYLOAD', desc: 'Invalid notification payload (missing title/body)' },
                 ].map((err, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <code className="text-xs text-accent-primary font-mono flex-shrink-0 w-32">{err.code}</code>
@@ -784,7 +804,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 icon: Webhook,
                 title: "ScrollOne Bridge",
                 description: "Seamless communication between your dApp and Scroll One wallet",
-                features: ["Wallet integration", "Transaction signing", "Event handling", "7 core methods"]
+                features: ["Wallet integration", "Transaction signing", "Event handling", "Notification support", "8 core methods"]
               },
               {
                 icon: Shield,

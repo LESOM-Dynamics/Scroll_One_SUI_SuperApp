@@ -89,7 +89,7 @@ The app integrates real Scroll-native dApps from the official Scroll ecosystem:
 ### Prerequisites
 
 - **Node.js** (v18 or higher) - [Install with nvm](https://github.com/nvm-sh/nvm)
-- **Bun** (latest) - [Install Bun](https://bun.sh/docs/installation)
+- **Bun** (latest | Recommended) - [Install Bun](https://bun.sh/docs/installation)
 - **iOS Development** (optional): Xcode 14+ for iOS Simulator
 - **Android Development** (optional): Android Studio for Android Emulator
 

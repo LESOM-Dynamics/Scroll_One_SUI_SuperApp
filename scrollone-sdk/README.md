@@ -152,6 +152,30 @@ const estimate = await window.scrollOne.estimateGas({
 // { gasLimit: string, gasPrice: string, estimatedFee: string }
 ```
 
+### REQUEST_NOTIFICATION
+
+Request a notification from mini-app (requires user permission).
+
+```typescript
+const notification = await window.scrollOne.requestNotification({
+  title: 'DeFi Position Updated',
+  body: 'Your liquidity position has been updated',
+  data: {
+    type: 'defi_update',
+    poolId: '0x123...',
+  },
+  sound: true, // Optional, defaults to true
+  badge: 1,    // Optional, set app badge count
+});
+// { success: boolean, notificationId?: string }
+```
+
+**Note:** 
+- Maximum 5 notifications per minute per origin (rate limited)
+- Respects user's notification preferences
+- Title max 100 chars, body max 500 chars
+- All notifications include origin tracking
+
 ## dApp Integration
 
 ### Basic Usage

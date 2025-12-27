@@ -15,6 +15,7 @@ import {
   createSignTypedDataHandler,
   createGetNetworkHandler,
   createEstimateGasHandler,
+  createRequestNotificationHandler,
   executeTransaction,
 } from './handlers';
 import type { TransactionRequest } from '@/scrollone-sdk';
@@ -61,6 +62,8 @@ class BridgeService {
     console.log('[BridgeService] Registered handler: GET_NETWORK');
     this.nativeBridge.register(BridgeMethod.ESTIMATE_GAS, createEstimateGasHandler());
     console.log('[BridgeService] Registered handler: ESTIMATE_GAS');
+    this.nativeBridge.register(BridgeMethod.REQUEST_NOTIFICATION, createRequestNotificationHandler());
+    console.log('[BridgeService] Registered handler: REQUEST_NOTIFICATION');
     console.log('[BridgeService] All handlers registered');
   }
 

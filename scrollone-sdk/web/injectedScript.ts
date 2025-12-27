@@ -193,6 +193,10 @@ export function generateInjectedScript(config: {
       return sendMessage('ESTIMATE_GAS', transaction);
     },
 
+    requestNotification: function(notification) {
+      return sendMessage('REQUEST_NOTIFICATION', notification);
+    },
+
     // Event system
     on: function(event, callback) {
       if (!listeners.has(event)) {

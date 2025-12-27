@@ -23,6 +23,7 @@ The WebView Bridge enables secure two-way communication between dApps (MiniApps)
 - Sign messages and typed data
 - Switch networks
 - Estimate gas fees
+- Request notifications from mini-apps
 
 ---
 
@@ -1296,6 +1297,7 @@ function MyComponent() {
 5. **SIGN_TYPED_DATA** - Sign EIP-712 typed data
 6. **GET_NETWORK** - Get current network info
 7. **ESTIMATE_GAS** - Estimate transaction gas
+8. **REQUEST_NOTIFICATION** - Request a notification from mini-app
 
 ---
 
@@ -1368,6 +1370,7 @@ Create a simple HTML file to test all bridge functionality:
   <button onclick="testGetAccount()">Get Account</button>
   <button onclick="testGetBalance()">Get Balance</button>
   <button onclick="testSendTransaction()">Send Transaction</button>
+  <button onclick="testRequestNotification()">Request Notification</button>
   <pre id="output"></pre>
 
   <script>
@@ -1405,6 +1408,19 @@ Create a simple HTML file to test all bridge functionality:
           value: '0.001',
         });
         log('Transaction: ' + JSON.stringify(result));
+      } catch (error) {
+        log('Error: ' + error.message);
+      }
+    }
+
+    async function testRequestNotification() {
+      try {
+        const result = await window.scrollOne.requestNotification({
+          title: 'Test Notification',
+          body: 'This is a test notification from the dApp',
+          data: { type: 'test', timestamp: Date.now() },
+        });
+        log('Notification requested: ' + JSON.stringify(result));
       } catch (error) {
         log('Error: ' + error.message);
       }

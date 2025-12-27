@@ -19,6 +19,7 @@ export * from './native';
 // Type exports
 export * from './types/wallet';
 export * from './types/transactions';
+export * from './types/notifications';
 
 // Version
 export const VERSION = '1.0.0';
