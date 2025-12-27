@@ -75,14 +75,14 @@ There are **two main approaches** to integrate AI into your ScrollOne SuperApp:
 
 ## Which Approach Should You Choose?
 
-### Choose **Mini-App** if:
+### Choose **Mini-App** if
 
 - ✅ You have an existing AI web service
 - ✅ You want quick integration (5 minutes)
 - ✅ You want to test AI features first
 - ✅ The AI service is maintained separately
 
-### Choose **Native Integration** if:
+### Choose **Native Integration** if
 
 - ✅ You want AI built directly into the app
 - ✅ You need transaction analysis features

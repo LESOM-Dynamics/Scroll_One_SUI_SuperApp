@@ -108,7 +108,27 @@ The app integrates real Scroll-native dApps from the official Scroll ecosystem:
    bun install
    ```
 
-3. **Start the development server**
+3. **Set up backend (optional but recommended)**
+
+   ```bash
+   cd backend
+   npm install
+   cp .env.example .env
+   # Edit .env with your configuration
+   
+   # Start PostgreSQL and Redis with Docker
+   docker-compose up -d postgres redis
+   
+   # Initialize database
+   psql -U postgres -d scroll_one -f database/schema.sql
+   
+   # Start backend server
+   npm run dev
+   
+   cd ..
+   ```
+
+4. **Start the mobile app development server**
 
    ```bash
    # For web preview
@@ -243,9 +263,24 @@ Scroll_One_SuperApp/
 │   ├── shadows.ts
 │   └── index.ts
 ├── assets/                      # Static assets
-├── backend/                     # Optional backend API (separate service)
-│   ├── src/
-│   └── docs/
+├── backend/                     # Backend API service (Node.js/Express)
+│   ├── src/                     # Backend source code
+│   │   ├── config/              # Configuration (DB, Redis, Logger)
+│   │   ├── controllers/         # Request handlers
+│   │   ├── middleware/          # Auth, validation, error handling
+│   │   ├── routes/              # API routes
+│   │   ├── services/            # Business logic (user, transaction, token, etc.)
+│   │   ├── utils/               # Helpers and utilities
+│   │   ├── jobs/                # Background jobs (transaction indexer, price updater)
+│   │   └── index.ts             # Entry point
+│   ├── database/                # Database schema and migrations
+│   ├── docs/                    # Backend documentation
+│   │   ├── ARCHITECTURE.md      # System architecture
+│   │   ├── API.md               # API documentation
+│   │   └── DEPLOYMENT.md        # Deployment guide
+│   ├── package.json             # Backend dependencies
+│   ├── Dockerfile               # Docker configuration
+│   └── docker-compose.yml       # Docker Compose setup
 ├── app.json                     # Expo configuration
 ├── package.json                 # Main dependencies
 ├── tsconfig.json                # TypeScript config
@@ -260,29 +295,54 @@ Scroll_One_SuperApp/
 
 ### Tech Stack
 
+**Mobile App**:
+
 - **Framework**: React Native 0.81.5 with Expo ~54.0.27
 - **Routing**: Expo Router (file-based routing, similar to Next.js)
 - **Language**: TypeScript 5.9.2 (strict mode)
-- **State Management**: 
+- **State Management**:
   - Zustand 5.0.2 (client state: wallet, user, mini-apps, settings)
   - React Query (@tanstack/react-query) for server state
 - **Blockchain**: ethers.js v6.0.0 (wallet operations, signing, transactions)
 - **Icons**: Lucide React Native
-- **Storage**: 
+- **Storage**:
   - Expo SecureStore (encrypted private keys, wallet data)
   - AsyncStorage (non-sensitive preferences)
 - **WebView**: React Native WebView 13.15.0
 - **UI Components**: Custom design system in `theme/`
 
+**Backend API** (Optional):
+- **Runtime**: Node.js 20+
+- **Framework**: Express.js 4.18+
+- **Language**: TypeScript 5.3+
+- **Database**: PostgreSQL 15+
+- **Cache**: Redis 7+
+- **Authentication**: JWT with wallet signature verification
+- **Background Jobs**: node-cron for scheduled tasks
+
 ### Backend/Services Architecture
 
-**No traditional backend.** This is a fully client-side application with:
+**Hybrid Architecture**: The app combines client-side blockchain operations with an optional backend API for enhanced features:
+
+**Client-Side (Mobile App)**:
 
 - **Blockchain RPC**: Direct calls to Scroll RPC endpoints
-- **External APIs**:
-  - CoinGecko API for token prices
-  - ScrollScan API for transaction history
-- **Local Storage**: Encrypted SecureStore for sensitive data
+- **Wallet Operations**: Local wallet creation, signing, and transaction sending
+- **Local Storage**: Encrypted SecureStore for sensitive data (private keys)
+
+**Backend API** (Optional, located in `backend/`):
+
+- **User & Identity Management**: User profiles, badges, reputation system
+- **Transaction Indexing**: Automated blockchain transaction indexing and history
+- **Mini-App Registry**: Dynamic app discovery, analytics, and usage tracking
+- **Token Management**: Multi-token support with real-time price updates
+- **Notification System**: Push and in-app notifications
+- **Analytics**: User behavior tracking and insights
+- **Caching Layer**: Redis for performance optimization
+
+The mobile app can operate fully standalone (client-side only) or connect to the backend API for enhanced features like user profiles, transaction history indexing, and analytics.
+
+See [backend/README.md](./backend/README.md) for complete backend documentation.
 
 ### State Management
 
@@ -301,9 +361,13 @@ The app uses **Zustand** for client-side state management with four main stores:
   - Mainnet: `https://rpc.scroll.io` (chainId: 534352)
   - Testnet: `https://sepolia-rpc.scroll.io` (chainId: 534351)
 - **Wallet Service**: Real wallet creation, signing, and sending using ethers.js
-- **Transaction Service**: Real transaction sending and history fetching via ScrollScan API
+- **Transaction Service**:
+  - Client-side: Real transaction sending and history fetching via ScrollScan API
+  - Backend: Automated transaction indexing and enhanced history tracking
 - **Token Service**: ERC-20 token balance fetching and metadata
-- **Price Service**: CoinGecko integration for real-time token prices
+- **Price Service**:
+  - Client-side: CoinGecko integration for real-time token prices
+  - Backend: Automated price updates and caching
 
 ### WebView Bridge Architecture
 
@@ -316,6 +380,7 @@ The app includes a custom **WebView Bridge SDK** (`scrollone-sdk`) that enables 
 
 ### Component Communication Flow
 
+**Mobile App Flow:**
 ```
 React Components (app/, components/)
     ↓
@@ -324,6 +389,24 @@ Zustand Stores (store/)
 Services Layer (services/scroll/, services/bridge/)
     ↓
 Blockchain / External APIs (Scroll RPC, CoinGecko, ScrollScan)
+    ↓
+Backend API (optional, for enhanced features)
+```
+
+**Backend API Flow:**
+
+```
+API Requests
+    ↓
+Routes & Middleware (auth, validation, rate limiting)
+    ↓
+Controllers
+    ↓
+Services Layer (business logic)
+    ↓
+Data Layer (PostgreSQL, Redis, Blockchain RPC)
+    ↓
+Background Jobs (transaction indexing, price updates)
 ```
 
 ---
@@ -496,7 +579,7 @@ Note: Some native features may not be available in browser preview.
 
 ## 🔒 Security
 
-- **Private Keys**: 
+- **Private Keys**:
   - Generated using cryptographically secure `expo-crypto.getRandomBytes(32)`
   - Encrypted with Expo SecureStore (device keychain/keystore)
   - Never leave the device (no cloud backup)
@@ -504,12 +587,12 @@ Note: Some native features may not be available in browser preview.
 - **Secure Storage**: Uses device keychain/keystore via Expo SecureStore
 - **Biometric Auth**: Face ID/Touch ID support (library installed, requires custom build for full integration)
 - **Network Security**: HTTPS-only for all API calls
-- **Bridge Security**: 
+- **Bridge Security**:
   - Origin validation (configurable)
   - Method allow-list (configurable)
   - Wallet lock checks before signing
   - Transaction approval modal for user confirmation
-- **Transaction Safety**: 
+- **Transaction Safety**:
   - Gas estimation before sending
   - User approval required for all transactions
   - Address validation before transactions
@@ -554,11 +637,17 @@ We welcome contributions! Please follow these steps:
 
 ### Project Documentation
 
+**Mobile App Documentation**:
 - **[WEB3_ENGINEER_ONBOARDING.md](./WEB3_ENGINEER_ONBOARDING.md)** - Comprehensive onboarding guide for Web3 engineers
 - **[WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md)** - Detailed guide for WebView bridge integration
 - **[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)** - Feature completion status
 - **[scrollone-sdk/README.md](./scrollone-sdk/README.md)** - WebView bridge SDK documentation
-- **[backend/README.md](./backend/README.md)** - Optional backend API documentation (if using)
+
+**Backend API Documentation**:
+- **[backend/README.md](./backend/README.md)** - Backend API overview and quick start
+- **[backend/docs/ARCHITECTURE.md](./backend/docs/ARCHITECTURE.md)** - Complete system architecture
+- **[backend/docs/API.md](./backend/docs/API.md)** - Full API reference documentation
+- **[backend/docs/DEPLOYMENT.md](./backend/docs/DEPLOYMENT.md)** - Production deployment guide
 
 ### External Resources
 
@@ -628,7 +717,7 @@ This project is private and proprietary. All rights reserved.
 
 ## 📞 Support
 
-- **Documentation**: 
+- **Documentation**:
   - Check the [Expo docs](https://docs.expo.dev/)
   - Review [WEB3_ENGINEER_ONBOARDING.md](./WEB3_ENGINEER_ONBOARDING.md) for detailed technical information
 - **Issues**: Open an issue on GitHub

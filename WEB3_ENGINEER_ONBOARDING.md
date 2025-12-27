@@ -58,7 +58,9 @@ The codebase is **exclusively** built for Scroll:
 
 ### Backend/Services Stack
 
-**No traditional backend.** This is a fully client-side application with:
+**Hybrid Architecture**: The app combines client-side blockchain operations with an optional backend API for enhanced features.
+
+**Client-Side (Mobile App)**:
 
 - **Blockchain RPC**: Direct calls to Scroll RPC endpoints
 - **External APIs**:
@@ -67,6 +69,23 @@ The codebase is **exclusively** built for Scroll:
 - **Local Storage**:
   - Expo SecureStore (encrypted private keys, wallet data)
   - AsyncStorage (non-sensitive preferences)
+
+**Backend API** (Optional, located in `backend/`):
+
+- **Technology**: Node.js 20+, Express.js, TypeScript, PostgreSQL, Redis
+- **Services**:
+  - User & Identity Management (`backend/src/services/user/`)
+  - Transaction Indexing (`backend/src/services/transaction/`)
+  - Mini-App Registry (`backend/src/services/miniapp/`)
+  - Token Management (`backend/src/services/token/`)
+  - Notifications (`backend/src/services/notification/`)
+  - Analytics (`backend/src/services/analytics/`)
+- **Background Jobs**:
+  - Transaction Indexer (automated blockchain indexing)
+  - Price Updater (automated token price updates)
+- **Documentation**: See `backend/README.md` and `backend/docs/` for complete backend documentation
+
+The mobile app can operate fully standalone (client-side only) or connect to the backend API for enhanced features like user profiles, transaction history indexing, and analytics.
 
 ### Smart Contracts
 
