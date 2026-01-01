@@ -1,0 +1,16 @@
+diff --git a/node_modules/@expo/cli/build/src/api/getNativeModuleVersions.js b/node_modules/@expo/cli/build/src/api/getNativeModuleVersions.js
+index 4c7bc7f..d3e99c9 100644
+--- a/node_modules/@expo/cli/build/src/api/getNativeModuleVersions.js
++++ b/node_modules/@expo/cli/build/src/api/getNativeModuleVersions.js
+@@ -20,7 +20,10 @@ async function getNativeModuleVersionsAsync(sdkVersion) {
+     if (!response.ok) {
+         throw new _errors.CommandError('API', `Unexpected response when fetching version info from Expo servers: ${response.statusText}.`);
+     }
+-    const json = await response.json();
++    // Clone response to avoid "Body has already been read" error when cached
++    // Always clone to ensure we have a fresh body stream
++    const responseToRead = response.clone();
++    const json = await responseToRead.json();
+     const data = (0, _client.getResponseDataOrThrow)(json);
+     if (!data.length) {
+         throw new _errors.CommandError('VERSIONS', 'The bundled native module list from the Expo API is empty');

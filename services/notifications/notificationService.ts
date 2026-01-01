@@ -42,7 +42,8 @@ class NotificationService {
       }
 
       // Get the Expo Push Token (only for push notifications, not local)
-      // For local notifications, we don't need this, but we'll set it up anyway
+      // Skip in Expo Go - remote push notifications were removed in SDK 53+
+      // Local notifications still work fine in Expo Go
       try {
         const projectId = Constants.expoConfig?.extra?.eas?.projectId || 
                          Constants.expoConfig?.extra?.projectId ||
@@ -57,9 +58,17 @@ class NotificationService {
         } else {
           console.log('[NotificationService] Project ID not found, skipping push token (local notifications will still work)');
         }
-      } catch (error) {
+      } catch (error: any) {
         // Push token is optional for local notifications
-        console.log('[NotificationService] Could not get push token (this is OK for local notifications):', error);
+        // In Expo Go (SDK 53+), getExpoPushTokenAsync throws an error - that's expected
+        // We'll catch it and continue - local notifications still work
+        const errorMessage = error?.message || String(error);
+        if (errorMessage.includes('Expo Go') || errorMessage.includes('SDK 53') || errorMessage.includes('development build')) {
+          // This is expected in Expo Go - local notifications still work
+          console.log('[NotificationService] Push notifications not available in Expo Go (expected) - local notifications still work');
+        } else {
+          console.log('[NotificationService] Could not get push token (this is OK for local notifications):', error);
+        }
       }
 
       // Configure Android notification channel
