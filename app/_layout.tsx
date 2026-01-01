@@ -14,7 +14,14 @@ import { AuthGuard } from '@/components/auth/AuthGuard';
 import { notificationService, type NotificationData } from '@/services/notifications/notificationService';
 import * as Notifications from 'expo-notifications';
 import * as Haptics from 'expo-haptics';
-import * as Clarity from '@microsoft/react-native-clarity';
+// Clarity requires native linking and doesn't work in Expo Go
+// Only import if available (in development builds)
+let Clarity: any = null;
+try {
+  Clarity = require('@microsoft/react-native-clarity');
+} catch (e) {
+  // Clarity not available (e.g., in Expo Go) - this is expected
+}
 
 SplashScreen.preventAutoHideAsync();
 
@@ -107,11 +114,17 @@ export default function RootLayout() {
 
   const { themeMode } = useSettingsStore();
 
-  // Initialize Microsoft Clarity
+  // Initialize Microsoft Clarity (only if available, not in Expo Go)
   useEffect(() => {
-    Clarity.initialize('urm4valmet', {
-      logLevel: Clarity.LogLevel.None, // Use "LogLevel.Verbose" while testing to debug initialization issues
-    });
+    if (Clarity && Clarity.initialize) {
+      try {
+        Clarity.initialize('urm4valmet', {
+          logLevel: Clarity.LogLevel.None, // Use "LogLevel.Verbose" while testing to debug initialization issues
+        });
+      } catch (error) {
+        console.log('[Clarity] Initialization failed (expected in Expo Go):', error);
+      }
+    }
   }, []);
 
   useEffect(() => {

@@ -28,7 +28,6 @@
     "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.11",
     "expo-crypto": "^15.0.8",
-    "expo-dev-client": "~6.0.20",
     "expo-font": "~14.0.10",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",
@@ -60,9 +59,11 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-transform-class-static-block": "^7.28.3",
     "@expo/ngrok": "^4.1.0",
     "@types/react": "~19.1.10",
+    "babel-preset-expo": "^54.0.9",
     "eslint": "^9.31.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"
