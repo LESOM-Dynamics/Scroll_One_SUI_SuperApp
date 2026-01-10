@@ -31,11 +31,19 @@ const defaultMembers: TeamMember[] = [
   },
   {
     name: "Mercy Wairimu",
-    role: "Marketing Lead",
+    role: "Marketing & Business Lead",
     quote: "Technology should be invisible. We're making blockchain so seamless, users won't even think about it.",
     image: "https://media.licdn.com/dms/image/v2/D4D03AQFGWLxJwKzUHg/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1723220871043?e=2147483647&v=beta&t=ZnXjWhi_C6sQuidmV2-8tts_CXFiahKIRvwGxhDYakI",
     linkedin: "https://www.linkedin.com/in/mercy-murigi",
     twitter: "https://twitter.com/mercy_nimo28"
+  },
+  {
+    name: "Nicholas Muthoki",
+    role: "BlockChain DevRel",
+    quote: "I'm passionate about helping developers integrate blockchain technology into their applications. Scroll One is a great platform for developers to build on and experiment with.",
+    image: "https://media.licdn.com/dms/image/v2/D4D03AQFa2v0QZgwCTA/profile-displayphoto-shrink_200_200/B4DZczzkUCGUAY-/0/1748920846093?e=1769644800&v=beta&t=0o45X7QIwx972rjFyFohKUncNm_EptrzGo6LoBFmrFU",
+    linkedin: "https://www.linkedin.com/in/nicholas-muthoki-5642a7288",
+    twitter: ""
   },
 ];
 
