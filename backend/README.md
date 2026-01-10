@@ -17,6 +17,7 @@ This backend provides a comprehensive REST API for managing users, transactions,
 - 📊 **Analytics** - User behavior and app usage tracking
 - ⚡ **Background Jobs** - Automated transaction indexing and price updates
 - 🚀 **High Performance** - Redis caching, connection pooling, optimized queries
+- 🛡️ **Super Admin Dashboard** - Comprehensive administrative interface with role-based access control
 
 ## Tech Stack
 
@@ -67,8 +68,11 @@ docker-compose up -d postgres redis
 5. **Run database migrations:**
 
 ```bash
-# Apply schema
+# Apply main schema
 psql -U postgres -d scroll_one -f database/schema.sql
+
+# Apply admin dashboard schema
+psql -U postgres -d scroll_one -f database/admin_schema.sql
 ```
 
 6. **Start development server:**
@@ -215,6 +219,19 @@ docker-compose down
 - `POST /api/v1/analytics/event` - Track analytics event
 - `GET /api/v1/analytics/users/:walletAddress` - Get user analytics
 
+### Admin (Super Admin Only)
+
+- `GET /api/v1/admin/dashboard/stats` - Get dashboard statistics
+- `GET /api/v1/admin/users` - List users with filters
+- `PUT /api/v1/admin/users/:userId` - Update user role/status
+- `GET /api/v1/admin/transactions` - List all transactions
+- `PUT /api/v1/admin/miniapps/:appId` - Update mini-app (verify/feature)
+- `GET /api/v1/admin/security/events` - Get security events
+- `GET /api/v1/admin/system/health` - Get system health metrics
+- `GET /api/v1/admin/actions` - Get admin actions audit log
+
+**Note**: All admin endpoints require Super Admin role. See [ADMIN_DASHBOARD_DOCUMENTATION.md](../ADMIN_DASHBOARD_DOCUMENTATION.md) for details.
+
 ## Background Jobs
 
 The backend includes automated background jobs:
@@ -258,6 +275,20 @@ The backend includes automated background jobs:
 ## License
 
 MIT
+
+## Admin Dashboard
+
+The backend includes a comprehensive Super Admin Dashboard for platform management. See:
+
+- **[ADMIN_DASHBOARD_DOCUMENTATION.md](../ADMIN_DASHBOARD_DOCUMENTATION.md)** - Complete documentation
+- **[ADMIN_DASHBOARD_SETUP.md](../ADMIN_DASHBOARD_SETUP.md)** - Setup guide
+- **[ADMIN_DASHBOARD_SUMMARY.md](../ADMIN_DASHBOARD_SUMMARY.md)** - Implementation summary
+
+### Quick Admin Setup
+
+1. Apply admin schema: `psql -U postgres -d scroll_one -f database/admin_schema.sql`
+2. Create Super Admin: `node scripts/create-super-admin.js 0xYourWalletAddress`
+3. Access dashboard at: `http://localhost:3001/admin-super` (frontend must be running)
 
 ## Support
 

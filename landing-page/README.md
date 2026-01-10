@@ -10,6 +10,7 @@ A world-class, modern landing page for Scroll One SuperApp, built with Next.js 1
 - **Mobile First**: Fully responsive design that works on all devices
 - **SEO Optimized**: Built-in metadata and Open Graph tags
 - **Fast Performance**: Optimized for speed and Core Web Vitals
+- **Super Admin Dashboard**: Hidden administrative interface at `/admin-super` (Super Admin access required)
 
 ## 📦 Installation
 
@@ -99,7 +100,13 @@ landing-page/
 ├── app/
 │   ├── globals.css      # Global styles and Tailwind directives
 │   ├── layout.tsx       # Root layout with metadata
-│   └── page.tsx         # Main landing page
+│   ├── page.tsx         # Main landing page
+│   └── admin-super/     # Super Admin Dashboard (hidden route)
+│       └── page.tsx     # Admin dashboard page
+├── components/
+│   └── admin/           # Admin dashboard components
+├── lib/
+│   └── adminApi.ts      # Admin API client
 ├── public/              # Static assets (add your APK here)
 ├── tailwind.config.ts   # Tailwind configuration
 ├── tsconfig.json        # TypeScript configuration
@@ -107,6 +114,29 @@ landing-page/
 ├── vercel.json          # Vercel deployment config
 └── package.json         # Dependencies
 ```
+
+## 🛡️ Super Admin Dashboard
+
+The landing page includes a hidden Super Admin Dashboard accessible at `/admin-super`.
+
+**Features:**
+- User management (search, filter, update roles/status)
+- Transaction monitoring
+- Mini-app management (verify, feature)
+- Security event monitoring
+- System health metrics
+- Complete audit log
+
+**Setup:**
+1. See [ADMIN_DASHBOARD_SETUP.md](../ADMIN_DASHBOARD_SETUP.md) for setup instructions
+2. Create Super Admin user in database
+3. Set `NEXT_PUBLIC_API_URL` in `.env.local`
+4. Access at `http://localhost:3000/admin-super`
+
+**Documentation:**
+- [ADMIN_DASHBOARD_DOCUMENTATION.md](../ADMIN_DASHBOARD_DOCUMENTATION.md) - Complete documentation
+- [ADMIN_DASHBOARD_SETUP.md](../ADMIN_DASHBOARD_SETUP.md) - Setup guide
+- [ADMIN_DASHBOARD_SUMMARY.md](../ADMIN_DASHBOARD_SUMMARY.md) - Implementation summary
 
 ## 🎨 Design Features
 

@@ -6,6 +6,7 @@ import tokenRoutes from './tokens';
 import notificationRoutes from './notifications';
 import analyticsRoutes from './analytics';
 import authRoutes from './auth';
+import adminRoutes from './admin';
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use('/tokens', tokenRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/auth', authRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;
 

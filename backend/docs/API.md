@@ -582,6 +582,343 @@ Authorization: Bearer <token>
 
 ---
 
+## Admin Endpoints (Super Admin Only)
+
+**⚠️ Important**: All admin endpoints require:
+- Valid JWT token in `Authorization: Bearer <token>` header
+- User must have `role = 'super_admin'` in database
+- User must have `status = 'active'`
+
+### Dashboard Statistics
+
+```http
+GET /admin/dashboard/stats
+Authorization: Bearer <token>
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "users": {
+      "total": 1000,
+      "active": 950,
+      "newToday": 10,
+      "newThisWeek": 50,
+      "newThisMonth": 200,
+      "suspended": 5,
+      "banned": 2
+    },
+    "transactions": {
+      "total": 5000,
+      "today": 100,
+      "thisWeek": 500,
+      "thisMonth": 2000,
+      "pending": 5,
+      "failed": 10,
+      "totalVolume": "1000000000000000000000"
+    },
+    "miniapps": {
+      "total": 20,
+      "verified": 15,
+      "featured": 5,
+      "pendingVerification": 3,
+      "totalUsers": 5000
+    },
+    "tokens": {
+      "total": 50,
+      "verified": 30,
+      "withPrices": 25
+    },
+    "analytics": {
+      "activeUsers24h": 200,
+      "activeUsers7d": 800,
+      "activeUsers30d": 3000,
+      "totalSessions": 500,
+      "avgSessionDuration": 0
+    },
+    "security": {
+      "securityEvents24h": 5,
+      "failedLogins24h": 2,
+      "suspiciousActivities": 1
+    }
+  }
+}
+```
+
+### List Users
+
+```http
+GET /admin/users?search=wallet&role=user&status=active&page=1&limit=50&sortBy=created_at&sortOrder=DESC
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+- `search`: Search by wallet address, username, or display name
+- `role`: Filter by role (`user`, `admin`, `super_admin`)
+- `status`: Filter by status (`active`, `suspended`, `banned`)
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 50)
+- `sortBy`: Sort field (default: `created_at`)
+- `sortOrder`: Sort order (`ASC` or `DESC`, default: `DESC`)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "users": [
+      {
+        "id": "uuid",
+        "wallet_address": "0x...",
+        "username": "johndoe",
+        "display_name": "John Doe",
+        "role": "user",
+        "status": "active",
+        "reputation": 150,
+        "level": 5,
+        "created_at": "2024-01-01T00:00:00Z",
+        "last_active_at": "2024-01-15T00:00:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 50,
+      "total": 100,
+      "totalPages": 2
+    }
+  }
+}
+```
+
+### Update User
+
+```http
+PUT /admin/users/:userId
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "role": "admin",
+  "status": "active"
+}
+```
+
+**Request Body:**
+- `role` (optional): `user`, `admin`, or `super_admin`
+- `status` (optional): `active`, `suspended`, or `banned`
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "wallet_address": "0x...",
+    "role": "admin",
+    "status": "active",
+    "updated_at": "2024-01-15T00:00:00Z"
+  }
+}
+```
+
+**Note**: All user updates are logged in the admin actions audit log.
+
+### List Transactions
+
+```http
+GET /admin/transactions?status=confirmed&type=send&fromDate=2024-01-01&toDate=2024-12-31&page=1&limit=50
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+- `status`: Filter by status (`pending`, `confirmed`, `failed`)
+- `type`: Filter by type (`send`, `receive`, `swap`, `contract`)
+- `fromDate`: Start date (ISO 8601)
+- `toDate`: End date (ISO 8601)
+- `minValue`: Minimum transaction value
+- `maxValue`: Maximum transaction value
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 50)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "transactions": [
+      {
+        "id": "uuid",
+        "hash": "0x...",
+        "from_address": "0x...",
+        "to_address": "0x...",
+        "value": "1000000000000000000",
+        "status": "confirmed",
+        "type": "send",
+        "gas_used": "21000",
+        "fee": "420000000000000",
+        "timestamp": "2024-01-01T00:00:00Z",
+        "block_number": 12345
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 50,
+      "total": 500,
+      "totalPages": 10
+    }
+  }
+}
+```
+
+### Update Mini-App
+
+```http
+PUT /admin/miniapps/:appId
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "verified": true,
+  "featured": true
+}
+```
+
+**Request Body:**
+- `verified` (optional): Boolean - Mark app as verified
+- `featured` (optional): Boolean - Feature/unfeature app
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "app_id": "syncswap",
+    "name": "SyncSwap",
+    "verified": true,
+    "featured": true,
+    "updated_at": "2024-01-15T00:00:00Z"
+  }
+}
+```
+
+### Get Security Events
+
+```http
+GET /admin/security/events?eventType=login_failed&userId=uuid&page=1&limit=50
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+- `eventType`: Filter by event type
+- `userId`: Filter by user ID
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 50)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "events": [
+      {
+        "id": "uuid",
+        "event_type": "login_failed",
+        "user_id": "uuid",
+        "wallet_address": "0x...",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0...",
+        "metadata": {},
+        "created_at": "2024-01-15T00:00:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 50,
+      "total": 100,
+      "totalPages": 2
+    }
+  }
+}
+```
+
+### Get System Health
+
+```http
+GET /admin/system/health
+Authorization: Bearer <token>
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "metric_type": "api_response_time",
+      "avg_value": 0.05,
+      "max_value": 0.2,
+      "min_value": 0.01,
+      "last_updated": "2024-01-15T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Get Admin Actions Log
+
+```http
+GET /admin/actions?adminId=uuid&actionType=user_update&resourceType=user&page=1&limit=50
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+- `adminId`: Filter by admin user ID
+- `actionType`: Filter by action type
+- `resourceType`: Filter by resource type (`user`, `miniapp`, `token`, etc.)
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 50)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "actions": [
+      {
+        "id": "uuid",
+        "admin_id": "uuid",
+        "admin_wallet_address": "0x...",
+        "admin_username": "admin",
+        "action_type": "user_update",
+        "resource_type": "user",
+        "resource_id": "uuid",
+        "details": {
+          "updates": {
+            "role": "admin"
+          }
+        },
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0...",
+        "created_at": "2024-01-15T00:00:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 50,
+      "total": 200,
+      "totalPages": 4
+    }
+  }
+}
+```
+
+**Note**: All admin actions are automatically logged for audit purposes.
+
+---
+
 ## Error Responses
 
 All errors follow this format:
@@ -605,13 +942,14 @@ All errors follow this format:
 
 - `VALIDATION_ERROR` (400): Request validation failed
 - `UNAUTHORIZED` (401): Authentication required
-- `FORBIDDEN` (403): Insufficient permissions
+- `FORBIDDEN` (403): Insufficient permissions (includes Super Admin access required)
 - `NOT_FOUND` (404): Resource not found
 - `RATE_LIMIT_EXCEEDED` (429): Too many requests
 - `INTERNAL_ERROR` (500): Server error
 - `WALLET_VERIFICATION_FAILED` (401): Invalid wallet signature
 - `USER_NOT_FOUND` (404): User does not exist
 - `DUPLICATE_ENTRY` (409): Resource already exists
+- `AUTHORIZATION_ERROR` (403): Super Admin access required (for admin endpoints)
 
 ---
 

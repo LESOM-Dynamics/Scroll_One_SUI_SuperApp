@@ -626,6 +626,10 @@ We welcome contributions! Please follow these steps:
 
 ## 📚 Documentation
 
+### Documentation Index
+
+For a complete guide to all documentation, see **[DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)**.
+
 ### Key Concepts
 
 - **Scroll Blockchain**: Layer 2 Ethereum scaling solution (Ethereum L2)
@@ -634,6 +638,7 @@ We welcome contributions! Please follow these steps:
 - **Scroll ID**: Decentralized identity on Scroll network
 - **Reputation**: User reputation earned through app usage
 - **Self-Custodial Wallet**: Users control their private keys, stored encrypted on device
+- **Super Admin Dashboard**: Comprehensive administrative interface for platform management
 
 ### Project Documentation
 
@@ -648,6 +653,11 @@ We welcome contributions! Please follow these steps:
 - **[backend/docs/ARCHITECTURE.md](./backend/docs/ARCHITECTURE.md)** - Complete system architecture
 - **[backend/docs/API.md](./backend/docs/API.md)** - Full API reference documentation
 - **[backend/docs/DEPLOYMENT.md](./backend/docs/DEPLOYMENT.md)** - Production deployment guide
+
+**Admin Dashboard Documentation**:
+- **[ADMIN_DASHBOARD_DOCUMENTATION.md](./ADMIN_DASHBOARD_DOCUMENTATION.md)** - Complete admin dashboard documentation
+- **[ADMIN_DASHBOARD_SETUP.md](./ADMIN_DASHBOARD_SETUP.md)** - Quick setup and testing guide
+- **[ADMIN_DASHBOARD_SUMMARY.md](./ADMIN_DASHBOARD_SUMMARY.md)** - Implementation summary and overview
 
 ### External Resources
 

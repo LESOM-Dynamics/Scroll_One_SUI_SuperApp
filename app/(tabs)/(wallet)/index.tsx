@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Animated } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Wallet, Send, ArrowDownToLine, ArrowLeftRight, ExternalLink, ChevronDown, ChevronUp, Banknote, Eye, EyeOff, Copy, RefreshCw } from 'lucide-react-native';
+import { Wallet, Send, ArrowDownToLine, ArrowLeftRight, ExternalLink, ChevronDown, ChevronUp, Banknote, Eye, EyeOff, Copy, RefreshCw, Plus } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -11,8 +11,9 @@ import { shortenAddress } from '@/services/scroll/wallet';
 import { formatTransactionTime, fetchTransactions } from '@/services/scroll/transactions';
 import { scrollProvider } from '@/services/scroll/provider';
 import { getETHPrice, getTokenPrice } from '@/services/scroll/prices';
-import { getTokenBalances, getAvailableTokens, getTokenInfo } from '@/services/scroll/tokens';
+import { getTokenBalances, getAllAvailableTokens, getAllTokens } from '@/services/scroll/tokens';
 import { WalletSelectionModal } from '@/components/wallet/WalletSelectionModal';
+import { ImportTokenModal } from '@/components/tokens/ImportTokenModal';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 
@@ -133,6 +134,7 @@ export default function WalletScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [assetsExpanded, setAssetsExpanded] = useState(true);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [isBalanceMasked, setIsBalanceMasked] = useState(false);
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
@@ -195,8 +197,8 @@ export default function WalletScreen() {
     setIsRefreshing(true);
     
     try {
-      // Get available tokens for current network
-      const availableTokens = getAvailableTokens(isTestnet);
+      // Get available tokens for current network (built-in + custom)
+      const availableTokens = await getAllAvailableTokens(isTestnet);
       
       // Fetch ETH balance and price
       const [ethBalance, ethPriceData] = await Promise.all([
@@ -223,6 +225,9 @@ export default function WalletScreen() {
       const prices = await Promise.all(pricePromises);
       const priceMap = new Map(prices.map(p => [p.symbol, p]));
       
+      // Get all tokens (built-in + custom) for token info
+      const allTokens = await getAllTokens(isTestnet);
+      
       // Build assets array
       const assetsList: Asset[] = [];
       
@@ -243,7 +248,7 @@ export default function WalletScreen() {
       for (const symbol of availableTokens) {
         const balance = tokenBalances.get(symbol) || '0.0';
         const balanceNum = parseFloat(balance);
-        const tokenInfo = getTokenInfo(symbol, isTestnet);
+        const tokenInfo = allTokens[symbol.toUpperCase()];
         const priceData = priceMap.get(symbol);
         
         // Only show tokens with non-zero balance or if we have price data
@@ -510,20 +515,30 @@ export default function WalletScreen() {
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>Assets</Text>
-                <TouchableOpacity
-                  onPress={() => setAssetsExpanded((prev) => !prev)}
-                  style={styles.sectionToggle}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.sectionToggleText}>
-                    {assetsExpanded ? 'Hide' : 'Show'}
-                  </Text>
-                  {assetsExpanded ? (
-                    <ChevronUp color={colors.text.secondary} size={16} />
-                  ) : (
-                    <ChevronDown color={colors.text.secondary} size={16} />
-                  )}
-                </TouchableOpacity>
+                <View style={styles.sectionHeaderRight}>
+                  <TouchableOpacity
+                    onPress={() => setShowImportModal(true)}
+                    style={styles.importButton}
+                    activeOpacity={0.7}
+                  >
+                    <Plus color={colors.accent.primary} size={18} />
+                    <Text style={styles.importButtonText}>Import</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setAssetsExpanded((prev) => !prev)}
+                    style={styles.sectionToggle}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.sectionToggleText}>
+                      {assetsExpanded ? 'Hide' : 'Show'}
+                    </Text>
+                    {assetsExpanded ? (
+                      <ChevronUp color={colors.text.secondary} size={16} />
+                    ) : (
+                      <ChevronDown color={colors.text.secondary} size={16} />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
 
               {assetsExpanded && (
@@ -574,6 +589,12 @@ export default function WalletScreen() {
       <WalletSelectionModal
         visible={showWalletModal}
         onClose={() => setShowWalletModal(false)}
+      />
+      
+      <ImportTokenModal
+        visible={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onTokenImported={loadWalletData}
       />
     </>
   );
@@ -676,6 +697,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing.md,
+  },
+  sectionHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  importButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.accent.primary + '15',
+  },
+  importButtonText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.accent.primary,
+    fontWeight: typography.fontWeight.semibold,
   },
   sectionTitle: {
     fontSize: typography.fontSize.lg,
