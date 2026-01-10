@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import Team from "@/components/ui/team";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -314,6 +315,10 @@ export default function Home() {
                 Developers
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
               </a>
+              <a href="#about" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
+                About
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
+              </a>
               <a href="#faq" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
                 FAQ
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
@@ -349,6 +354,7 @@ export default function Home() {
               <a href="#demo" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Demo</a>
               <a href="#ecosystem" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Ecosystem</a>
               <a href="/developers" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Developers</a>
+              <a href="#about" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>About</a>
               <a href="#faq" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
               <a href="#download" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Coming Soon</a>
             </div>
@@ -1205,6 +1211,33 @@ export default function Home() {
               </motion.div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section id="team" className="relative py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-background-secondary/50 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mb-16 text-center"
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-primary"></div>
+              <span className="text-accent-primary font-mono text-sm tracking-wider">TEAM</span>
+              <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6">
+              Meet the <span className="gradient-text">Team</span>
+            </h2>
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+              The passionate people behind Scroll One
+            </p>
+          </motion.div>
+
+          <Team />
         </div>
       </section>
 
