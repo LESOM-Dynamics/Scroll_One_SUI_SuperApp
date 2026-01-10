@@ -3,12 +3,15 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Linkedin, Twitter } from "lucide-react";
 
-interface TeamMember {
+export interface TeamMember {
   name: string;
   role: string;
   quote: string;
   image: string;
+  linkedin?: string;
+  twitter?: string;
 }
 
 interface TeamProps {
@@ -21,14 +24,18 @@ const defaultMembers: TeamMember[] = [
   {
     name: "Kevin Isom",
     role: "Tech Lead",
-    quote: "Building Scroll One has been an incredible journey. We're bringing Web3 to everyone, one feature at a time.",
-    image: "https://media.licdn.com/dms/image/v2/D4D03AQELXdPv639O4w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1699938883733?e=2147483647&v=beta&t=t41UBuuI4uxkug3KyHx8bHcoBSCYoO8Hw-QL9IFlBps"
+    quote: "Building Scroll One has been an incredible journey. We're streamlining Web3 distribution to everyone, one feature at a time.",
+    image: "https://media.licdn.com/dms/image/v2/D4D03AQELXdPv639O4w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1699938883733?e=2147483647&v=beta&t=t41UBuuI4uxkug3KyHx8bHcoBSCYoO8Hw-QL9IFlBps",
+    linkedin: "https://www.linkedin.com/in/kevin-isom-a58bb3201/",
+    twitter: "https://twitter.com/kevin_B_isom"
   },
   {
     name: "Mercy Wairimu",
     role: "Marketing Lead",
     quote: "Technology should be invisible. We're making blockchain so seamless, users won't even think about it.",
-    image: "https://media.licdn.com/dms/image/v2/D4D03AQFGWLxJwKzUHg/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1723220871043?e=2147483647&v=beta&t=ZnXjWhi_C6sQuidmV2-8tts_CXFiahKIRvwGxhDYakI"
+    image: "https://media.licdn.com/dms/image/v2/D4D03AQFGWLxJwKzUHg/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1723220871043?e=2147483647&v=beta&t=ZnXjWhi_C6sQuidmV2-8tts_CXFiahKIRvwGxhDYakI",
+    linkedin: "https://www.linkedin.com/in/mercy-murigi",
+    twitter: "https://twitter.com/mercy_nimo28"
   },
 ];
 
@@ -70,6 +77,36 @@ export default function Team({ members = defaultMembers, className }: TeamProps)
               <p className="text-sm font-medium bg-gradient-to-r from-[#8B5CF6] via-[#E0724A] to-[#9938CA] text-transparent bg-clip-text">
                 {member.role}
               </p>
+              {(member.linkedin || member.twitter) && (
+                <div className="flex items-center gap-3 mt-4 pt-3 border-t border-gray-700">
+                  {member.linkedin && (
+                    <motion.a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-[#0077b5] transition-colors"
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.95 }}
+                      aria-label={`${member.name}'s LinkedIn`}
+                    >
+                      <Linkedin className="w-5 h-5" />
+                    </motion.a>
+                  )}
+                  {member.twitter && (
+                    <motion.a
+                      href={member.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-[#1DA1F2] transition-colors"
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.95 }}
+                      aria-label={`${member.name}'s Twitter`}
+                    >
+                      <Twitter className="w-5 h-5" />
+                    </motion.a>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         ))}
