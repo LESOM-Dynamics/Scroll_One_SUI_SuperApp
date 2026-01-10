@@ -22,6 +22,7 @@ The Scroll One SuperApp backend is a RESTful API service built with Node.js, Exp
 - **Token Management**: Multi-token support with real-time price updates
 - **Notification System**: Push and in-app notifications
 - **Analytics**: User behavior tracking and insights
+- **Admin Dashboard**: Comprehensive administrative interface with role-based access control, user management, transaction monitoring, security tracking, and audit logging
 
 ## System Architecture
 
@@ -80,10 +81,10 @@ The Scroll One SuperApp backend is a RESTful API service built with Node.js, Exp
 │  │   User   │  │Transaction│ │  Token   │  │ MiniApp  │   │
 │  │ Service  │  │  Service  │ │ Service  │  │ Service  │   │
 │  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
-│  ┌──────────┐  ┌──────────┐                               │
-│  │Notification│ │Analytics │                               │
-│  │  Service  │  │ Service  │                               │
-│  └──────────┘  └──────────┘                               │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
+│  │Notification│ │Analytics │  │  Admin   │               │
+│  │  Service  │  │ Service  │  │ Service  │               │
+│  └──────────┘  └──────────┘  └──────────┘               │
 └───────────────────────┬─────────────────────────────────────┘
                         │
 ┌───────────────────────▼─────────────────────────────────────┐
@@ -115,7 +116,8 @@ The Scroll One SuperApp backend is a RESTful API service built with Node.js, Exp
 #### Middleware (`src/middleware/`)
 
 - **Authentication**: JWT token verification
-- **Authorization**: Permission checks
+- **Authorization**: Permission checks and role-based access control
+- **Admin Auth**: Super Admin role verification (`requireSuperAdmin`)
 - **Rate Limiting**: Request throttling
 - **Error Handling**: Centralized error processing
 - **Validation**: Request data validation
@@ -164,6 +166,16 @@ The Scroll One SuperApp backend is a RESTful API service built with Node.js, Exp
 - Session tracking
 - Behavior analysis
 
+#### Admin Service (`src/services/admin/`)
+
+- Dashboard statistics aggregation
+- User management with advanced filtering
+- Transaction monitoring across platform
+- Mini-app management (verification, featuring)
+- Security events tracking
+- System health metrics
+- Admin actions audit logging
+
 ### 3. Data Layer
 
 #### PostgreSQL Database
@@ -172,6 +184,13 @@ The Scroll One SuperApp backend is a RESTful API service built with Node.js, Exp
 - Relational data
 - ACID transactions
 - Complex queries
+
+**Key Tables:**
+- `users` - User profiles with role and status columns
+- `admin_actions` - Complete audit log of all admin operations
+- `feature_flags` - Feature toggle management
+- `system_health` - System health metrics
+- All existing tables (transactions, miniapps, tokens, notifications, analytics, etc.)
 
 #### Redis Cache
 
@@ -207,6 +226,24 @@ The Scroll One SuperApp backend is a RESTful API service built with Node.js, Exp
    └─> Access protected endpoints
 ```
 
+### Admin Authentication Flow
+
+```
+1. Client → POST /auth/wallet/verify (with signature)
+   └─> Server verifies signature and returns JWT token
+
+2. Client → GET /admin/dashboard/stats
+   ├─> authenticateToken middleware verifies JWT
+   ├─> requireSuperAdmin middleware checks role
+   │   ├─> Query database for user role
+   │   ├─> Verify role = 'super_admin'
+   │   └─> Verify status = 'active'
+   └─> Access granted to admin endpoints
+
+3. Admin action performed
+   └─> Logged to admin_actions table (audit trail)
+```
+
 ### Transaction Indexing Flow
 
 ```
@@ -231,6 +268,10 @@ CORS Middleware
   ↓
 Authentication Middleware (if required)
   ↓
+Admin Auth Middleware (if admin route)
+  ├─> Verify Super Admin role
+  └─> Verify active status
+  ↓
 Validation Middleware
   ↓
 Controller
@@ -238,6 +279,7 @@ Controller
 Service Layer
   ├─> Check Cache (Redis)
   ├─> Query Database (PostgreSQL)
+  ├─> Log Admin Action (if admin operation)
   └─> External API Calls (if needed)
   ↓
 Response
@@ -386,13 +428,23 @@ Developer Machine
 ## Security Considerations
 
 1. **Authentication**: JWT with wallet signature verification
-2. **Authorization**: Role-based access control (future)
-3. **Rate Limiting**: Prevent abuse and DDoS
-4. **Input Validation**: Sanitize all user inputs
-5. **SQL Injection**: Parameterized queries only
-6. **CORS**: Restricted origins
-7. **HTTPS**: Enforced in production
-8. **Secrets**: Environment variables, never in code
+2. **Authorization**: Role-based access control (RBAC) implemented
+   - User roles: `user`, `admin`, `super_admin`
+   - User status: `active`, `suspended`, `banned`
+   - Super Admin required for `/admin/*` endpoints
+3. **Admin Security**:
+   - Wallet signature authentication required
+   - Super Admin role verification on every request
+   - Complete audit logging of all admin actions
+   - IP address and user agent tracking
+   - Hidden route (`/admin-super`) not discoverable
+4. **Rate Limiting**: Prevent abuse and DDoS
+5. **Input Validation**: Sanitize all user inputs
+6. **SQL Injection**: Parameterized queries only
+7. **CORS**: Restricted origins
+8. **HTTPS**: Enforced in production
+9. **Secrets**: Environment variables, never in code
+10. **Audit Trail**: All admin actions logged for compliance and security
 
 ## Performance Optimizations
 
@@ -411,11 +463,35 @@ Developer Machine
 4. **Metrics**: Request/response logging
 5. **Database Monitoring**: Query performance tracking
 
+## Admin Dashboard
+
+The backend includes a comprehensive Super Admin Dashboard accessible via hidden route `/admin-super`. See:
+
+- **[ADMIN_DASHBOARD_DOCUMENTATION.md](../../ADMIN_DASHBOARD_DOCUMENTATION.md)** - Complete documentation
+- **[ADMIN_DASHBOARD_SETUP.md](../../ADMIN_DASHBOARD_SETUP.md)** - Setup guide
+- **[backend/docs/API.md](./API.md#admin-endpoints-super-admin-only)** - Admin API endpoints
+
+**Key Features:**
+- Dashboard statistics aggregation
+- User management (search, filter, update roles/status)
+- Transaction monitoring across platform
+- Mini-app management (verify, feature)
+- Security events monitoring
+- System health metrics
+- Complete audit log of all admin actions
+
+**Database Extensions:**
+- `users.role` and `users.status` columns added
+- `admin_actions` table for audit logging
+- `feature_flags` table for feature management
+- `system_health` table for metrics
+
 ## Future Enhancements
 
 1. **GraphQL API**: Alternative to REST
-2. **WebSocket Support**: Real-time updates
+2. **WebSocket Support**: Real-time updates for admin dashboard
 3. **Message Queue**: RabbitMQ/Kafka for async processing
 4. **Microservices**: Split into smaller services
 5. **API Gateway**: Kong/Tyk for advanced routing
 6. **Service Mesh**: Istio for service communication
+7. **Admin Dashboard**: Feature flags UI, advanced analytics, batch operations, IP whitelisting, 2FA
