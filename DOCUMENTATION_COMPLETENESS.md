@@ -111,6 +111,10 @@ This document verifies that all documentation is comprehensive, detailed, and up
 - [x] **IMPLEMENTATION_STATUS.md** - Feature status
 - [x] **scrollone-sdk/README.md** - SDK documentation
 - [x] **Technical_Docs/** - Technical guides
+  - [x] **AI_INTEGRATION_GUIDE.md** - AI integration guide
+  - [x] **AI_INTEGRATION_SUMMARY.md** - AI integration summary
+  - [x] **NOTIFICATIONS_IMPLEMENTATION.md** - Notifications implementation
+  - [x] **PERMISSIONS_SYSTEM_IMPLEMENTATION.md** - ERC-7715-inspired permissions system (planned feature)
 
 ## 📋 Documentation Coverage
 
@@ -229,8 +233,8 @@ This document verifies that all documentation is comprehensive, detailed, and up
 - **Admin Dashboard Docs**: 4 files
 - **Backend Docs**: 4 files
 - **Frontend Docs**: 2 files
-- **Technical Docs**: 5+ files
-- **Total**: 18+ documentation files
+- **Technical Docs**: 6+ files (including Permissions System)
+- **Total**: 19+ documentation files
 
 ### Documentation Coverage
 - **Backend**: 100% covered
@@ -254,10 +258,11 @@ This document verifies that all documentation is comprehensive, detailed, and up
 ### When to Update Documentation
 
 1. **New Features**: Add to relevant docs and update index
-2. **API Changes**: Update API.md and related docs
-3. **Setup Changes**: Update setup guides
-4. **Security Updates**: Update security sections
-5. **Bug Fixes**: Update troubleshooting sections
+2. **Planned Features**: Document implementation plans (e.g., Permissions System)
+3. **API Changes**: Update API.md and related docs
+4. **Setup Changes**: Update setup guides
+5. **Security Updates**: Update security sections
+6. **Bug Fixes**: Update troubleshooting sections
 
 ### Documentation Review Checklist
 

@@ -239,6 +239,41 @@
 
 ---
 
+## 🔮 Planned Features (Near-Future)
+
+### ERC-7715-Inspired Permissions System
+
+**Status**: 📋 **Planned for near-future implementation**
+
+**Overview**: Fine-grained permission system that allows mini-apps to request permissions for reduced approval prompts, similar to ERC-7715 standard. This will significantly improve UX for trusted mini-apps while maintaining security.
+
+**Key Features**:
+- Request permissions with amount, time, and contract limits
+- Automatic transaction execution within permission constraints
+- Usage tracking for rate limiting (daily/weekly/monthly)
+- Full user control to view, modify, and revoke permissions
+- Backward compatible with existing per-transaction approval
+
+**Implementation Phases**:
+1. **Phase 1 (Week 1-2)**: Core infrastructure - Permission storage, validator, service
+2. **Phase 2 (Week 3)**: Bridge integration - Add permission methods to bridge
+3. **Phase 3 (Week 4)**: UI components - Permission request modal, management screen
+4. **Phase 4 (Week 5)**: Testing & documentation - E2E tests, security audit
+5. **Phase 5 (Week 6)**: Polish & release - UX improvements, beta testing
+
+**Documentation**: 
+- Complete implementation guide: [PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md)
+- Detailed architecture, API reference, security considerations, and testing guide included
+
+**Benefits**:
+- ✅ Better UX: Reduced approval prompts for trusted apps
+- ✅ Enhanced Security: Fine-grained limits prevent abuse
+- ✅ User Control: Full visibility and control over permissions
+- ✅ Backward Compatible: Existing apps continue to work
+- ✅ Future-Proof: Foundation for advanced permission features
+
+---
+
 ## 📋 Implementation Priority
 
 ### Phase 1: Core Blockchain Functionality (Critical)
@@ -311,8 +346,12 @@ bun add axios  # for custom API integration
 
 ## 🎯 Estimated Completion
 
+### Current Implementation
 - **Phase 1 (Critical)**: ~2-3 weeks
 - **Phase 2 (Important)**: ~1-2 weeks  
 - **Phase 3 (Enhancements)**: ~1 week
 
 **Total remaining work**: ~4-6 weeks of focused development
+
+### Planned Features
+- **Permissions System (ERC-7715-inspired)**: ~6 weeks (See [PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md) for timeline)

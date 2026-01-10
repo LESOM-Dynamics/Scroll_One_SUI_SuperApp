@@ -33,6 +33,7 @@ Complete documentation index for the Scroll One SuperApp project.
 - **[Technical_Docs/AI_INTEGRATION_GUIDE.md](./Technical_Docs/AI_INTEGRATION_GUIDE.md)** - AI integration guide
 - **[Technical_Docs/AI_INTEGRATION_SUMMARY.md](./Technical_Docs/AI_INTEGRATION_SUMMARY.md)** - AI integration summary
 - **[Technical_Docs/NOTIFICATIONS_IMPLEMENTATION.md](./Technical_Docs/NOTIFICATIONS_IMPLEMENTATION.md)** - Notifications implementation
+- **[Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md)** - ERC-7715-inspired permissions system implementation (near-future feature)
 
 #### Deployment
 - **[landing-page/DEPLOYMENT.md](./landing-page/DEPLOYMENT.md)** - Landing page deployment guide
@@ -61,6 +62,7 @@ Complete documentation index for the Scroll One SuperApp project.
 - **Mini-App API**: [backend/docs/API.md](./backend/docs/API.md#mini-apps) - Mini-app endpoints
 - **Admin Mini-App Management**: [ADMIN_DASHBOARD_DOCUMENTATION.md](./ADMIN_DASHBOARD_DOCUMENTATION.md#mini-apps-tab) - Mini-app verification and featuring
 - **WebView Bridge**: [WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md) - Bridge integration guide
+- **Permissions System**: [Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md) - ERC-7715-inspired permissions for mini-apps (near-future)
 
 ### Tokens
 - **Token API**: [backend/docs/API.md](./backend/docs/API.md#tokens) - Token endpoints
@@ -123,6 +125,7 @@ Complete documentation index for the Scroll One SuperApp project.
 - [x] SDK documentation
 - [x] Notifications implementation
 - [x] AI integration guides
+- [x] Permissions system implementation guide (planned feature)
 
 ### ✅ Setup & Deployment
 - [x] Quick start guides
@@ -137,6 +140,7 @@ Complete documentation index for the Scroll One SuperApp project.
 ### "How do I..."
 - **Set up the admin dashboard?** → [ADMIN_DASHBOARD_SETUP.md](./ADMIN_DASHBOARD_SETUP.md)
 - **Integrate a mini-app?** → [WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md)
+- **Implement permissions for mini-apps?** → [Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md)
 - **Deploy the backend?** → [backend/docs/DEPLOYMENT.md](./backend/docs/DEPLOYMENT.md)
 - **Understand the architecture?** → [backend/docs/ARCHITECTURE.md](./backend/docs/ARCHITECTURE.md)
 - **Use the API?** → [backend/docs/API.md](./backend/docs/API.md)
@@ -206,5 +210,6 @@ Our documentation aims to:
 ---
 
 **Last Updated**: 2024-01-15  
-**Documentation Version**: 1.0.0
+**Documentation Version**: 1.1.0  
+**Latest Addition**: ERC-7715-Inspired Permissions System Implementation Guide
 

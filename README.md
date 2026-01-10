@@ -81,6 +81,7 @@ The app integrates real Scroll-native dApps from the official Scroll ecosystem:
 - **Bridge Methods**: GET_ACCOUNT, GET_BALANCE, SIGN_TRANSACTION, SIGN_MESSAGE, GET_NETWORK, ESTIMATE_GAS
 - **Transaction Approval**: Native modal for user transaction approvals
 - **Secure Communication**: PostMessage-based bridge with origin validation
+- **Permissions System** (Planned): ERC-7715-inspired fine-grained permissions for reduced approval prompts - see [PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md)
 
 ---
 
@@ -466,6 +467,18 @@ If you need to add new functionality that dApps can call:
 
 See [WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md) for detailed bridge integration documentation.
 
+### Permissions System (Planned)
+
+We're planning to implement an ERC-7715-inspired permissions system that allows mini-apps to request fine-grained permissions for reduced approval prompts. This will significantly improve UX for trusted mini-apps while maintaining security through limits and user control.
+
+**Key Features**:
+- Request permissions with amount, time, and contract limits
+- Automatic transaction execution within permission constraints
+- Usage tracking and rate limiting
+- Full user control to view, modify, and revoke permissions
+
+See [PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md) for complete implementation guide.
+
 ### Custom Development Builds
 
 For advanced native features (Face ID, push notifications, in-app purchases), create a custom development build:
@@ -647,6 +660,7 @@ For a complete guide to all documentation, see **[DOCUMENTATION_INDEX.md](./DOCU
 - **[WEBVIEW_BRIDGE_GUIDE.md](./WEBVIEW_BRIDGE_GUIDE.md)** - Detailed guide for WebView bridge integration
 - **[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)** - Feature completion status
 - **[scrollone-sdk/README.md](./scrollone-sdk/README.md)** - WebView bridge SDK documentation
+- **[Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md](./Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md)** - ERC-7715-inspired permissions system (planned feature)
 
 **Backend API Documentation**:
 - **[backend/README.md](./backend/README.md)** - Backend API overview and quick start

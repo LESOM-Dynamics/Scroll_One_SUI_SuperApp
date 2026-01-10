@@ -176,6 +176,34 @@ const notification = await window.scrollOne.requestNotification({
 - Title max 100 chars, body max 500 chars
 - All notifications include origin tracking
 
+### Permissions System (Planned)
+
+**ERC-7715-inspired permissions system** - Coming soon!
+
+Request fine-grained permissions for reduced approval prompts:
+
+```typescript
+// Request permission once
+await window.scrollOne.grantPermissions({
+  permissions: [{
+    type: 'TRANSACTION',
+    constraints: {
+      maxAmount: '100000000000000000', // 0.1 ETH per transaction
+      maxPerDay: '1000000000000000000', // 1 ETH per day
+      expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days
+    },
+  }],
+});
+
+// Subsequent transactions work without approval (if within limits)
+const result = await window.scrollOne.signTransaction({
+  to: '0x...',
+  value: '0.05', // Within 0.1 ETH limit
+});
+```
+
+See [PERMISSIONS_SYSTEM_IMPLEMENTATION.md](../Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md) for complete documentation.
+
 ## dApp Integration
 
 ### Basic Usage
@@ -443,6 +471,17 @@ On WebView reload:
 - Pending requests are cleared
 - Event listeners are preserved (dApp responsibility)
 - State is re-initialized
+
+## Planned Features
+
+### Permissions System (v1.1.0 - Planned)
+
+- ERC-7715-inspired fine-grained permissions
+- Automatic transaction execution within limits
+- Usage tracking and rate limiting
+- Full user control over permissions
+
+See [PERMISSIONS_SYSTEM_IMPLEMENTATION.md](../Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md) for details.
 
 ## Versioning
 
