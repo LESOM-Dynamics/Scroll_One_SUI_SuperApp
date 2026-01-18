@@ -467,8 +467,8 @@ Developer Machine
 
 The backend includes a comprehensive Super Admin Dashboard accessible via hidden route `/admin-super`. See:
 
-- **[ADMIN_DASHBOARD_DOCUMENTATION.md](../../ADMIN_DASHBOARD_DOCUMENTATION.md)** - Complete documentation
-- **[ADMIN_DASHBOARD_SETUP.md](../../ADMIN_DASHBOARD_SETUP.md)** - Setup guide
+- **[Admin Dashboard Documentation](../../docs/backend/admin-dashboard.md)** - Complete documentation
+- **[Admin Dashboard Setup](../../docs/deployment/admin-setup.md)** - Setup guide
 - **[backend/docs/API.md](./API.md#admin-endpoints-super-admin-only)** - Admin API endpoints
 
 **Key Features:**

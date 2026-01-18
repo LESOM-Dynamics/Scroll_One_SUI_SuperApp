@@ -230,7 +230,7 @@ docker-compose down
 - `GET /api/v1/admin/system/health` - Get system health metrics
 - `GET /api/v1/admin/actions` - Get admin actions audit log
 
-**Note**: All admin endpoints require Super Admin role. See [ADMIN_DASHBOARD_DOCUMENTATION.md](../ADMIN_DASHBOARD_DOCUMENTATION.md) for details.
+**Note**: All admin endpoints require Super Admin role. See [Admin Dashboard Documentation](../docs/backend/admin-dashboard.md) for details.
 
 ## Background Jobs
 

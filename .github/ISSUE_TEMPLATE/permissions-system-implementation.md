@@ -389,7 +389,7 @@ Revoke permission(s).
 ### Phase 5: Documentation & Polish (Week 6)
 
 - [ ] Update documentation
-  - [ ] Update `WEBVIEW_BRIDGE_GUIDE.md` with permission examples
+  - [ ] Update [WebView Bridge Guide](../docs/integrations/webview-bridge.md) with permission examples
   - [ ] Update `scrollone-sdk/README.md` with permission API
   - [ ] Create developer guide for mini-apps
   - [ ] Update API reference
@@ -543,9 +543,9 @@ Revoke permission(s).
 
 ## 📚 Documentation Requirements
 
-- [ ] Update `WEBVIEW_BRIDGE_GUIDE.md` with permission examples
-- [ ] Update `scrollone-sdk/README.md` with permission API
-- [ ] Update `PERMISSIONS_SYSTEM_IMPLEMENTATION.md` with implementation status
+- [ ] Update [WebView Bridge Guide](../docs/integrations/webview-bridge.md) with permission examples
+- [ ] Update [SDK Reference](../docs/integrations/sdk-reference.md) with permission API
+- [ ] Update [Permissions System](../docs/security/permissions-system.md) with implementation status
 - [ ] Create mini-app developer guide
 - [ ] Add code examples to all documentation
 - [ ] Update API reference
@@ -553,8 +553,8 @@ Revoke permission(s).
 
 ## 🔗 Related Documentation
 
-- **[PERMISSIONS_SYSTEM_IMPLEMENTATION.md](../Technical_Docs/PERMISSIONS_SYSTEM_IMPLEMENTATION.md)** - Complete implementation guide
-- **[WEBVIEW_BRIDGE_GUIDE.md](../WEBVIEW_BRIDGE_GUIDE.md)** - Bridge integration guide
+- **[Permissions System](../docs/security/permissions-system.md)** - ERC-7715-inspired permissions system
+- **[WebView Bridge Guide](../docs/integrations/webview-bridge.md)** - Bridge integration guide
 - **[scrollone-sdk/README.md](../scrollone-sdk/README.md)** - SDK documentation
 
 ## 🏷️ Labels
