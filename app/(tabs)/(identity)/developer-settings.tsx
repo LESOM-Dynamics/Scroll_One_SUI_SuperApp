@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { ArrowLeft, Code } from 'lucide-react-native';
+import { ArrowLeft, ShieldCheck, Network } from 'lucide-react-native';
 import { colors, spacing, typography } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -9,21 +9,8 @@ import { useSettingsStore } from '@/store/settingsStore';
 
 export default function DeveloperSettingsScreen() {
   const router = useRouter();
-  const { 
-    useMockData,
-    setUseMockData,
-    loadMockDataPreference,
-    themeMode,
-  } = useSettingsStore();
+  const { isTestnet, themeMode } = useSettingsStore();
   const styles = React.useMemo(() => createStyles(), [themeMode]);
-
-  useEffect(() => {
-    loadMockDataPreference();
-  }, [loadMockDataPreference]);
-
-  const handleMockDataToggle = async (value: boolean) => {
-    await setUseMockData(value);
-  };
 
   return (
     <>
@@ -50,38 +37,30 @@ export default function DeveloperSettingsScreen() {
       />
       <Screen scrollable>
         <View style={styles.content}>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Mock Data</Text>
-            <Card style={styles.settingCard}>
-              <View style={styles.settingRow}>
-                <View style={styles.settingLeft}>
-                  <Code color={colors.accent.secondary} size={24} />
-                  <View style={styles.settingTextContainer}>
-                    <Text style={styles.settingTitle}>Use Mock Data</Text>
-                    <Text style={styles.settingDescription}>
-                      {useMockData ? 'Enabled' : 'Disabled'}
-                    </Text>
-                  </View>
+          <Text style={styles.sectionTitle}>Runtime Diagnostics</Text>
+
+          <Card style={styles.settingCard}>
+            <View style={styles.settingRow}>
+              <View style={styles.settingLeft}>
+                <Network color={colors.accent.secondary} size={24} />
+                <View style={styles.settingTextContainer}>
+                  <Text style={styles.settingTitle}>Active Blockchain Network</Text>
+                  <Text style={styles.settingDescription}>
+                    {isTestnet ? 'Scroll Sepolia (testnet)' : 'Scroll Mainnet'}
+                  </Text>
                 </View>
-                <Switch
-                  value={useMockData}
-                  onValueChange={handleMockDataToggle}
-                  trackColor={{
-                    false: colors.border.medium,
-                    true: colors.accent.primary + '80',
-                  }}
-                  thumbColor={useMockData ? colors.accent.primary : colors.text.tertiary}
-                  ios_backgroundColor={colors.border.medium}
-                />
               </View>
-              <View style={styles.infoBox}>
+            </View>
+
+            <View style={styles.infoBox}>
+              <View style={styles.inlineRow}>
+                <ShieldCheck color={colors.accent.primary} size={18} />
                 <Text style={styles.infoText}>
-                  When enabled, the Wallet Tab will display mock data for demonstration purposes. 
-                  This setting is useful for testing and showcasing the app without requiring real wallet connections.
+                  Mock wallet and transaction fixtures were removed from production runtime paths.
                 </Text>
               </View>
-            </Card>
-          </View>
+            </View>
+          </Card>
         </View>
       </Screen>
     </>
@@ -92,9 +71,6 @@ const createStyles = () =>
   StyleSheet.create({
     content: {
       padding: spacing.base,
-    },
-    section: {
-      marginBottom: spacing.xl,
     },
     sectionTitle: {
       fontSize: typography.fontSize.lg,
@@ -136,14 +112,19 @@ const createStyles = () =>
       borderTopWidth: 1,
       borderTopColor: colors.border.subtle,
     },
+    inlineRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
     infoText: {
       fontSize: typography.fontSize.sm,
       color: colors.text.secondary,
       lineHeight: 20,
+      flex: 1,
     },
     headerButton: {
       marginLeft: spacing.sm,
       padding: spacing.xs,
     },
   });
-

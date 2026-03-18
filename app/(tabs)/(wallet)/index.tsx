@@ -17,120 +17,10 @@ import { ImportTokenModal } from '@/components/tokens/ImportTokenModal';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 
-// TEMPORARY: Mock data for demonstration
-const MOCK_ASSETS: Asset[] = [
-  {
-    symbol: 'ETH',
-    name: 'Ethereum',
-    balance: '2.4587',
-    usdValue: '6,245.82',
-    change24h: 2.45,
-    icon: '⟠',
-  },
-  {
-    symbol: 'USDC',
-    name: 'USD Coin',
-    balance: '1,250.00',
-    usdValue: '1,250.00',
-    change24h: 0.01,
-    icon: '💵',
-  },
-  {
-    symbol: 'USDT',
-    name: 'Tether',
-    balance: '875.50',
-    usdValue: '875.50',
-    change24h: -0.02,
-    icon: '💸',
-  },
-  {
-    symbol: 'WBTC',
-    name: 'Wrapped Bitcoin',
-    balance: '0.125',
-    usdValue: '8,945.75',
-    change24h: 3.12,
-    icon: '₿',
-  },
-];
-
-const MOCK_TRANSACTIONS: Transaction[] = [
-  {
-    id: 'mock-1',
-    type: 'receive',
-    amount: '0.5',
-    symbol: 'ETH',
-    to: '0x1234...5678',
-    from: '0xabcd...efgh',
-    timestamp: Date.now() - 3600000, // 1 hour ago
-    status: 'confirmed',
-    hash: '0xabc123...def456',
-    fee: '0.002',
-    network: 'Scroll Mainnet',
-    gasUsed: '21,000',
-  },
-  {
-    id: 'mock-2',
-    type: 'send',
-    amount: '100',
-    symbol: 'USDC',
-    to: '0x9876...5432',
-    from: '0x1234...5678',
-    timestamp: Date.now() - 86400000, // 1 day ago
-    status: 'confirmed',
-    hash: '0xdef456...abc123',
-    fee: '0.001',
-    network: 'Scroll Mainnet',
-    gasUsed: '65,000',
-  },
-  {
-    id: 'mock-3',
-    type: 'swap',
-    amount: '250',
-    symbol: 'USDT',
-    to: '0x1234...5678',
-    from: '0x1234...5678',
-    timestamp: Date.now() - 172800000, // 2 days ago
-    status: 'confirmed',
-    hash: '0x789abc...def123',
-    fee: '0.005',
-    network: 'Scroll Mainnet',
-    crossChain: true,
-    gasUsed: '120,000',
-  },
-  {
-    id: 'mock-4',
-    type: 'contract',
-    amount: '0.25',
-    symbol: 'WBTC',
-    to: '0x1234...5678',
-    from: '0x5678...9012',
-    timestamp: Date.now() - 259200000, // 3 days ago
-    status: 'pending',
-    hash: '0x456def...789abc',
-    fee: '0.003',
-    network: 'Scroll Sepolia',
-    gasUsed: '45,000',
-  },
-  {
-    id: 'mock-5',
-    type: 'send',
-    amount: '1.2',
-    symbol: 'ETH',
-    to: '0x3456...7890',
-    from: '0x1234...5678',
-    timestamp: Date.now() - 345600000, // 4 days ago
-    status: 'failed',
-    hash: '0x123abc...456def',
-    fee: '0.0025',
-    network: 'Scroll Mainnet',
-    gasUsed: '21,000',
-  },
-];
-
 export default function WalletScreen() {
   const router = useRouter();
   const { address, balance, assets, transactions, setAssets, setTransactions, setBalance, setLoading } = useWalletStore();
-  const { isTestnet, useMockData, loadMockDataPreference } = useSettingsStore();
+  const { isTestnet } = useSettingsStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [assetsExpanded, setAssetsExpanded] = useState(true);
   const [showWalletModal, setShowWalletModal] = useState(false);
@@ -138,35 +28,11 @@ export default function WalletScreen() {
   const [isBalanceMasked, setIsBalanceMasked] = useState(false);
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
-  // Load mock data preference on mount
   useEffect(() => {
-    loadMockDataPreference();
-  }, [loadMockDataPreference]);
-
-  // Load mock data if enabled
-  useEffect(() => {
-    if (useMockData) {
-      // Set mock balance
-      const totalBalance = MOCK_ASSETS.reduce((sum, asset) => {
-        return sum + parseFloat(asset.usdValue.replace(/,/g, ''));
-      }, 0);
-      setBalance(totalBalance.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }));
-      
-      // Set mock assets and transactions
-      setAssets(MOCK_ASSETS);
-      setTransactions(MOCK_TRANSACTIONS);
-    }
-  }, [useMockData, setBalance, setAssets, setTransactions]);
-
-  useEffect(() => {
-    // Only load real data if mock data is disabled and address exists
-    if (!useMockData && address) {
+    if (address) {
       loadWalletData();
     }
-  }, [address, isTestnet, useMockData]); // Refresh when network changes or mock data setting changes
+  }, [address, isTestnet]); // Refresh when network changes
 
   // Animation effect for refresh icon
   useEffect(() => {
@@ -309,34 +175,10 @@ export default function WalletScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     
     try {
-      if (useMockData) {
-        // Refresh mock data - recalculate balance
-        setIsRefreshing(true);
-        
-        const totalBalance = MOCK_ASSETS.reduce((sum, asset) => {
-          return sum + parseFloat(asset.usdValue.replace(/,/g, ''));
-        }, 0);
-        setBalance(totalBalance.toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }));
-        
-        // Re-set mock assets and transactions
-        setAssets(MOCK_ASSETS);
-        setTransactions(MOCK_TRANSACTIONS);
-        
-        // Small delay for better UX
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        setIsRefreshing(false);
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        console.log('[WalletScreen] Wallet data refreshed successfully');
-      } else {
-        // Refresh real wallet data - loadWalletData manages isRefreshing state
-        await loadWalletData();
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        console.log('[WalletScreen] Wallet data refreshed successfully');
-      }
+      // Refresh real wallet data - loadWalletData manages isRefreshing state
+      await loadWalletData();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      console.log('[WalletScreen] Wallet data refreshed successfully');
     } catch (error) {
       console.error('[WalletScreen] Error refreshing wallet data:', error);
       setIsRefreshing(false);

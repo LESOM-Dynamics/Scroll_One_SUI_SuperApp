@@ -5,7 +5,6 @@ import { setThemeMode, type ThemeMode } from '@/theme/colors';
 const NETWORK_PREFERENCE_KEY = '@scroll_one:network_preference';
 const THEME_PREFERENCE_KEY = '@scroll_one:theme_mode';
 const BIOMETRIC_PREFERENCE_KEY = '@scroll_one:biometric_auth_enabled';
-const MOCK_DATA_PREFERENCE_KEY = '@scroll_one:use_mock_data';
 const NOTIFICATIONS_ENABLED_KEY = '@scroll_one:notifications_enabled';
 
 interface SettingsState {
@@ -14,7 +13,6 @@ interface SettingsState {
   themeMode: ThemeMode;
   kycSharingEnabled: boolean;
   biometricAuthEnabled: boolean;
-  useMockData: boolean;
   notificationsEnabled: boolean;
 
   setNetwork: (isTestnet: boolean) => Promise<void>;
@@ -28,9 +26,6 @@ interface SettingsState {
   setBiometricAuthEnabled: (enabled: boolean) => Promise<void>;
   loadBiometricPreference: () => Promise<void>;
 
-  setUseMockData: (enabled: boolean) => Promise<void>;
-  loadMockDataPreference: () => Promise<void>;
-
   setNotificationsEnabled: (enabled: boolean) => Promise<void>;
   loadNotificationsPreference: () => Promise<void>;
 }
@@ -41,7 +36,6 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   themeMode: 'light',
   kycSharingEnabled: false,
   biometricAuthEnabled: false,
-  useMockData: false,
   notificationsEnabled: true, // Default to enabled
 
   setNetwork: async (isTestnet: boolean) => {
@@ -126,30 +120,6 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     }
   },
 
-  setUseMockData: async (enabled: boolean) => {
-    try {
-      await AsyncStorage.setItem(MOCK_DATA_PREFERENCE_KEY, JSON.stringify(enabled));
-      set({ useMockData: enabled });
-      console.log('[SettingsStore] Mock data preference saved:', enabled);
-    } catch (error) {
-      console.error('[SettingsStore] Error saving mock data preference:', error);
-    }
-  },
-
-  loadMockDataPreference: async () => {
-    try {
-      const stored = await AsyncStorage.getItem(MOCK_DATA_PREFERENCE_KEY);
-      if (stored !== null) {
-        const enabled = JSON.parse(stored);
-        set({ useMockData: enabled });
-        console.log('[SettingsStore] Mock data preference loaded:', enabled);
-      } else {
-        console.log('[SettingsStore] No mock data preference found, defaulting to disabled');
-      }
-    } catch (error) {
-      console.error('[SettingsStore] Error loading mock data preference:', error);
-    }
-  },
 
   setNotificationsEnabled: async (enabled: boolean) => {
     try {

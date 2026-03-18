@@ -10,6 +10,12 @@ import { BridgeMethod } from '@/scrollone-sdk';
 import { scrollProvider } from '@/services/scroll/provider';
 import { TransactionApprovalModal } from '@/components/bridge/TransactionApprovalModal';
 import type { TransactionRequest } from '@/scrollone-sdk';
+import { SuperAppProtocolManager } from '@/services/protocol/superAppProtocol';
+import type {
+  HandshakeAckPayload,
+  HandshakeInitPayload,
+  ProtocolEnvelope,
+} from '@/services/protocol/types';
 
 interface WebViewContainerProps {
   app: MiniApp;
@@ -25,7 +31,8 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
     request: TransactionRequest;
   } | null>(null);
   const { address, isUnlocked } = useWalletStore();
-  const { kycSharingEnabled, isTestnet } = useSettingsStore();
+  const { kycSharingEnabled } = useSettingsStore();
+  const protocolManagerRef = useRef(new SuperAppProtocolManager());
 
   const isWalletLocked = !isUnlocked || !address;
   const config = scrollProvider.getConfig();
@@ -51,6 +58,30 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       console.log('[WebViewContainer] Parsed message data:', JSON.stringify(data, null, 2));
+
+      // Protocol v2 envelope path (session-aware, signed handshake)
+      if (data.version === '2.0.0' && data.type) {
+        const envelope = data as ProtocolEnvelope;
+
+        if (envelope.type === 'handshake:init') {
+          const challenge = protocolManagerRef.current.beginHandshake(
+            envelope as ProtocolEnvelope<HandshakeInitPayload>,
+          );
+          sendEventToWebView('protocol:message', challenge);
+          return;
+        }
+
+        if (envelope.type === 'handshake:ack') {
+          const ready = protocolManagerRef.current.completeHandshake(
+            envelope as ProtocolEnvelope<HandshakeAckPayload>,
+          );
+          sendEventToWebView('protocol:message', ready);
+          return;
+        }
+
+        // Validate session envelope before handling legacy SDK method requests.
+        protocolManagerRef.current.validateSessionMessage(envelope);
+      }
       
       // Only handle bridge messages
       if (!data.id || !data.type || data.source !== 'web') {
