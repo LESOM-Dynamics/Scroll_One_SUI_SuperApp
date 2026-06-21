@@ -24,7 +24,7 @@ const defaultMembers: TeamMember[] = [
   {
     name: "Kevin Isom",
     role: "Tech Lead",
-    quote: "Building Scroll One has been an incredible journey. We're streamlining Web3 distribution to everyone, one feature at a time.",
+    quote: "Building Scroll One has been an incredible journey. We're bringing the power of Sui's parallel execution and object model to everyone, one feature at a time.",
     image: "https://media.licdn.com/dms/image/v2/D4D03AQELXdPv639O4w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1699938883733?e=2147483647&v=beta&t=t41UBuuI4uxkug3KyHx8bHcoBSCYoO8Hw-QL9IFlBps",
     linkedin: "https://www.linkedin.com/in/kevin-isom-a58bb3201/",
     twitter: "https://twitter.com/kevin_B_isom"

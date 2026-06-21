@@ -146,7 +146,7 @@ export default function Home() {
     "name": "Scroll One SuperApp",
     "url": siteUrl,
     "logo": `${siteUrl}/logo.png`,
-    "description": "A comprehensive super app ecosystem built on the Scroll blockchain",
+    "description": "A comprehensive super app ecosystem built on the Sui blockchain",
     "sameAs": [
       "https://twitter.com/scrollone",
       "https://github.com/scrollone",
@@ -163,7 +163,7 @@ export default function Home() {
     "@type": "WebSite",
     "name": "Scroll One SuperApp",
     "url": siteUrl,
-    "description": "Your Gateway to the Scroll Ecosystem",
+    "description": "Your Gateway to the Sui Ecosystem",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
@@ -190,7 +190,7 @@ export default function Home() {
       "ratingValue": "4.8",
       "ratingCount": "1250",
     },
-    "description": "A comprehensive super app ecosystem built on the Scroll blockchain, integrating wallet, identity, and a diverse mini-app marketplace.",
+    "description": "A comprehensive super app ecosystem built on the Sui blockchain, integrating wallet, identity, and a diverse mini-app marketplace powered by Sui Move and parallel execution.",
   };
 
   const breadcrumbSchema = {
@@ -307,6 +307,10 @@ export default function Home() {
                 Demo
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
               </a>
+              <a href="#sui" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
+                Why Sui
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
+              </a>
               <a href="#ecosystem" className="text-text-secondary hover:text-accent-primary transition-colors font-medium text-sm relative group">
                 Ecosystem
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300"></span>
@@ -351,6 +355,7 @@ export default function Home() {
           >
             <div className="flex flex-col space-y-4">
               <a href="#features" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Features</a>
+              <a href="#sui" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Why Sui</a>
               <a href="#demo" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Demo</a>
               <a href="#ecosystem" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Ecosystem</a>
               <a href="/developers" className="text-text-secondary hover:text-accent-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Developers</a>
@@ -425,7 +430,7 @@ export default function Home() {
                 transition={{ delay: 0.4 }}
                 className="text-xl md:text-2xl text-text-secondary mb-10 leading-relaxed max-w-xl"
               >
-                The Scroll ecosystem, reimagined. Wallet, identity, and 20+ mini-apps in one beautifully crafted experience.
+                The Sui ecosystem, reimagined. Scroll One brings wallet, identity, and 20+ mini-apps together in one experience—built on Sui, not the Scroll blockchain.
               </motion.p>
 
               <motion.div
@@ -578,15 +583,15 @@ export default function Home() {
               {
                 icon: Wallet,
                 title: "Your Wallet, Your Rules",
-                description: "Full control over your assets. Send, receive, swap—all with the security you deserve.",
-                features: ["Multi-token support", "Real-time balance", "Transaction history", "QR codes"],
+                description: "Full control over your SUI and on-chain objects. Send, receive, and swap assets secured by Sui&apos;s object ownership model.",
+                features: ["SUI & token support", "Object-based assets", "Transaction history", "QR codes"],
                 color: "from-blue-500 to-cyan-500",
                 position: "left"
               },
               {
                 icon: Fingerprint,
                 title: "Identity You Own",
-                description: "Scroll ID isn&apos;t just a username. It&apos;s your reputation, your achievements, your digital self.",
+                description: "Scroll ID isn&apos;t just a username. It&apos;s your reputation, your achievements, your portable digital self across the Sui network.",
                 features: ["Unique Scroll ID", "Reputation system", "Portable identity", "Badges & achievements"],
                 color: "from-purple-500 to-pink-500",
                 position: "right"
@@ -594,7 +599,7 @@ export default function Home() {
               {
                 icon: Layers,
                 title: "20+ Apps, One Home",
-                description: "DeFi, NFTs, gaming, social—discover the Scroll ecosystem without leaving the app.",
+                description: "DeFi, NFTs, gaming, social—discover Sui-native dApps built with Sui Move without leaving the app.",
                 features: ["20+ mini-apps", "Category filtering", "Featured apps", "One-click access"],
                 color: "from-green-500 to-emerald-500",
                 position: "left"
@@ -602,8 +607,8 @@ export default function Home() {
               {
                 icon: Rocket,
                 title: "Lightning Fast",
-                description: "Built on Scroll. Instant transactions, minimal fees, maximum speed.",
-                features: ["Instant transactions", "Low fees", "Scalable network", "Optimized performance"],
+                description: "Built on Sui. Parallel transaction execution and sub-second finality for simple transfers—no global consensus bottleneck.",
+                features: ["Parallel execution", "Fast-path transfers", "Low gas fees", "Horizontal scale"],
                 color: "from-yellow-500 to-orange-500",
                 position: "right"
               },
@@ -656,6 +661,69 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Powered by Sui */}
+      <section id="sui" className="relative py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-background-secondary/50 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="mb-20 text-center"
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-primary"></div>
+              <span className="text-accent-primary font-mono text-sm tracking-wider">POWERED BY SUI</span>
+              <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6">
+              Built on <span className="gradient-text">Sui</span>
+            </h2>
+            <p className="text-xl text-text-secondary max-w-3xl mx-auto">
+              Sui is a Layer 1 blockchain designed for high-performance decentralized apps. Its object-centric data model enables parallel execution, low-latency finality, and horizontal scalability.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: Cpu,
+                title: "Object-Centric Model",
+                description: "Every asset on Sui is a programmable object with a unique on-chain ID—owned, shared, or immutable. Transactions interact directly with objects, not a global account ledger.",
+              },
+              {
+                icon: Zap,
+                title: "Parallel Execution",
+                description: "Owned-object transfers bypass global consensus via Byzantine Consistent Broadcast, achieving sub-second finality. Independent transaction flows run in parallel without blocking each other.",
+              },
+              {
+                icon: Code,
+                title: "Sui Move",
+                description: "Smart contracts are written in Sui Move—an asset-centric, type-safe dialect of Move originally developed at Meta. Strong ownership types make bugs and exploits far less likely.",
+              },
+              {
+                icon: Network,
+                title: "Scale Without Limits",
+                description: "Shared-object transactions are ordered through the Bullshark consensus protocol. Low-cost on-chain storage lets dApps keep rich data directly on-chain for full composability.",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="glass rounded-3xl p-8 border border-border-subtle backdrop-blur-xl hover:border-accent-primary/30 transition-all"
+              >
+                <item.icon className="w-10 h-10 text-accent-primary mb-4" />
+                <h3 className="text-xl font-bold mb-3 text-text-primary">{item.title}</h3>
+                <p className="text-text-secondary text-sm leading-relaxed">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Video Demo Section */}
       <section id="demo" className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -675,7 +743,7 @@ export default function Home() {
               See It in <span className="gradient-text">Action</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              Watch how Scroll One transforms your Web3 experience
+              Watch how Scroll One SuperApp transforms your Web3 experience on Sui
             </p>
           </motion.div>
 
@@ -721,7 +789,7 @@ export default function Home() {
               ( will be ) Loved by <span className="gradient-text">Users</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              See what our community is saying about Scroll One
+              See what our community is saying about Scroll One SuperApp
             </p>
           </motion.div>
 
@@ -732,7 +800,7 @@ export default function Home() {
                 role: "DeFi Trader",
                 avatar: "👤",
                 rating: 5,
-                text: "Scroll One changed how I interact with DeFi. Having everything in one app is a game-changer. The wallet integration is seamless!",
+                text: "Scroll One SuperApp changed how I interact with DeFi on Sui. Having everything in one app is a game-changer. The wallet integration is seamless!",
                 verified: true
               },
               {
@@ -764,7 +832,7 @@ export default function Home() {
                 role: "Gaming Enthusiast",
                 avatar: "👤",
                 rating: 5,
-                text: "The gaming mini-apps are amazing! I can play, earn, and trade all from one place. The Scroll network speed is incredible.",
+                text: "The gaming mini-apps are amazing! I can play, earn, and trade all from one place. Sui&apos;s parallel execution makes everything feel instant.",
                 verified: true
               },
               {
@@ -829,10 +897,10 @@ export default function Home() {
               <div className="h-px w-20 bg-gradient-to-r from-accent-primary to-transparent"></div>
             </div>
             <h2 className="text-5xl md:text-7xl font-black mb-6">
-              The <span className="gradient-text">Scroll</span> Universe
+              The <span className="gradient-text">Sui</span> Universe
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              Everything you need, all in one place
+              Everything you need on Sui&apos;s object-centric Layer 1—all in one place
             </p>
           </motion.div>
 
@@ -989,7 +1057,7 @@ export default function Home() {
               Common <span className="gradient-text">Questions</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              Everything you need to know about Scroll One
+              Everything you need to know about Scroll One SuperApp
             </p>
           </motion.div>
 
@@ -997,11 +1065,15 @@ export default function Home() {
             {[
               {
                 question: "What is Scroll One SuperApp?",
-                answer: "Scroll One is a comprehensive super app built on the Scroll blockchain that combines a secure crypto wallet, decentralized identity management, and an extensive marketplace of 20+ mini-applications. It's your all-in-one gateway to the Scroll ecosystem."
+                answer: "Scroll One SuperApp is a comprehensive super app built on the Sui blockchain—not the Scroll L2 network. It combines a secure crypto wallet, decentralized identity management, and an extensive marketplace of 20+ mini-applications. It's your all-in-one gateway to the Sui ecosystem, leveraging Sui's object-centric model, Sui Move smart contracts, and parallel transaction execution."
               },
               {
-                question: "Is Scroll One free to use?",
-                answer: "Yes! Scroll One will be completely free to download and use once it launches. You'll only pay network fees for blockchain transactions, which are minimal on the Scroll network. There are no subscription fees or hidden costs. We're currently in active development and putting on the final touches before launch."
+                question: "Is Scroll One related to the Scroll blockchain?",
+                answer: "No. Despite the name, Scroll One is not affiliated with or built on the Scroll blockchain (scroll.io). Scroll One is a super app powered exclusively by the Sui network. The name reflects our vision of scrolling through a unified Web3 experience—not any connection to Scroll L2."
+              },
+              {
+                question: "Is Scroll One SuperApp free to use?",
+                answer: "Yes! Scroll One SuperApp will be completely free to download and use once it launches. You'll only pay network gas fees for on-chain transactions, which are typically very low on Sui. There are no subscription fees or hidden costs. We're currently in active development and putting on the final touches before launch."
               },
               {
                 question: "How secure is my wallet?",
@@ -1009,23 +1081,27 @@ export default function Home() {
               },
               {
                 question: "What is Scroll ID?",
-                answer: "Scroll ID is your decentralized identity on the Scroll network. It's a unique identifier that you own and control, complete with a reputation system, badges, and achievements. Your Scroll ID is portable and can be used across different applications in the ecosystem."
+                answer: "Scroll ID is your decentralized identity on the Sui network. It's a unique identifier that you own and control, complete with a reputation system, badges, and achievements. Your Scroll ID is portable and can be used across different applications in the Sui ecosystem."
               },
               {
                 question: "Can I use my existing wallet?",
-                answer: "Yes! You can import your existing wallet using your seed phrase or private key. Scroll One supports standard Ethereum-compatible wallets, so you can bring your existing assets and continue using them seamlessly."
+                answer: "Yes! You can import your existing Sui wallet using your recovery phrase. Scroll One SuperApp supports standard Sui wallets, so you can bring your existing SUI and on-chain objects and continue using them seamlessly."
               },
               {
                 question: "What mini-apps are available?",
-                answer: "Scroll One features 20+ mini-apps across categories including DeFi (trading, lending, swapping), NFTs (marketplaces, galleries), Gaming, Social networking, Governance, AI tools, and more. New apps are added regularly based on community feedback."
+                answer: "Scroll One SuperApp features 20+ mini-apps across categories including DeFi (trading, lending, swapping), NFTs (marketplaces, galleries), Gaming, Social networking, Governance, AI tools, and more. New Sui-native apps are added regularly based on community feedback."
               },
               {
-                question: "Is Scroll One available on all platforms?",
-                answer: "Scroll One will be available on iOS, Android, and Web when we launch. Your data will sync across all platforms, so you can access your wallet and identity from any device. The experience will be consistent across all platforms. We're currently in final development and will announce launch dates soon."
+                question: "Is Scroll One SuperApp available on all platforms?",
+                answer: "Scroll One SuperApp will be available on iOS, Android, and Web when we launch. Your data will sync across all platforms, so you can access your wallet and identity from any device. The experience will be consistent across all platforms. We're currently in final development and will announce launch dates soon."
               },
               {
                 question: "How do I integrate my dApp?",
-                answer: "We provide a comprehensive SDK and ScrollOne bridge for developers. Check out our Developers page for documentation, code examples, and integration guides. The process is straightforward and well-documented."
+                answer: "We provide a comprehensive SDK and bridge API for developers building on Sui Move. Check out our Developers page for documentation, code examples, and integration guides. The process is straightforward and well-documented."
+              },
+              {
+                question: "Why is Scroll One built on Sui?",
+                answer: "Scroll One is built on Sui—not the Scroll L2 blockchain. Sui is a high-performance Layer 1 designed for scale. Unlike account-based blockchains, Sui stores every asset as a programmable object with a unique on-chain ID. Simple transfers of owned objects bypass global consensus and finalize in sub-seconds, while complex interactions use the Bullshark consensus protocol. Sui Move—a safe, asset-centric dialect of Move—powers the smart contracts behind our mini-app ecosystem."
               },
             ].map((faq, index) => (
               <motion.div
@@ -1094,7 +1170,7 @@ export default function Home() {
               Get notified when we launch and receive early access
             </p>
             <p className="text-sm text-text-tertiary mb-10 max-w-2xl mx-auto">
-              Join our waitlist to be among the first to experience Scroll One
+              Join our waitlist to be among the first to experience Scroll One SuperApp
             </p>
 
             {!emailSubmitted ? (
@@ -1146,7 +1222,7 @@ export default function Home() {
                   </div>
                   <h3 className="text-2xl font-bold text-text-primary">Thanks for subscribing!</h3>
                   <p className="text-text-secondary text-center">
-                    Check your email to confirm your subscription. We&apos;ll keep you updated with the latest from Scroll One.
+                    Check your email to confirm your subscription. We&apos;ll keep you updated with the latest from Scroll One SuperApp.
                   </p>
                   <button
                     onClick={() => setEmailSubmitted(false)}
@@ -1180,9 +1256,8 @@ export default function Home() {
               Built for the <span className="gradient-text">future</span>
             </h2>
             <p className="text-xl md:text-2xl text-text-primary leading-relaxed mb-16">
-              Scroll One isn&apos;t just another app. It&apos;s a complete reimagining of what a super app can be. 
-              We&apos;ve taken the best of blockchain technology, wrapped it in beautiful design, and made it 
-              accessible to everyone.
+              Scroll One SuperApp isn&apos;t just another app. It&apos;s a complete reimagining of what a super app can be on Sui. 
+              We&apos;ve taken Sui&apos;s object-centric architecture, parallel execution, and Sui Move smart contracts, wrapped them in beautiful design, and made Web3 accessible to everyone.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <motion.div
@@ -1206,7 +1281,7 @@ export default function Home() {
                 <TrendingUp className="w-12 h-12 text-accent-primary mb-4" />
                 <h3 className="text-2xl font-bold mb-4 text-text-primary">Vision</h3>
                 <p className="text-text-secondary leading-relaxed">
-                  Become the home for everything Scroll. One app, infinite possibilities.
+                  Become the home for everything on Sui. One app, infinite possibilities—not affiliated with the Scroll blockchain.
                 </p>
               </motion.div>
             </div>
@@ -1233,7 +1308,7 @@ export default function Home() {
               Meet the <span className="gradient-text">Team</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              The passionate people behind Scroll One
+              The passionate people behind Scroll One SuperApp
             </p>
           </motion.div>
 
@@ -1262,7 +1337,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-text-secondary mb-6 leading-relaxed max-w-md">
-                Your gateway to the Scroll ecosystem. Experience Web3, reimagined.
+                Your gateway to the Sui ecosystem. Experience Web3, reimagined on Sui.
               </p>
               <div className="flex items-center space-x-4">
                 {[
@@ -1294,8 +1369,8 @@ export default function Home() {
               <h4 className="font-bold mb-4 text-text-primary">Developers</h4>
               <ul className="space-y-3 text-sm text-text-secondary">
                 <li><a href="/developers" className="hover:text-accent-primary transition-colors">Developer Docs</a></li>
-                <li><a href="https://docs.scroll.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Scroll Docs</a></li>
-                <li><a href="https://scroll.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Scroll Network</a></li>
+                <li><a href="https://docs.sui.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Sui Docs</a></li>
+                <li><a href="https://sui.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Sui Network</a></li>
                 <li><a href="#" className="hover:text-accent-primary transition-colors">Support</a></li>
               </ul>
             </div>

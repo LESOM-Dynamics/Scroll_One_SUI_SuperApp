@@ -4,8 +4,8 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { useWalletStore } from '@/store/walletStore';
 import { useUserStore } from '@/store/userStore';
 import { useSettingsStore } from '@/store/settingsStore';
-import { loadWallet, createWallet } from '@/services/scroll/wallet';
-import { scrollProvider } from '@/services/scroll/provider';
+import { loadWallet } from '@/services/sui/wallet';
+import { suiProvider } from '@/services/sui/provider';
 
 export function useAppInitialization() {
   const { address, setAddress, setBalance, setUnlocked } = useWalletStore();
@@ -22,7 +22,7 @@ export function useAppInitialization() {
 
   useEffect(() => {
     const initializeApp = async () => {
-      console.log('[App] Initializing Scroll One...');
+      console.log('[App] Initializing Sui One...');
 
       // Load persisted preferences first
       await Promise.all([loadNetworkPreference(), loadBiometricPreference()]);
@@ -42,7 +42,7 @@ export function useAppInitialization() {
       // Start locked until we successfully load (and optionally unlock) the wallet
       setUnlocked(false);
       // Initialize provider with current network preference
-      scrollProvider.switchNetwork(isTestnet);
+      suiProvider.switchNetwork(isTestnet);
       lastNetworkRef.current = isTestnet;
 
       // Check if wallet exists (don't auto-create - let signup handle it)
@@ -66,7 +66,7 @@ export function useAppInitialization() {
               // Continue without biometrics
             } else {
               const result = await LocalAuthentication.authenticateAsync({
-                promptMessage: 'Unlock your Scroll wallet',
+                promptMessage: 'Unlock your Sui wallet',
                 fallbackLabel: 'Use device passcode',
                 cancelLabel: 'Cancel',
               });
@@ -84,7 +84,7 @@ export function useAppInitialization() {
 
         if (shouldUnlock) {
           // Unlock wallet and load balance
-          const balance = await scrollProvider.getBalance(wallet.address);
+          const balance = await suiProvider.getBalance(wallet.address);
           setBalance(balance);
           console.log('[App] Balance loaded:', balance);
           setUnlocked(true);
@@ -93,9 +93,9 @@ export function useAppInitialization() {
           if (!profile) {
             setProfile({
               id: '1',
-              username: 'scrolluser',
-              displayName: 'Scroll User',
-              scrollId: 'scrolluser123',
+              username: 'suiuser',
+              displayName: 'Sui User',
+              suiId: 'suiuser123',
               reputation: 1250,
               level: 5,
               joinedAt: Date.now() - 90 * 24 * 60 * 60 * 1000,
@@ -134,12 +134,12 @@ export function useAppInitialization() {
     // Only refresh if network actually changed
     if (lastNetworkRef.current !== null && lastNetworkRef.current !== isTestnet) {
       const refreshBalance = async () => {
-        scrollProvider.switchNetwork(isTestnet);
+        suiProvider.switchNetwork(isTestnet);
         lastNetworkRef.current = isTestnet;
         
         if (address) {
           try {
-            const balance = await scrollProvider.getBalance(address);
+            const balance = await suiProvider.getBalance(address);
             setBalance(balance);
             console.log('[App] Balance refreshed after network switch:', balance);
           } catch (error) {

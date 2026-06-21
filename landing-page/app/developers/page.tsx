@@ -71,7 +71,7 @@ async function initializeApp() {
     console.log('Address:', account.address);
     console.log('Connected:', account.isConnected);
     
-    // Get ETH balance
+    // Get SUI balance
     const balance = await window.scrollOne.getBalance();
     console.log('Balance:', balance.formatted, balance.symbol);
     
@@ -96,7 +96,7 @@ async function initializeApp() {
     console.log('Transaction hash:', result.hash);
     
     // Sign message
-    const signature = await window.scrollOne.signMessage('Hello, Scroll!');
+    const signature = await window.scrollOne.signMessage('Hello, Sui!');
     console.log('Signature:', signature.signature);
     
     // Request notification from mini-app
@@ -148,7 +148,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
   const account = await window.scrollOne.getAccount();
   // Returns: { address: string | null, isConnected: boolean }
   
-  // 4. Get balance (ETH only, token support coming soon)
+  // 4. Get balance (SUI only, token support coming soon)
   const balance = await window.scrollOne.getBalance();
   // Returns: { balance: string, formatted: string, symbol: string }
   
@@ -165,7 +165,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
   // Returns: { gasLimit: string, gasPrice: string, estimatedFee: string }
   
   // 7. Sign message
-  const signature = await window.scrollOne.signMessage('Hello, Scroll!');
+  const signature = await window.scrollOne.signMessage('Hello, Sui!');
   // Returns: { signature: string }
   
   // 8. Sign transaction (requires user approval)
@@ -296,11 +296,11 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-accent-primary/20"></div>
             </div>
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-6 leading-[0.95] tracking-tight">
-              Build on <span className="gradient-text">Scroll</span>
+              Build on <span className="gradient-text">Sui</span>
             </h1>
             <p className="text-xl md:text-2xl text-text-secondary mb-10 leading-relaxed max-w-3xl">
-              Integrate your dApp into Scroll One SuperApp and reach thousands of users. 
-              Simple SDK v1.0.0, powerful tools, endless possibilities.
+              Integrate your Sui Move dApp into Scroll One SuperApp and reach thousands of users. 
+              Simple SDK v1.0.0, powerful tools, endless possibilities on Sui&apos;s object-centric Layer 1.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <motion.a
@@ -313,14 +313,14 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 <ArrowRight className="w-5 h-5" />
               </motion.a>
               <motion.a
-                href="https://docs.scroll.io"
+                href="https://docs.sui.io"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-8 py-4 glass border-2 border-border-subtle text-text-primary rounded-2xl font-semibold text-lg flex items-center justify-center space-x-3 hover:border-accent-primary/50 transition-all backdrop-blur-xl"
                 whileHover={{ scale: 1.05 }}
               >
                 <Book className="w-5 h-5" />
-                <span>Scroll Docs</span>
+                <span>Sui Docs</span>
                 <ExternalLink className="w-4 h-4" />
               </motion.a>
             </div>
@@ -353,7 +353,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               {
                 step: "01",
                 title: "Add to Registry",
-                description: "Add your dApp to the Scroll One registry",
+                description: "Add your dApp to the Scroll One SuperApp registry",
                 icon: FileCode,
                 color: "from-blue-500 to-cyan-500"
               },
@@ -420,12 +420,12 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               {
                 step: "1",
                 title: "Prepare Your dApp",
-                description: "Ensure your dApp is live on Scroll network and integrates with window.scrollOne bridge API",
+                description: "Ensure your dApp is live on Sui mainnet or testnet and integrates with the bridge API",
                 details: [
                   "dApp must be accessible via HTTPS",
                   "Must work in WebView environment",
-                  "Should integrate with ScrollOne bridge API (window.scrollOne)",
-                  "Use SDK v1.0.0 methods: getAccount, getBalance, signTransaction, etc."
+                  "Should integrate with the bridge API (window.scrollOne)",
+                  "Built with Sui Move smart contracts on the Sui network"
                 ]
               },
               {
@@ -435,7 +435,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 details: [
                   "Email: dev@scrollone.app",
                   "Include: App name, URL, description, category",
-                  "Ensure your dApp uses window.scrollOne API",
+                  "Ensure your dApp uses the bridge API",
                   "We'll review and add to the registry"
                 ]
               },
@@ -446,7 +446,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 details: [
                   "Added to miniapps/registry.ts",
                   "Appears in Explore tab",
-                  "Available to all Scroll One users"
+                  "Available to all Scroll One SuperApp users"
                 ]
               },
               {
@@ -508,7 +508,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               Available <span className="gradient-text">Methods</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-3xl mb-12">
-              ScrollOne SDK v1.0.0 provides the following methods for dApp integration:
+              Scroll One SuperApp SDK v1.0.0 provides the following methods for dApp integration on Sui:
             </p>
           </motion.div>
 
@@ -522,7 +522,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               },
               {
                 method: "getBalance(tokenAddress?)",
-                description: "Get ETH balance (token support coming soon)",
+                description: "Get SUI balance (token support coming soon)",
                 returns: "{ balance: string, formatted: string, symbol: string }",
                 example: "const balance = await window.scrollOne.getBalance();"
               },
@@ -617,19 +617,19 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
             {[
               {
                 title: "Add Your dApp to Registry",
-                description: "Register your dApp in the Scroll One MiniApp registry",
+                description: "Register your dApp in the Scroll One SuperApp MiniApp registry",
                 code: codeExamples.integration,
                 id: "integration"
               },
               {
-                title: "ScrollOne Bridge API",
+                title: "Bridge API",
                 description: "Access wallet features from your dApp using window.scrollOne",
                 code: codeExamples.bridge,
                 id: "bridge"
               },
               {
                 title: "Bridge Integration",
-                description: "Complete example of integrating with the ScrollOne bridge",
+                description: "Complete example of integrating with the Scroll One SuperApp bridge",
                 code: codeExamples.sdk,
                 id: "sdk"
               },
@@ -803,7 +803,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               {
                 icon: Webhook,
                 title: "ScrollOne Bridge",
-                description: "Seamless communication between your dApp and Scroll One wallet",
+                description: "Seamless communication between your Sui dApp and the Scroll One wallet",
                 features: ["Wallet integration", "Transaction signing", "Event handling", "Notification support", "8 core methods"]
               },
               {
@@ -881,22 +881,22 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {[
               {
-                title: "Scroll Documentation",
-                description: "Complete guide to building on Scroll blockchain",
-                href: "https://docs.scroll.io",
+                title: "Sui Documentation",
+                description: "Complete guide to building on Sui with Sui Move smart contracts",
+                href: "https://docs.sui.io",
                 icon: Book,
                 external: true
               },
               {
                 title: "SDK Documentation",
-                description: "Complete ScrollOne SDK v1.0.0 documentation and API reference",
+                description: "Complete Scroll One SuperApp SDK v1.0.0 documentation and API reference",
                 href: "#",
                 icon: Code,
                 external: false
               },
               {
                 title: "Bridge Integration Guide",
-                description: "Complete guide to integrating with ScrollOne Bridge API v1.0.0",
+                description: "Complete guide to integrating with the Scroll One SuperApp Bridge API v1.0.0",
                 href: "#",
                 icon: Webhook,
                 external: false
@@ -949,8 +949,8 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               Ready to <span className="gradient-text">Build</span>?
             </h2>
             <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-              Join the Scroll One ecosystem and bring your dApp to thousands of users. 
-              Built with ScrollOne SDK v1.0.0 - simple, secure, and powerful.
+              Join the Scroll One SuperApp ecosystem and bring your Sui Move dApp to thousands of users. 
+              Built with SDK v1.0.0 - simple, secure, and powerful on Sui.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.a
@@ -995,14 +995,14 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 </div>
               </div>
               <p className="text-text-secondary mb-6 leading-relaxed max-w-md">
-                Built for the Scroll ecosystem. Experience Web3, reimagined.
+                Built for the Sui ecosystem. Experience Web3, reimagined on Sui.
               </p>
             </div>
             <div>
               <h4 className="font-bold mb-4 text-text-primary">Developers</h4>
               <ul className="space-y-3 text-sm text-text-secondary">
                 <li><Link href="/developers" className="hover:text-accent-primary transition-colors">Documentation</Link></li>
-                <li><a href="https://docs.scroll.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Scroll Docs</a></li>
+                <li><a href="https://docs.sui.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Sui Docs</a></li>
                 <li><a href="#" className="hover:text-accent-primary transition-colors">SDK Reference</a></li>
                 <li><a href="#" className="hover:text-accent-primary transition-colors">Examples</a></li>
               </ul>
@@ -1013,12 +1013,12 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 <li><Link href="/#features" className="hover:text-accent-primary transition-colors">Features</Link></li>
                 <li><Link href="/#ecosystem" className="hover:text-accent-primary transition-colors">Ecosystem</Link></li>
                 <li><Link href="/#download" className="hover:text-accent-primary transition-colors">Download</Link></li>
-                <li><a href="https://scroll.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Scroll Network</a></li>
+                <li><a href="https://sui.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent-primary transition-colors">Sui Network</a></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-border-subtle pt-8 text-center text-sm text-text-tertiary">
-            <p>&copy; {new Date().getFullYear()} Scroll One SuperApp. Built on Scroll blockchain.</p>
+            <p>&copy; {new Date().getFullYear()} Scroll One SuperApp. Built on Sui blockchain.</p>
           </div>
         </div>
       </footer>

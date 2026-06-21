@@ -1,7 +1,7 @@
 {
   "name": "Scroll One SuperApp",
   "short_name": "Scroll One",
-  "description": "Your Gateway to the Scroll Ecosystem",
+  "description": "Your Gateway to the Sui Ecosystem",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFF8F3",
@@ -24,4 +24,3 @@
   "lang": "en-US",
   "dir": "ltr"
 }
-
