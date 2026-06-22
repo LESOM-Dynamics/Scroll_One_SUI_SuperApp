@@ -7,11 +7,11 @@ import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useWalletStore, type Asset, type Transaction } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
-import { shortenAddress } from '@/services/scroll/wallet';
-import { formatTransactionTime, fetchTransactions } from '@/services/scroll/transactions';
-import { scrollProvider } from '@/services/scroll/provider';
-import { getETHPrice, getTokenPrice } from '@/services/scroll/prices';
-import { getTokenBalances, getAllAvailableTokens, getAllTokens } from '@/services/scroll/tokens';
+import { shortenAddress } from '@/services/sui/wallet';
+import { formatTransactionTime, fetchTransactions } from '@/services/sui/transactions';
+import { suiProvider } from '@/services/sui/provider';
+import { getSUIPrice, getTokenPrice } from '@/services/sui/prices';
+import { getTokenBalances, getAllAvailableTokens, getAllTokens } from '@/services/sui/tokens';
 import { WalletSelectionModal } from '@/components/wallet/WalletSelectionModal';
 import { ImportTokenModal } from '@/components/tokens/ImportTokenModal';
 import * as Clipboard from 'expo-clipboard';
@@ -66,23 +66,22 @@ export default function WalletScreen() {
       // Get available tokens for current network (built-in + custom)
       const availableTokens = await getAllAvailableTokens(isTestnet);
       
-      // Fetch ETH balance and price
-      const [ethBalance, ethPriceData] = await Promise.all([
-        scrollProvider.getBalance(address),
-        getETHPrice(),
+      // Fetch SUI balance and price
+      const [suiBalance, suiPriceData] = await Promise.all([
+        suiProvider.getBalance(address),
+        getSUIPrice(),
       ]);
       
-      const ethBalanceNum = parseFloat(ethBalance);
-      const ethPrice = ethPriceData.price;
-      const ethUsdValue = ethBalanceNum * ethPrice;
+      const suiBalanceNum = parseFloat(suiBalance);
+      const suiPrice = suiPriceData.price;
+      const suiUsdValue = suiBalanceNum * suiPrice;
       
-      // Fetch ERC-20 token balances
+      // Fetch coin balances
       const tokenBalances = await getTokenBalances(address, availableTokens, isTestnet);
       
-      // Fetch prices for all tokens in parallel
-      const pricePromises = ['ETH', ...availableTokens].map(async (symbol) => {
-        if (symbol === 'ETH') {
-          return { symbol, price: ethPriceData.price, change24h: ethPriceData.change24h };
+      const pricePromises = ['SUI', ...availableTokens].map(async (symbol) => {
+        if (symbol === 'SUI') {
+          return { symbol, price: suiPriceData.price, change24h: suiPriceData.change24h };
         }
         const priceData = await getTokenPrice(symbol);
         return { symbol, price: priceData.price, change24h: priceData.change24h };
@@ -91,27 +90,24 @@ export default function WalletScreen() {
       const prices = await Promise.all(pricePromises);
       const priceMap = new Map(prices.map(p => [p.symbol, p]));
       
-      // Get all tokens (built-in + custom) for token info
       const allTokens = await getAllTokens(isTestnet);
       
-      // Build assets array
       const assetsList: Asset[] = [];
       
-      // Add ETH asset
       assetsList.push({
-        symbol: 'ETH',
-        name: 'Ethereum',
-        balance: ethBalanceNum.toFixed(4),
-        usdValue: ethUsdValue.toLocaleString('en-US', {
+        symbol: 'SUI',
+        name: 'Sui',
+        balance: suiBalanceNum.toFixed(4),
+        usdValue: suiUsdValue.toLocaleString('en-US', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }),
-        change24h: ethPriceData.change24h,
-        icon: '⟠',
+        change24h: suiPriceData.change24h,
+        icon: '💧',
       });
       
-      // Add ERC-20 token assets
       for (const symbol of availableTokens) {
+        if (symbol === 'SUI') continue;
         const balance = tokenBalances.get(symbol) || '0.0';
         const balanceNum = parseFloat(balance);
         const tokenInfo = allTokens[symbol.toUpperCase()];

@@ -21,7 +21,7 @@ export class AuthService {
     message: string,
     signature: string
   ): Promise<boolean> {
-    return SignatureVerifier.verifySignature(walletAddress, message, signature);
+    return await SignatureVerifier.verifySignature(walletAddress, message, signature);
   }
 
   async createSession(userId: string, walletAddress: string, deviceId?: string): Promise<Session> {

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Alert, ActivityIndicator, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { isAddress } from 'ethers';
-import { parseEther, formatEther } from 'ethers';
+import { isValidSuiAddress, normalizeSuiAddress } from '@mysten/sui/utils';
 import { QrCode, ArrowLeft, ArrowRight, CheckCircle, AlertTriangle, Info, Shield, X } from 'lucide-react-native';
 
 import { colors, spacing, typography, borderRadius } from '@/theme';
@@ -12,13 +11,13 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { useWalletStore } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
-import { sendTransaction, estimateTransactionFee } from '@/services/scroll/transactions';
-import { getETHPrice } from '@/services/scroll/prices';
-import { shortenAddress } from '@/services/scroll/wallet';
+import { sendTransaction, estimateTransactionFee } from '@/services/sui/transactions';
+import { getSUIPrice } from '@/services/sui/prices';
+import { shortenAddress } from '@/services/sui/wallet';
 import * as Haptics from 'expo-haptics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SCROLL_EXPLAINER_SHOWN_KEY = '@scroll_one:l2_explainer_shown';
+const SUI_GAS_EXPLAINER_SHOWN_KEY = '@sui_one:gas_explainer_shown';
 
 type Step = 'intent' | 'review' | 'confirmation';
 
@@ -30,7 +29,7 @@ export default function SendScreen() {
   const [recipient, setRecipient] = useState('');
   const [recipientDisplay, setRecipientDisplay] = useState(''); // For ENS or formatted address
   const [amount, setAmount] = useState('');
-  const [selectedAsset] = useState('ETH');
+  const [selectedAsset] = useState('SUI');
   const [estimatedFee, setEstimatedFee] = useState('0.002');
   const [feeUsd, setFeeUsd] = useState('0.00');
   const [isEstimatingFee, setIsEstimatingFee] = useState(false);
@@ -38,32 +37,31 @@ export default function SendScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
-  const [showScrollExplainer, setShowScrollExplainer] = useState(false);
+  const [showGasExplainer, setShowGasExplainer] = useState(false);
   const [hasSeenExplainer, setHasSeenExplainer] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
-  const [ethPrice, setEthPrice] = useState(2500);
+  const [suiPrice, setSuiPrice] = useState(2.5);
   const [contractRisk, setContractRisk] = useState<'none' | 'low' | 'medium' | 'high'>('none');
 
-  const ethBalance = assets.find(a => a.symbol === 'ETH')?.balance || '0';
-  const usdValue = amount ? (parseFloat(amount) * ethPrice).toFixed(2) : '0.00';
+  const suiBalance = assets.find(a => a.symbol === 'SUI')?.balance || '0';
+  const usdValue = amount ? (parseFloat(amount) * suiPrice).toFixed(2) : '0.00';
   const totalCost = (parseFloat(amount || '0') + parseFloat(estimatedFee)).toFixed(6);
-  const totalCostUsd = ((parseFloat(amount || '0') + parseFloat(estimatedFee)) * ethPrice).toFixed(2);
-  const networkName = isTestnet ? 'Scroll Sepolia (Testnet)' : 'Scroll Mainnet';
+  const totalCostUsd = ((parseFloat(amount || '0') + parseFloat(estimatedFee)) * suiPrice).toFixed(2);
+  const networkName = isTestnet ? 'Sui Testnet' : 'Sui Mainnet';
 
-  // Fetch ETH price on mount
+  // Fetch SUI price on mount
   useEffect(() => {
     const fetchPrice = async () => {
       try {
-        const priceData = await getETHPrice();
-        setEthPrice(priceData.price);
+        const priceData = await getSUIPrice();
+        setSuiPrice(priceData.price);
       } catch (error) {
-        console.error('[SendScreen] Error fetching ETH price:', error);
+        console.error('[SendScreen] Error fetching SUI price:', error);
       }
     };
     fetchPrice();
 
-    // Check if user has seen Scroll explainer
-    AsyncStorage.getItem(SCROLL_EXPLAINER_SHOWN_KEY).then((value) => {
+    AsyncStorage.getItem(SUI_GAS_EXPLAINER_SHOWN_KEY).then((value) => {
       setHasSeenExplainer(value === 'true');
     });
   }, []);
@@ -77,7 +75,7 @@ export default function SendScreen() {
       }
 
       // Check if it's an address
-      if (isAddress(recipient)) {
+      if (isValidSuiAddress(recipient)) {
         setRecipientDisplay(shortenAddress(recipient, 6));
         // TODO: Check if it's a contract address for risk assessment
         // For now, assume it's a regular address (low risk)
@@ -96,7 +94,7 @@ export default function SendScreen() {
   // Estimate fee when recipient and amount change
   useEffect(() => {
     const estimateFee = async () => {
-      if (!recipient || !amount || !isAddress(recipient)) {
+      if (!recipient || !amount || !isValidSuiAddress(recipient)) {
         setEstimatedFee('0.002');
         setFeeUsd('0.00');
         return;
@@ -106,7 +104,7 @@ export default function SendScreen() {
         setIsEstimatingFee(true);
         const fee = await estimateTransactionFee(recipient, amount);
         setEstimatedFee(fee);
-        setFeeUsd((parseFloat(fee) * ethPrice).toFixed(2));
+        setFeeUsd((parseFloat(fee) * suiPrice).toFixed(2));
       } catch (error) {
         console.error('[SendScreen] Error estimating fee:', error);
         setEstimatedFee('0.002');
@@ -118,7 +116,7 @@ export default function SendScreen() {
 
     const timeoutId = setTimeout(estimateFee, 500);
     return () => clearTimeout(timeoutId);
-  }, [recipient, amount, ethPrice]);
+  }, [recipient, amount, suiPrice]);
 
   const validateInputs = (): boolean => {
     if (!recipient) {
@@ -126,7 +124,7 @@ export default function SendScreen() {
       return false;
     }
 
-    if (!isAddress(recipient)) {
+    if (!isValidSuiAddress(recipient)) {
       setError('Invalid recipient address');
       return false;
     }
@@ -137,7 +135,7 @@ export default function SendScreen() {
     }
 
     const amountNum = parseFloat(amount);
-    const balanceNum = parseFloat(ethBalance);
+    const balanceNum = parseFloat(suiBalance);
     const feeNum = parseFloat(estimatedFee);
 
     if (amountNum + feeNum > balanceNum) {
@@ -151,21 +149,21 @@ export default function SendScreen() {
   const handleBarCodeScanned = ({ data }: { data: string }) => {
     let scannedAddress = data.trim();
     
-    if (scannedAddress.startsWith('ethereum:')) {
-      scannedAddress = scannedAddress.replace('ethereum:', '').split('?')[0];
+    if (scannedAddress.startsWith('sui:')) {
+      scannedAddress = scannedAddress.replace('sui:', '').split('?')[0];
     }
     
     if (scannedAddress.includes('@')) {
       scannedAddress = scannedAddress.split('@')[0];
     }
     
-    if (isAddress(scannedAddress)) {
-      setRecipient(scannedAddress);
+    if (isValidSuiAddress(scannedAddress)) {
+      setRecipient(normalizeSuiAddress(scannedAddress));
       setShowScanner(false);
       setError(null);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } else {
-      Alert.alert('Invalid Address', 'The scanned QR code does not contain a valid Ethereum address');
+      Alert.alert('Invalid Address', 'The scanned QR code does not contain a valid Sui address');
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
   };
@@ -202,13 +200,13 @@ export default function SendScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const handleShowScrollExplainer = () => {
-    setShowScrollExplainer(true);
+  const handleShowGasExplainer = () => {
+    setShowGasExplainer(true);
   };
 
   const handleDismissExplainer = async () => {
-    setShowScrollExplainer(false);
-    await AsyncStorage.setItem(SCROLL_EXPLAINER_SHOWN_KEY, 'true');
+    setShowGasExplainer(false);
+    await AsyncStorage.setItem(SUI_GAS_EXPLAINER_SHOWN_KEY, 'true');
     setHasSeenExplainer(true);
   };
 
@@ -343,7 +341,7 @@ export default function SendScreen() {
       </Button>
 
       <Text style={styles.balanceText}>
-        Available: {ethBalance} ETH
+        Available: {suiBalance} SUI
       </Text>
     </ScrollView>
   );
@@ -393,7 +391,7 @@ export default function SendScreen() {
             )}
           </View>
           <View style={styles.feeValueContainer}>
-            <Text style={styles.feeValue}>{estimatedFee} ETH</Text>
+            <Text style={styles.feeValue}>{estimatedFee} SUI</Text>
             <Text style={styles.feeUsdValue}>≈ ${feeUsd}</Text>
           </View>
         </View>
@@ -404,7 +402,7 @@ export default function SendScreen() {
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Total Cost</Text>
           <View style={styles.totalValueContainer}>
-            <Text style={styles.totalValue}>{totalCost} ETH</Text>
+            <Text style={styles.totalValue}>{totalCost} SUI</Text>
             <Text style={styles.totalUsdValue}>≈ ${totalCostUsd}</Text>
           </View>
         </View>
@@ -436,21 +434,21 @@ export default function SendScreen() {
         </Card>
       )}
 
-      {/* Scroll L2 Enhancement */}
+      {/* Sui gas info */}
       <Card variant="bordered" style={styles.scrollCard}>
         <View style={styles.scrollHeader}>
           <Info color={colors.accent.primary} size={20} />
-          <Text style={styles.scrollTitle}>This transaction executes on Scroll (L2)</Text>
+          <Text style={styles.scrollTitle}>This transaction runs on Sui</Text>
         </View>
         <Text style={styles.scrollText}>
-          Scroll is a Layer 2 network that provides faster and cheaper transactions than Ethereum mainnet.
+          Sui uses an object-based model with fast finality and low gas fees paid in SUI.
         </Text>
         {!hasSeenExplainer && (
           <TouchableOpacity
             style={styles.explainerButton}
-            onPress={handleShowScrollExplainer}
+            onPress={handleShowGasExplainer}
           >
-            <Text style={styles.explainerButtonText}>Why is this cheaper?</Text>
+            <Text style={styles.explainerButtonText}>Learn about Sui gas</Text>
           </TouchableOpacity>
         )}
       </Card>
@@ -511,7 +509,7 @@ export default function SendScreen() {
                 </View>
                 <View style={styles.confirmationDetailRow}>
                   <Text style={styles.confirmationDetailLabel}>Network Fee:</Text>
-                  <Text style={styles.confirmationDetailValue}>{estimatedFee} ETH (≈ ${feeUsd})</Text>
+                  <Text style={styles.confirmationDetailValue}>{estimatedFee} SUI (≈ ${feeUsd})</Text>
                 </View>
                 <View style={styles.confirmationDetailRow}>
                   <Text style={styles.confirmationDetailLabel}>Network:</Text>
@@ -591,10 +589,10 @@ export default function SendScreen() {
           </Modal>
         )}
 
-        {/* Scroll L2 Explainer Modal */}
-        {showScrollExplainer && (
+        {/* Sui gas explainer modal */}
+        {showGasExplainer && (
           <Modal
-            visible={showScrollExplainer}
+            visible={showGasExplainer}
             animationType="slide"
             transparent
             onRequestClose={handleDismissExplainer}
@@ -602,13 +600,13 @@ export default function SendScreen() {
             <View style={styles.modalOverlay}>
               <Card style={styles.explainerModal}>
                 <View style={styles.explainerHeader}>
-                  <Text style={styles.explainerModalTitle}>Why Scroll is Cheaper</Text>
+                  <Text style={styles.explainerModalTitle}>How Sui gas works</Text>
                   <TouchableOpacity onPress={handleDismissExplainer}>
                     <X color={colors.text.secondary} size={24} />
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.explainerModalText}>
-                  Scroll is a Layer 2 (L2) scaling solution built on Ethereum. It processes transactions off-chain and batches them together, which means:
+                  Sui transactions pay a small gas fee in SUI. Fees cover computation and storage, with unused storage cost rebated. This means:
                 </Text>
                 <View style={styles.explainerList}>
                   <Text style={styles.explainerListItem}>• Lower gas fees (often 10-100x cheaper)</Text>
@@ -616,7 +614,7 @@ export default function SendScreen() {
                   <Text style={styles.explainerListItem}>• Same security guarantees as Ethereum</Text>
                 </View>
                 <Text style={styles.explainerModalText}>
-                  Your transaction will be executed on Scroll's network, providing you with significant cost savings while maintaining full security.
+                  Your transaction will be executed on the Sui network with fast finality and predictable low fees.
                 </Text>
                 <Button onPress={handleDismissExplainer} fullWidth style={styles.explainerButton}>
                   Got it

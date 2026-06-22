@@ -6,7 +6,7 @@
 
 import { NativeBridge, type HandlerContext, generateInjectedScript } from '@/scrollone-sdk';
 import { BridgeMethod } from '@/scrollone-sdk';
-import { scrollProvider } from '../scroll/provider';
+import { suiProvider } from '../sui/provider';
 import {
   createGetAccountHandler,
   createGetBalanceHandler,

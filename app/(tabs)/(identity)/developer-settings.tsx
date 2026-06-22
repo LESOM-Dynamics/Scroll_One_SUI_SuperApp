@@ -46,7 +46,7 @@ export default function DeveloperSettingsScreen() {
                 <View style={styles.settingTextContainer}>
                   <Text style={styles.settingTitle}>Active Blockchain Network</Text>
                   <Text style={styles.settingDescription}>
-                    {isTestnet ? 'Scroll Sepolia (testnet)' : 'Scroll Mainnet'}
+                    {isTestnet ? 'Sui Testnet' : 'Sui Mainnet'}
                   </Text>
                 </View>
               </View>

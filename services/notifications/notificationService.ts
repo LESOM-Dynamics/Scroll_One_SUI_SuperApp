@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import type { Transaction } from '@/store/walletStore';
-import { shortenAddress } from '@/services/scroll/wallet';
+import { shortenAddress } from '@/services/sui/wallet';
 
 // Configure notification behavior
 Notifications.setNotificationHandler({

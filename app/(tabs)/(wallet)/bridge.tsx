@@ -12,18 +12,18 @@ export default function BridgeScreen() {
   const { address } = useWalletStore();
   const { isTestnet } = useSettingsStore();
 
-  const networkLabel = isTestnet ? 'Scroll Sepolia (Testnet)' : 'Scroll Mainnet';
+  const networkLabel = isTestnet ? 'Sui Testnet' : 'Sui Mainnet';
 
   const bridgeUrl = isTestnet
-    ? 'https://sepolia.scroll.io/bridge' // TODO: verify actual testnet bridge URL
-    : 'https://scroll.io/bridge';
+    ? 'https://portalbridge.com/sui'
+    : 'https://portalbridge.com/sui';
 
   const app: MiniApp = {
-    id: isTestnet ? 'scroll-bridge-sepolia' : 'scroll-bridge',
-    name: 'Scroll Bridge',
+    id: isTestnet ? 'wormhole-bridge-testnet' : 'wormhole-bridge',
+    name: 'Wormhole Bridge',
     url: bridgeUrl,
     icon: '🌉',
-    description: 'Bridge assets to and from Scroll.',
+    description: 'Bridge assets to and from Sui.',
     category: 'Bridge',
     featured: false,
     verified: true,
@@ -33,7 +33,7 @@ export default function BridgeScreen() {
     <>
       <Stack.Screen
         options={{
-          title: 'Scroll Bridge',
+          title: 'Sui Bridge',
           headerStyle: { backgroundColor: colors.background.primary },
           headerTintColor: colors.text.primary,
         }}

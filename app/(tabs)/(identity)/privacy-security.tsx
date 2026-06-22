@@ -8,8 +8,8 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { useWalletStore } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
-import { getPrivateKey, resetWallet, shortenAddress } from '@/services/scroll/wallet';
-import { scrollProvider } from '@/services/scroll/provider';
+import { getPrivateKey, resetWallet, shortenAddress } from '@/services/sui/wallet';
+import { suiProvider } from '@/services/sui/provider';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -96,7 +96,7 @@ export default function PrivacySecurityScreen() {
               setTransactions([]);
 
               try {
-                const balance = await scrollProvider.getBalance(newWallet.address);
+                const balance = await suiProvider.getBalance(newWallet.address);
                 setBalance(balance);
               } catch (balanceError) {
                 console.error('[PrivacySecurity] Error fetching new wallet balance:', balanceError);
@@ -222,7 +222,7 @@ export default function PrivacySecurityScreen() {
                     Copy Private Key
                   </Button>
                   <Text style={styles.warningText}>
-                    Never share this key with anyone. Scroll will never ask for it.
+                    Never share this key with anyone. Sui One will never ask for it.
                   </Text>
                 </View>
               )}
@@ -246,7 +246,7 @@ export default function PrivacySecurityScreen() {
                 <View style={styles.textContainer}>
                   <Text style={styles.cardTitle}>Biometric Unlock</Text>
                   <Text style={styles.cardDescription}>
-                    Require Face ID / Touch ID / fingerprint (or your device passcode) to unlock your Scroll wallet when the app starts.
+                    Require Face ID / Touch ID / fingerprint (or your device passcode) to unlock your Sui wallet when the app starts.
                   </Text>
                 </View>
               </View>
@@ -255,7 +255,7 @@ export default function PrivacySecurityScreen() {
                 <View style={styles.settingLeft}>
                   <Text style={styles.settingTitle}>Use biometrics to unlock wallet</Text>
                   <Text style={styles.settingSubtitle}>
-                    When enabled, the app will prompt for biometric authentication before loading your wallet and exposing it to mini-apps via the ScrollOne bridge.
+                    When enabled, the app will prompt for biometric authentication before loading your wallet and exposing it to mini-apps via the bridge.
                   </Text>
                 </View>
                 <Switch
@@ -273,7 +273,7 @@ export default function PrivacySecurityScreen() {
 
               <View style={styles.infoBox}>
                 <Text style={styles.infoText}>
-                  Biometric prompts are handled by your device. The Scroll app never receives your fingerprint or Face ID data—only a simple success or failure result.
+                  Biometric prompts are handled by your device. The Sui One app never receives your fingerprint or Face ID data—only a simple success or failure result.
                 </Text>
               </View>
             </Card>

@@ -7,7 +7,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { type MiniApp } from '@/store/miniAppStore';
 import { bridgeService } from '@/services/bridge/bridgeService';
 import { BridgeMethod } from '@/scrollone-sdk';
-import { scrollProvider } from '@/services/scroll/provider';
+import { suiProvider } from '@/services/sui/provider';
 import { TransactionApprovalModal } from '@/components/bridge/TransactionApprovalModal';
 import type { TransactionRequest } from '@/scrollone-sdk';
 import { SuperAppProtocolManager } from '@/services/protocol/superAppProtocol';
@@ -35,7 +35,7 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
   const protocolManagerRef = useRef(new SuperAppProtocolManager());
 
   const isWalletLocked = !isUnlocked || !address;
-  const config = scrollProvider.getConfig();
+  const config = suiProvider.getConfig();
 
   // Generate injected script using SDK
   const generateInjectedScript = useCallback(() => {
@@ -72,7 +72,7 @@ export function WebViewContainer({ app, onError }: WebViewContainerProps) {
         }
 
         if (envelope.type === 'handshake:ack') {
-          const ready = protocolManagerRef.current.completeHandshake(
+          const ready = await protocolManagerRef.current.completeHandshake(
             envelope as ProtocolEnvelope<HandshakeAckPayload>,
           );
           sendEventToWebView('protocol:message', ready);

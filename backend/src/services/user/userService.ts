@@ -5,7 +5,7 @@ import { NotFoundError, ConflictError } from '../../utils/errors';
 export interface User {
   id: string;
   walletAddress: string;
-  scrollId?: string;
+  suiId?: string;
   username?: string;
   displayName?: string;
   avatar?: string;
@@ -21,6 +21,7 @@ export interface User {
 export class UserService {
   async createUser(data: {
     walletAddress: string;
+    suiId?: string;
     scrollId?: string;
     username?: string;
     displayName?: string;
@@ -47,7 +48,7 @@ export class UserService {
     
     const result = await pool.query(query, [
       data.walletAddress,
-      data.scrollId,
+      data.suiId ?? data.scrollId,
       data.username,
       data.displayName,
     ]);
@@ -152,7 +153,7 @@ export class UserService {
     return {
       id: row.id,
       walletAddress: row.wallet_address,
-      scrollId: row.scroll_id,
+      suiId: row.scroll_id,
       username: row.username,
       displayName: row.display_name,
       avatar: row.avatar,

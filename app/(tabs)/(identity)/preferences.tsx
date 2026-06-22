@@ -6,7 +6,7 @@ import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useSettingsStore } from '@/store/settingsStore';
-import { scrollProvider } from '@/services/scroll/provider';
+import { suiProvider } from '@/services/sui/provider';
 import { useWalletStore } from '@/store/walletStore';
 import { notificationService } from '@/services/notifications/notificationService';
 
@@ -36,7 +36,7 @@ export default function PreferencesScreen() {
   const handleNetworkToggle = async (value: boolean) => {
     Alert.alert(
       'Switch Network',
-      `Are you sure you want to switch to ${value ? 'Scroll Sepolia Testnet' : 'Scroll Mainnet'}?`,
+      `Are you sure you want to switch to ${value ? 'Sui Testnet' : 'Sui Mainnet'}?`,
       [
         {
           text: 'Cancel',
@@ -47,12 +47,12 @@ export default function PreferencesScreen() {
           style: 'default',
           onPress: async () => {
             await setNetwork(value);
-            scrollProvider.switchNetwork(value);
+            suiProvider.switchNetwork(value);
             
             // Refresh balance if wallet is connected
             if (address) {
               try {
-                const balance = await scrollProvider.getBalance(address);
+                const balance = await suiProvider.getBalance(address);
                 setBalance(balance);
               } catch (error) {
                 console.error('[Preferences] Error refreshing balance:', error);
@@ -174,7 +174,7 @@ export default function PreferencesScreen() {
                   <View style={styles.settingTextContainer}>
                     <Text style={styles.settingTitle}>Network</Text>
                     <Text style={styles.settingDescription}>
-                      {isTestnet ? 'Scroll Sepolia Testnet' : 'Scroll Mainnet'}
+                      {isTestnet ? 'Sui Testnet' : 'Sui Mainnet'}
                     </Text>
                   </View>
                 </View>
@@ -212,7 +212,7 @@ export default function PreferencesScreen() {
             <Text style={styles.sectionTitle}>About</Text>
             <Card style={styles.infoCard}>
               <Text style={styles.infoText}>
-                Switch between Scroll Mainnet and Scroll Sepolia Testnet. 
+                Switch between Sui Mainnet and Sui Testnet.
                 Testnet is used for development and testing purposes.
               </Text>
             </Card>

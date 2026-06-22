@@ -18,9 +18,9 @@ import type {
   SignTypedDataResponse,
   GasEstimate,
 } from '@/scrollone-sdk';
-import { scrollProvider } from '../scroll/provider';
-import { signMessage, sendTransaction } from '../scroll/wallet';
-import { formatEther, parseEther } from 'ethers';
+import { suiProvider } from '../sui/provider';
+import { signMessage, sendSuiTransaction } from '../sui/wallet';
+import { parseToMist } from '@mysten/sui/utils';
 import { BridgeErrorCode, createBridgeError } from '@/scrollone-sdk';
 import * as Notifications from 'expo-notifications';
 import { notificationService } from '../notifications/notificationService';
@@ -65,8 +65,7 @@ export function createGetBalanceHandler() {
       );
     }
 
-    // For now, only support ETH balance
-    // TODO: Add ERC-20 token support
+    // Native SUI balance only for now
     if (payload?.tokenAddress) {
       console.warn('[Handler:GET_BALANCE] Token balance requested but not supported:', payload.tokenAddress);
       throw createBridgeError(
@@ -77,11 +76,11 @@ export function createGetBalanceHandler() {
 
     try {
       console.log('[Handler:GET_BALANCE] Fetching balance for address:', context.walletAddress);
-      const balance = await scrollProvider.getBalance(context.walletAddress);
+      const balance = await suiProvider.getBalance(context.walletAddress);
       const result = {
         balance,
-        formatted: formatEther(parseEther(balance)),
-        symbol: 'ETH',
+        formatted: balance,
+        symbol: 'SUI',
       };
       console.log('[Handler:GET_BALANCE] Balance fetched successfully:', result);
       return result;
@@ -142,22 +141,20 @@ export async function executeTransaction(
   }
 
   try {
-    const provider = scrollProvider.getProvider();
-    
-    const txRequest = {
-      to: payload.to,
-      value: payload.value ? parseEther(payload.value) : undefined,
-      data: payload.data,
-      gasLimit: payload.gasLimit ? BigInt(payload.gasLimit) : undefined,
-      gasPrice: payload.gasPrice ? BigInt(payload.gasPrice) : undefined,
-    };
+    if (!payload.to || !payload.value) {
+      throw createBridgeError(
+        BridgeErrorCode.INVALID_PAYLOAD,
+        'Transaction "to" address and "value" are required'
+      );
+    }
 
-    const txResponse = await sendTransaction(txRequest, provider);
-    
+    const amountMist = parseToMist(payload.value);
+    const txResponse = await sendSuiTransaction(payload.to, amountMist);
+
     return {
-      hash: txResponse.hash,
+      hash: txResponse.digest,
       from: txResponse.from,
-      to: txResponse.to || null,
+      to: txResponse.to,
     };
   } catch (error) {
     throw createBridgeError(
@@ -234,12 +231,12 @@ export function createSignTypedDataHandler() {
 export function createGetNetworkHandler() {
   return async (_payload: unknown, context: HandlerContext): Promise<NetworkInfo> => {
     console.log('[Handler:GET_NETWORK] Handler invoked');
-    const config = scrollProvider.getConfig();
+    const config = suiProvider.getConfig();
     const result = {
       chainId: config.chainId,
       chainName: config.chainName,
       rpcUrl: config.rpcUrl,
-      isTestnet: config.chainId === 534351,
+      isTestnet: config.network === 'testnet' || config.network === 'devnet',
     };
     console.log('[Handler:GET_NETWORK] Returning network info:', result);
     return result;
@@ -263,20 +260,17 @@ export function createEstimateGasHandler() {
 
     try {
       console.log('[Handler:ESTIMATE_GAS] Estimating gas...');
-      const provider = scrollProvider.getProvider();
-      const gasEstimate = await scrollProvider.estimateGas({
-        to: payload.to,
-        value: payload.value ? parseEther(payload.value) : undefined,
-        data: payload.data,
-      });
-      
-      const gasPrice = await scrollProvider.getGasPrice();
-      const totalFee = gasEstimate * gasPrice;
-      
+      const sender = context.walletAddress ?? payload.to;
+      const amountMist = payload.value ? parseToMist(payload.value) : 0n;
+      const estimate = await suiProvider.estimateTransactionFee((tx) => {
+        const [coin] = tx.splitCoins(tx.gas, [amountMist]);
+        tx.transferObjects([coin], payload.to!);
+      }, sender);
+
       const result = {
-        gasLimit: gasEstimate.toString(),
-        gasPrice: gasPrice.toString(),
-        estimatedFee: formatEther(totalFee.toString()),
+        gasLimit: estimate.budget.toString(),
+        gasPrice: estimate.price.toString(),
+        estimatedFee: estimate.fee,
       };
       console.log('[Handler:ESTIMATE_GAS] Gas estimation complete:', result);
       return result;

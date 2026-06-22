@@ -10,17 +10,17 @@ const inter = Inter({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://scrollone.app';
-const siteName = "Scroll One SuperApp";
+const siteName = "Sui One SuperApp";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Scroll One SuperApp - Your Gateway to the Sui Ecosystem",
+    default: "Sui One SuperApp - Your Gateway to the Sui Ecosystem",
     template: `%s | ${siteName}`,
   },
-  description: "Scroll One SuperApp is built on the Sui blockchain—not Scroll L2. A unified wallet, identity, and mini-app marketplace powered by Sui Move and parallel execution.",
+  description: "Sui One SuperApp is a unified wallet, identity, and mini-app marketplace built on the Sui blockchain, powered by Sui Move and parallel execution.",
   keywords: [
-    "Scroll One",
+    "Sui One",
     "Sui",
     "SUI",
     "blockchain",
@@ -41,9 +41,9 @@ export const metadata: Metadata = {
     "NFT marketplace",
     "Mysten Labs",
   ],
-  authors: [{ name: "Scroll One Tech Team" }],
-  creator: "Scroll One",
-  publisher: "Scroll One",
+  authors: [{ name: "Sui One Tech Team" }],
+  creator: "Sui One",
+  publisher: "Sui One",
   formatDetection: {
     email: false,
     address: false,
@@ -67,21 +67,21 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: siteName,
-    title: "Scroll One SuperApp - Your Gateway to the Sui Ecosystem",
+    title: "Sui One SuperApp - Your Gateway to the Sui Ecosystem",
     description: "Experience Web3 reimagined on Sui. Wallet, identity, and 20+ mini-apps powered by object-centric architecture and parallel execution.",
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 1200,
-        alt: "Scroll One SuperApp Logo",
+        alt: "Sui One SuperApp Logo",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Scroll One SuperApp - Your Gateway to the Sui Ecosystem",
+    title: "Sui One SuperApp - Your Gateway to the Sui Ecosystem",
     description: "Experience Web3 reimagined on Sui. Wallet, identity, and 20+ mini-apps powered by object-centric architecture and parallel execution.",
     images: ["/logo.png"],
     creator: "@scrollone",
@@ -114,7 +114,7 @@ export const metadata: Metadata = {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
-    "apple-mobile-web-app-title": "Scroll One",
+    "apple-mobile-web-app-title": "Sui One",
   },
 };
 

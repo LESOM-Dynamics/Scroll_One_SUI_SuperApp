@@ -30,8 +30,8 @@ export default function IdentityScreen() {
             <View style={styles.avatar}>
               <User color={colors.text.primary} size={48} />
             </View>
-            <Text style={styles.name}>{profile?.displayName || 'Scroll User'}</Text>
-            <Text style={styles.scrollId}>@{profile?.scrollId || 'scrolluser123'}</Text>
+            <Text style={styles.name}>{profile?.displayName || 'Sui User'}</Text>
+            <Text style={styles.suiId}>@{profile?.suiId || 'suiuser123'}</Text>
             <View style={styles.stats}>
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>{profile?.reputation || 0}</Text>
@@ -149,7 +149,7 @@ const createStyles = () =>
       color: colors.text.primary,
       marginBottom: spacing.xs,
     },
-    scrollId: {
+    suiId: {
       fontSize: typography.fontSize.base,
       color: colors.text.secondary,
       fontFamily: typography.fontFamily.mono,

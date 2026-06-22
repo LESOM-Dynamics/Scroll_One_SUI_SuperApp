@@ -53,7 +53,7 @@ export default function OnrampProviderScreen() {
   const { isTestnet } = useSettingsStore();
   const router = useRouter();
 
-  const networkLabel = isTestnet ? 'Scroll Sepolia (Testnet)' : 'Scroll Mainnet';
+  const networkLabel = isTestnet ? 'Sui Testnet' : 'Sui Mainnet';
 
   const config = useMemo(() => {
     if (!provider) return undefined;

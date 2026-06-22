@@ -2,10 +2,10 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setThemeMode, type ThemeMode } from '@/theme/colors';
 
-const NETWORK_PREFERENCE_KEY = '@scroll_one:network_preference';
-const THEME_PREFERENCE_KEY = '@scroll_one:theme_mode';
-const BIOMETRIC_PREFERENCE_KEY = '@scroll_one:biometric_auth_enabled';
-const NOTIFICATIONS_ENABLED_KEY = '@scroll_one:notifications_enabled';
+const NETWORK_PREFERENCE_KEY = '@sui_one:network_preference';
+const THEME_PREFERENCE_KEY = '@sui_one:theme_mode';
+const BIOMETRIC_PREFERENCE_KEY = '@sui_one:biometric_auth_enabled';
+const NOTIFICATIONS_ENABLED_KEY = '@sui_one:notifications_enabled';
 
 interface SettingsState {
   isTestnet: boolean;

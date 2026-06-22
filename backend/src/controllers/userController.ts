@@ -10,7 +10,7 @@ import { logger } from '../config/logger';
 export class UserController {
   async createUser(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const { walletAddress, scrollId, username, displayName, signature, message } = req.body;
+      const { walletAddress, suiId, scrollId, username, displayName, signature, message } = req.body;
 
       if (!walletAddress || !signature) {
         res.status(400).json(createErrorResponse('VALIDATION_ERROR', 'Wallet address and signature required'));
@@ -34,7 +34,7 @@ export class UserController {
 
       const user = await userService.createUser({
         walletAddress,
-        scrollId,
+        suiId: suiId ?? scrollId,
         username,
         displayName,
       });

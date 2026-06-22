@@ -1,15 +1,8 @@
-import { Contract, formatUnits, JsonRpcProvider } from 'ethers';
+import { formatUnits } from 'ethers';
 import { pool } from '../../config/database';
 import { cacheService } from '../../config/redis';
 import { logger } from '../../config/logger';
-import { scrollProvider } from '../blockchain/scrollProvider';
-
-const ERC20_ABI = [
-  'function balanceOf(address owner) view returns (uint256)',
-  'function decimals() view returns (uint8)',
-  'function symbol() view returns (string)',
-  'function name() view returns (string)',
-];
+import { suiProvider } from '../blockchain/suiProvider';
 
 export interface TokenInfo {
   id: string;
@@ -112,27 +105,24 @@ export class TokenService {
   }
 
   async getTokenBalance(
-    tokenAddress: string,
-    walletAddress: string,
-    provider?: JsonRpcProvider
+    coinType: string,
+    walletAddress: string
   ): Promise<string> {
     try {
-      const rpcProvider = provider || scrollProvider.getProvider();
-      const tokenContract = new Contract(tokenAddress, ERC20_ABI, rpcProvider);
-      
-      const [balance, decimals] = await Promise.all([
-        tokenContract.balanceOf(walletAddress),
-        tokenContract.decimals(),
-      ]);
-      
-      return formatUnits(balance, decimals);
+      const balance = await suiProvider.getClient().getBalance({
+        owner: walletAddress,
+        coinType,
+      });
+      const metadata = await suiProvider.getClient().getCoinMetadata({ coinType });
+      const decimals = metadata?.decimals ?? 9;
+      return formatUnits(balance.totalBalance, decimals);
     } catch (error) {
       logger.error('Error fetching token balance', error);
       return '0.0';
     }
   }
 
-  async getTokenBalances(walletAddress: string, chainId: number = 534352): Promise<Array<{
+  async getTokenBalances(walletAddress: string, chainId: number = 101): Promise<Array<{
     token: TokenInfo;
     balance: string;
     usdValue: number;
@@ -164,7 +154,7 @@ export class TokenService {
     const metadata = await this.fetchTokenMetadata(address);
     
     if (!metadata) {
-      throw new Error('Invalid token address or not an ERC-20 token');
+      throw new Error('Invalid coin type or token metadata unavailable');
     }
 
     const query = `
@@ -195,16 +185,15 @@ export class TokenService {
     decimals: number;
   } | null> {
     try {
-      const provider = scrollProvider.getProvider();
-      const tokenContract = new Contract(address, ERC20_ABI, provider);
-      
-      const [symbol, name, decimals] = await Promise.all([
-        tokenContract.symbol(),
-        tokenContract.name(),
-        tokenContract.decimals(),
-      ]);
-      
-      return { symbol, name, decimals };
+      const metadata = await suiProvider.getClient().getCoinMetadata({ coinType: address });
+      if (!metadata) {
+        return null;
+      }
+      return {
+        symbol: metadata.symbol,
+        name: metadata.name,
+        decimals: metadata.decimals,
+      };
     } catch (error) {
       logger.error('Error fetching token metadata', error);
       return null;

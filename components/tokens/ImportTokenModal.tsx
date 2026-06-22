@@ -14,10 +14,9 @@ import { X, Search, AlertCircle, CheckCircle } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { importTokenByAddress, getTokenMetadata, isValidERC20Token } from '@/services/scroll/tokens';
+import { importTokenByAddress, getTokenMetadata, isValidCoinType } from '@/services/sui/tokens';
 import { useSettingsStore } from '@/store/settingsStore';
-import { shortenAddress } from '@/services/scroll/wallet';
-import { isAddress } from 'ethers';
+import { shortenAddress } from '@/services/sui/wallet';
 
 interface ImportTokenModalProps {
   visible: boolean;
@@ -50,18 +49,16 @@ export function ImportTokenModal({ visible, onClose, onTokenImported }: ImportTo
 
     try {
       // Validate address format
-      if (!isAddress(address.trim())) {
-        throw new Error('Invalid address format');
+      if (!address.trim().includes('::')) {
+        throw new Error('Invalid coin type format. Use 0xPACKAGE::module::Coin');
       }
 
-      // Check if it's a valid ERC-20 token
-      const isValid = await isValidERC20Token(address.trim(), undefined, isTestnet);
+      const isValid = await isValidCoinType(address.trim(), isTestnet);
       if (!isValid) {
-        throw new Error(`Address is not a valid ERC-20 token contract on ${isTestnet ? 'testnet' : 'mainnet'}`);
+        throw new Error(`Address is not a valid coin type on ${isTestnet ? 'testnet' : 'mainnet'}`);
       }
 
-      // Fetch metadata
-      const metadata = await getTokenMetadata(address.trim(), undefined, isTestnet);
+      const metadata = await getTokenMetadata(address.trim(), isTestnet);
       if (!metadata) {
         throw new Error('Could not fetch token information');
       }
@@ -131,9 +128,9 @@ export function ImportTokenModal({ visible, onClose, onTokenImported }: ImportTo
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             <Card style={styles.card}>
-              <Text style={styles.label}>Token Contract Address</Text>
+              <Text style={styles.label}>Coin Type</Text>
               <Text style={styles.description}>
-                Enter the token contract address to import it to your wallet
+                Enter the Sui coin type to import (e.g. 0x2::sui::SUI)
               </Text>
               
               <View style={styles.inputContainer}>
@@ -141,7 +138,7 @@ export function ImportTokenModal({ visible, onClose, onTokenImported }: ImportTo
                   style={styles.input}
                   value={address}
                   onChangeText={setAddress}
-                  placeholder="0x..."
+                  placeholder="0x...::module::Coin"
                   placeholderTextColor={colors.text.tertiary}
                   autoCapitalize="none"
                   autoCorrect={false}

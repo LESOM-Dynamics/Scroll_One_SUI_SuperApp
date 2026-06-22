@@ -13,7 +13,7 @@ import { Wallet, Plus, Check, Trash2, X } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { shortenAddress } from '@/services/scroll/wallet';
+import { shortenAddress } from '@/services/sui/wallet';
 import { 
   getAllWallets, 
   setCurrentWallet, 
@@ -22,7 +22,7 @@ import {
   getCurrentWalletId,
   loadWallet,
   type Wallet as WalletType 
-} from '@/services/scroll/wallet';
+} from '@/services/sui/wallet';
 import { useWalletStore } from '@/store/walletStore';
 
 interface WalletSelectionModalProps {

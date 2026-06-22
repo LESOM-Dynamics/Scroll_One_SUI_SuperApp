@@ -52,7 +52,7 @@ export default function DepositScreen() {
   const { address } = useWalletStore();
   const { isTestnet } = useSettingsStore();
 
-  const networkLabel = isTestnet ? 'Scroll Sepolia (Testnet)' : 'Scroll Mainnet';
+  const networkLabel = isTestnet ? 'Sui Testnet' : 'Sui Mainnet';
 
   const handleOpenOnramp = (provider: OnrampProvider) => {
     if (!address) {
@@ -70,7 +70,7 @@ export default function DepositScreen() {
     router.push('/(tabs)/(wallet)/receive');
   };
 
-  const handleOpenScrollBridge = () => {
+  const handleOpenSuiBridge = () => {
     if (!address) {
       Alert.alert(
         'Wallet not ready',
@@ -101,13 +101,13 @@ export default function DepositScreen() {
             <View style={styles.networkPill}>
               <Text style={styles.networkPillText}>{networkLabel}</Text>
             </View>
-            <Text style={styles.title}>Deposit to Scroll Wallet</Text>
+            <Text style={styles.title}>Deposit to Sui Wallet</Text>
             <Text style={styles.subtitle}>
               Add funds using fiat on-ramps or by sending crypto from another wallet or exchange.
             </Text>
 
             <Card variant="glass" style={styles.addressCard}>
-              <Text style={styles.addressLabel}>Your Scroll Address</Text>
+              <Text style={styles.addressLabel}>Your Sui Address</Text>
               <Text style={styles.addressValue} numberOfLines={1}>
                 {address || 'Loading wallet address...'}
               </Text>
@@ -140,7 +140,7 @@ export default function DepositScreen() {
               </View>
               <Text style={styles.sectionSubtitle}>
                 Buy crypto with cards, bank transfers, or local payment methods. Providers will send
-                assets directly to your Scroll wallet address.
+                assets directly to your Sui wallet address.
               </Text>
             </View>
 
@@ -171,7 +171,7 @@ export default function DepositScreen() {
                 <Text style={styles.sectionTitle}>Crypto Deposit (Non-fiat)</Text>
               </View>
               <Text style={styles.sectionSubtitle}>
-                Send existing crypto from another wallet or exchange directly to your Scroll
+                Send existing crypto from another wallet or exchange directly to your Sui
                 address.
               </Text>
             </View>
@@ -179,10 +179,10 @@ export default function DepositScreen() {
             <Card style={styles.stepsCard}>
               <Text style={styles.stepTitle}>From another wallet</Text>
               <Text style={styles.stepText}>
-                1. Copy or scan your Scroll address using the Receive screen.
+                1. Copy or scan your Sui address using the Receive screen.
               </Text>
               <Text style={styles.stepText}>
-                2. In the external wallet, choose the Scroll network and paste your address.
+                2. In the external wallet, choose the Sui network and paste your address.
               </Text>
               <Text style={styles.stepText}>
                 3. Confirm the transaction and wait for confirmation.
@@ -204,16 +204,16 @@ export default function DepositScreen() {
                 <Text style={styles.stepTitle}>From other chains / exchanges</Text>
               </View>
               <Text style={styles.stepText}>
-                1. Use the official Scroll Bridge or a supported CEX withdrawal to move funds to
-                Scroll.
+                1. Use the Wormhole Bridge or a supported CEX withdrawal to move funds to
+                Sui.
               </Text>
               <Text style={styles.stepText}>
-                2. Always double-check that you are withdrawing to the Scroll network and using the
+                2. Always double-check that you are withdrawing to the Sui network and using the
                 correct address.
               </Text>
 
-              <Button fullWidth style={styles.stepButton} onPress={handleOpenScrollBridge}>
-                Open Scroll Bridge
+              <Button fullWidth style={styles.stepButton} onPress={handleOpenSuiBridge}>
+                Open Sui Bridge
               </Button>
             </Card>
           </View>
@@ -222,7 +222,7 @@ export default function DepositScreen() {
             <Card variant="bordered" style={styles.disclaimerCard}>
               <Text style={styles.disclaimerTitle}>Important</Text>
               <Text style={styles.disclaimerText}>
-                On-ramp providers are third-party services. Scroll One does not custody your funds
+                On-ramp providers are third-party services. Sui One does not custody your funds
                 and is not responsible for delays, fees, or issues with those services. Always
                 double-check the network and destination address before confirming a deposit.
               </Text>

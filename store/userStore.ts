@@ -16,7 +16,7 @@ export interface UserProfile {
   displayName: string;
   avatar?: string;
   bio?: string;
-  scrollId: string;
+  suiId: string;
   reputation: number;
   level: number;
   joinedAt: number;

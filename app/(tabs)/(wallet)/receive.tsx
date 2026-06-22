@@ -26,7 +26,7 @@ export default function ReceiveScreen() {
     if (address) {
       try {
         await Share.share({
-          message: `Send assets to my Scroll address:\n${address}`,
+          message: `Send assets to my Sui address:\n${address}`,
         });
       } catch (error) {
         console.error('[ReceiveScreen] Error sharing:', error);
@@ -65,7 +65,7 @@ export default function ReceiveScreen() {
             )}
           </Card>
 
-          <Text style={styles.addressLabel}>Your Scroll Address</Text>
+          <Text style={styles.addressLabel}>Your Sui Address</Text>
           <Card variant="glass" style={styles.addressCard}>
             <Text style={styles.address} numberOfLines={1}>
               {address || '0x...'}
@@ -94,7 +94,7 @@ export default function ReceiveScreen() {
 
           <Card variant="bordered" style={styles.infoCard}>
             <Text style={styles.infoText}>
-              💡 Only send assets on the Scroll network to this address
+              💡 Only send assets on the Sui network to this address
             </Text>
           </Card>
         </View>

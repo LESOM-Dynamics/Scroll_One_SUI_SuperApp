@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { colors, spacing, typography } from '@/theme';
 import type { TransactionRequest } from '@/scrollone-sdk';
-import { formatEther } from 'ethers';
 
 interface TransactionApprovalModalProps {
   transaction: TransactionRequest;
@@ -17,14 +16,20 @@ interface TransactionApprovalModalProps {
   onReject: () => void;
 }
 
+function formatAmount(value: TransactionRequest['value']): string {
+  if (!value) return '0';
+  if (typeof value === 'string' && !value.startsWith('0x')) {
+    return value;
+  }
+  return String(value);
+}
+
 export function TransactionApprovalModal({
   transaction,
   onApprove,
   onReject,
 }: TransactionApprovalModalProps) {
-  const valueEth = transaction.value
-    ? formatEther(transaction.value)
-    : transaction.value || '0';
+  const valueSui = formatAmount(transaction.value);
 
   return (
     <Modal
@@ -49,9 +54,7 @@ export function TransactionApprovalModal({
               <View style={styles.section}>
                 <Text style={styles.label}>Amount:</Text>
                 <Text style={styles.value}>
-                  {typeof transaction.value === 'string' && !transaction.value.startsWith('0x')
-                    ? transaction.value
-                    : valueEth} ETH
+                  {valueSui} SUI
                 </Text>
               </View>
             )}

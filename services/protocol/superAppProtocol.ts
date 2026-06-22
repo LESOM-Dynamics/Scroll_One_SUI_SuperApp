@@ -1,4 +1,5 @@
-import { verifyMessage } from 'ethers';
+import { verifyPersonalMessageSignature } from '@mysten/sui/verify';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { resolveGrantedPermissions } from './permissions';
 import type {
   HandshakeAckPayload,
@@ -59,7 +60,7 @@ export class SuperAppProtocolManager {
     };
   }
 
-  completeHandshake(message: ProtocolEnvelope<HandshakeAckPayload>): ProtocolEnvelope<SessionReadyPayload> {
+  async completeHandshake(message: ProtocolEnvelope<HandshakeAckPayload>): Promise<ProtocolEnvelope<SessionReadyPayload>> {
     this.assertEnvelopeShape(message);
 
     const pending = this.pendingChallenges.get(message.correlationId ?? '');
@@ -72,9 +73,16 @@ export class SuperAppProtocolManager {
       throw this.createProtocolError('INVALID_SIGNATURE', 'Missing challenge signature', false);
     }
 
-    const recoveredAddress = verifyMessage(pending.challenge, signature);
-    if (recoveredAddress.toLowerCase() !== pending.publicKey.toLowerCase()) {
-      throw this.createProtocolError('INVALID_SIGNATURE', 'Challenge signature did not match declared address', false);
+    try {
+      const messageBytes = new TextEncoder().encode(pending.challenge);
+      const publicKey = await verifyPersonalMessageSignature(messageBytes, signature, {
+        address: pending.publicKey,
+      });
+      if (normalizeSuiAddress(publicKey.toSuiAddress()) !== normalizeSuiAddress(pending.publicKey)) {
+        throw this.createProtocolError('INVALID_SIGNATURE', 'Challenge signature did not match declared address', false);
+      }
+    } catch {
+      throw this.createProtocolError('INVALID_SIGNATURE', 'Challenge signature verification failed', false);
     }
 
     const grantedPermissions = resolveGrantedPermissions(

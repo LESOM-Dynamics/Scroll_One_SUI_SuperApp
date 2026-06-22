@@ -12,7 +12,7 @@ export const config = {
   database: {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    name: process.env.DB_NAME || 'scroll_one',
+    name: process.env.DB_NAME || 'sui_one',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
     ssl: process.env.DB_SSL === 'true',
@@ -35,9 +35,9 @@ export const config = {
   
   // Blockchain
   blockchain: {
-    scrollRpcUrl: process.env.SCROLL_RPC_URL || 'https://rpc.scroll.io',
-    scrollTestnetRpcUrl: process.env.SCROLL_TESTNET_RPC_URL || 'https://sepolia-rpc.scroll.io',
-    scrollscanApiKey: process.env.SCROLLSCAN_API_KEY || '',
+    suiMainnetRpcUrl: process.env.SUI_MAINNET_RPC_URL || 'https://fullnode.mainnet.sui.io:443',
+    suiTestnetRpcUrl: process.env.SUI_TESTNET_RPC_URL || 'https://fullnode.testnet.sui.io:443',
+    suiDevnetRpcUrl: process.env.SUI_DEVNET_RPC_URL || 'https://fullnode.devnet.sui.io:443',
   },
   
   // External APIs

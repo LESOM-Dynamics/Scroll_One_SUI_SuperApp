@@ -6,9 +6,9 @@ import { colors, spacing, typography, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useWalletStore } from '@/store/walletStore';
-import { shortenAddress } from '@/services/scroll/wallet';
-import { formatTransactionTime, getTransactionStatus, getTransactionExplorerUrl } from '@/services/scroll/transactions';
-import { scrollProvider } from '@/services/scroll/provider';
+import { shortenAddress } from '@/services/sui/wallet';
+import { formatTransactionTime, getTransactionStatus, getTransactionExplorerUrl } from '@/services/sui/transactions';
+import { suiProvider } from '@/services/sui/provider';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import * as WebBrowser from 'expo-web-browser';
@@ -236,7 +236,7 @@ export default function TransactionDetailScreen() {
             onPress={handleViewOnExplorer}
           >
             <ExternalLink color={colors.accent.primary} size={20} />
-            <Text style={styles.explorerButtonText}>View on ScrollScan</Text>
+            <Text style={styles.explorerButtonText}>View on SuiVision</Text>
           </TouchableOpacity>
         </View>
       </Screen>

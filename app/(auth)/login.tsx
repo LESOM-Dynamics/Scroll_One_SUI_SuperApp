@@ -7,8 +7,8 @@ import { Screen } from '@/components/layout/Screen';
 import { Button } from '@/components/ui/Button';
 import { useWalletStore } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
-import { loadWallet } from '@/services/scroll/wallet';
-import { scrollProvider } from '@/services/scroll/provider';
+import { loadWallet } from '@/services/sui/wallet';
+import { suiProvider } from '@/services/sui/provider';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as Haptics from 'expo-haptics';
 
@@ -46,7 +46,7 @@ export default function LoginScreen() {
       }
 
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Unlock your Scroll wallet',
+        promptMessage: 'Unlock your Sui wallet',
         fallbackLabel: 'Use PIN instead',
         cancelLabel: 'Cancel',
       });
@@ -110,7 +110,7 @@ export default function LoginScreen() {
       }
 
       setAddress(wallet.address);
-      const balance = await scrollProvider.getBalance(wallet.address);
+      const balance = await suiProvider.getBalance(wallet.address);
       setBalance(balance);
       setUnlocked(true);
 
@@ -164,7 +164,7 @@ export default function LoginScreen() {
             </View>
             <Text style={styles.title}>Welcome Back</Text>
             <Text style={styles.subtitle}>
-              {address ? `Unlock your wallet to continue` : 'Sign in to your Scroll wallet'}
+              {address ? `Unlock your wallet to continue` : 'Sign in to your Sui wallet'}
             </Text>
           </View>
 

@@ -7,8 +7,8 @@ import { Screen } from '@/components/layout/Screen';
 import { Button } from '@/components/ui/Button';
 import { useWalletStore } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
-import { createWallet } from '@/services/scroll/wallet';
-import { scrollProvider } from '@/services/scroll/provider';
+import { createWallet } from '@/services/sui/wallet';
+import { suiProvider } from '@/services/sui/provider';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as Haptics from 'expo-haptics';
 
@@ -29,7 +29,7 @@ export default function SignUpScreen() {
       
       if (wallet) {
         setAddress(wallet.address);
-        const balance = await scrollProvider.getBalance(wallet.address);
+        const balance = await suiProvider.getBalance(wallet.address);
         setBalance(balance);
         setUnlocked(true);
 
@@ -124,9 +124,9 @@ export default function SignUpScreen() {
                 <Sparkles size={16} color={colors.accent.secondary} />
               </View>
             </View>
-            <Text style={styles.title}>Welcome to Scroll One</Text>
+            <Text style={styles.title}>Welcome to Sui One</Text>
             <Text style={styles.subtitle}>
-              Your gateway to the Scroll blockchain ecosystem
+              Your gateway to the Sui blockchain ecosystem
             </Text>
           </View>
 
@@ -208,7 +208,7 @@ export default function SignUpScreen() {
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              By continuing, you agree to Scroll One's Terms of Service and Privacy Policy.
+              By continuing, you agree to Sui One's Terms of Service and Privacy Policy.
             </Text>
           </View>
         </ScrollView>

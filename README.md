@@ -18,7 +18,7 @@
 
 ## 📖 Overview
 
-**Scroll One SuperApp** is a mobile-first crypto SuperApp built exclusively on the Scroll blockchain (Ethereum L2). It serves as a unified gateway to the Scroll ecosystem, combining a self-custodial wallet with real blockchain integration, a WebView-based dApp marketplace, and decentralized identity management.
+**Scroll One SuperApp** is a mobile-first crypto SuperApp built exclusively on the SUI blockchain. It serves as a unified gateway to the Scroll ecosystem, combining a self-custodial wallet with real blockchain integration, a WebView-based dApp marketplace, and decentralized identity management.
 
 ### Key Highlights
 

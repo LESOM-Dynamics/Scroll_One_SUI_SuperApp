@@ -5,6 +5,7 @@ export interface ChainConfig {
   chainName: string;
   rpcUrl: string;
   explorerTxUrl: string;
+  network: 'mainnet' | 'testnet' | 'devnet';
   nativeCurrency: {
     name: string;
     symbol: string;
@@ -14,24 +15,27 @@ export interface ChainConfig {
 
 export const CHAIN_BY_ENV: Record<SupportedEnvironment, ChainConfig> = {
   dev: {
-    chainId: 534351,
-    chainName: 'Scroll Sepolia (Dev)',
-    rpcUrl: process.env.EXPO_PUBLIC_SCROLL_DEV_RPC_URL || 'https://sepolia-rpc.scroll.io',
-    explorerTxUrl: 'https://sepolia.scrollscan.com/tx/',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    chainId: 103,
+    chainName: 'Sui Devnet',
+    network: 'devnet',
+    rpcUrl: process.env.EXPO_PUBLIC_SUI_DEVNET_RPC_URL || 'https://fullnode.devnet.sui.io:443',
+    explorerTxUrl: 'https://suiscan.xyz/devnet/tx/',
+    nativeCurrency: { name: 'Sui', symbol: 'SUI', decimals: 9 },
   },
   testnet: {
-    chainId: 534351,
-    chainName: 'Scroll Sepolia',
-    rpcUrl: process.env.EXPO_PUBLIC_SCROLL_TESTNET_RPC_URL || 'https://sepolia-rpc.scroll.io',
-    explorerTxUrl: 'https://sepolia.scrollscan.com/tx/',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    chainId: 102,
+    chainName: 'Sui Testnet',
+    network: 'testnet',
+    rpcUrl: process.env.EXPO_PUBLIC_SUI_TESTNET_RPC_URL || 'https://fullnode.testnet.sui.io:443',
+    explorerTxUrl: 'https://suiscan.xyz/testnet/tx/',
+    nativeCurrency: { name: 'Sui', symbol: 'SUI', decimals: 9 },
   },
   mainnet: {
-    chainId: 534352,
-    chainName: 'Scroll',
-    rpcUrl: process.env.EXPO_PUBLIC_SCROLL_MAINNET_RPC_URL || 'https://rpc.scroll.io',
-    explorerTxUrl: 'https://scrollscan.com/tx/',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    chainId: 101,
+    chainName: 'Sui Mainnet',
+    network: 'mainnet',
+    rpcUrl: process.env.EXPO_PUBLIC_SUI_MAINNET_RPC_URL || 'https://fullnode.mainnet.sui.io:443',
+    explorerTxUrl: 'https://suiscan.xyz/mainnet/tx/',
+    nativeCurrency: { name: 'Sui', symbol: 'SUI', decimals: 9 },
   },
 };

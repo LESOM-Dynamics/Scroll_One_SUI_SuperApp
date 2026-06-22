@@ -7,8 +7,8 @@ import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useWalletStore, type Transaction } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
-import { shortenAddress } from '@/services/scroll/wallet';
-import { formatTransactionTime } from '@/services/scroll/transactions';
+import { shortenAddress } from '@/services/sui/wallet';
+import { formatTransactionTime } from '@/services/sui/transactions';
 import { notificationService } from '@/services/notifications/notificationService';
 
 type FilterType = 'all' | 'pending' | 'failed' | 'contract' | 'cross-chain';

@@ -202,7 +202,7 @@ export default function ExploreScreen() {
           <View style={styles.titleRow}>
             <View>
               <Text style={styles.title}>Explore</Text>
-              <Text style={styles.subtitle}>Discover dApps on Scroll</Text>
+              <Text style={styles.subtitle}>Discover dApps on Sui</Text>
             </View>
             <TouchableOpacity
               style={styles.viewToggle}

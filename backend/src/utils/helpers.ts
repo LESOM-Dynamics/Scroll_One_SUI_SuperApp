@@ -1,24 +1,21 @@
-import { ethers } from 'ethers';
+import { isValidSuiAddress, normalizeSuiAddress } from '@mysten/sui/utils';
+import { MIST_PER_SUI } from '@mysten/sui/utils';
 
 /**
- * Validate Ethereum address
+ * Validate Sui address
  */
 export function isValidAddress(address: string): boolean {
-  try {
-    return ethers.isAddress(address);
-  } catch {
-    return false;
-  }
+  return isValidSuiAddress(address);
 }
 
 /**
- * Normalize Ethereum address (checksum)
+ * Normalize Sui address
  */
 export function normalizeAddress(address: string): string {
   try {
-    return ethers.getAddress(address);
+    return normalizeSuiAddress(address);
   } catch {
-    return address.toLowerCase();
+    return address;
   }
 }
 
@@ -31,22 +28,24 @@ export function shortenAddress(address: string, chars: number = 4): string {
 }
 
 /**
- * Format wei to ether
+ * Format mist to SUI
  */
 export function formatEther(value: string | bigint): string {
   try {
-    return ethers.formatEther(value);
+    return (Number(value) / Number(MIST_PER_SUI)).toFixed(9);
   } catch {
     return '0';
   }
 }
 
 /**
- * Parse ether to wei
+ * Parse SUI to mist
  */
 export function parseEther(value: string): bigint {
   try {
-    return ethers.parseEther(value);
+    const [whole, fraction = ''] = value.split('.');
+    const paddedFraction = `${fraction}000000000`.slice(0, 9);
+    return BigInt(whole) * MIST_PER_SUI + BigInt(paddedFraction);
   } catch {
     return BigInt(0);
   }
@@ -97,4 +96,3 @@ export function getPaginationParams(query: any): {
 
   return { page, limit, offset };
 }
-

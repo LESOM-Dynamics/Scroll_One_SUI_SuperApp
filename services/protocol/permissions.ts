@@ -5,13 +5,14 @@ import type { MiniAppPermission } from './types';
  * feature logic while still enforcing least privilege.
  */
 export const MINIAPP_PERMISSION_REGISTRY: Record<string, MiniAppPermission[]> = {
-  syncswap: ['wallet:read', 'network:read', 'tx:sign'],
-  skydrome: ['wallet:read', 'network:read', 'tx:sign'],
-  izumi: ['wallet:read', 'network:read', 'tx:sign'],
-  layerbank: ['wallet:read', 'network:read', 'tx:sign'],
-  'aave-v3-scroll': ['wallet:read', 'network:read', 'tx:sign'],
-  'scroll-bridge': ['wallet:read', 'network:read', 'tx:sign'],
-  scrollscan: ['network:read'],
+  cetus: ['wallet:read', 'network:read', 'tx:sign'],
+  scallop: ['wallet:read', 'network:read', 'tx:sign'],
+  turbos: ['wallet:read', 'network:read', 'tx:sign'],
+  aftermath: ['wallet:read', 'network:read', 'tx:sign'],
+  suins: ['wallet:read', 'network:read'],
+  suivision: ['network:read'],
+  'wormhole-bridge': ['wallet:read', 'network:read', 'tx:sign'],
+  flowx: ['wallet:read', 'network:read', 'tx:sign'],
 };
 
 export function resolveGrantedPermissions(

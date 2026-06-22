@@ -131,7 +131,7 @@ Web3 lacks:
 ### Our Solution
 
 Decentralized identity system with:
-- Scroll ID (unique identifier)
+- Scroll-One ID (unique identifier)
 - Reputation system based on activity
 - Badges and achievements
 - User profiles and stats
