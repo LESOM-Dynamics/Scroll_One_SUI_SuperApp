@@ -55,7 +55,7 @@ export const MINIAPPS: MiniApp[] = [
     bridge: `// ScrollOne Bridge API v1.0.0 (automatically injected)
 // Wait for bridge to be ready
 window.addEventListener('scrollOneReady', () => {
-  console.log('Sui One bridge ready!');
+  console.log('Scroll One bridge ready!');
   initializeApp();
 });
 
@@ -186,7 +186,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
   // Clean up listeners
   window.scrollOne.off('accountChanged', callback);
 } else {
-  console.warn('Sui One bridge not available');
+  console.warn('Scroll One bridge not available');
 }`
   };
 
@@ -227,7 +227,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               >
                 <Image 
                   src="/logo.png" 
-                  alt="Sui One Logo" 
+                  alt="Scroll One Logo" 
                   width={40} 
                   height={40}
                   className="object-contain"
@@ -235,7 +235,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 />
               </motion.div>
               <div>
-                <span className="text-2xl font-bold gradient-text block">Sui One</span>
+                <span className="text-2xl font-bold gradient-text block">Scroll One</span>
                 <span className="text-[10px] text-text-tertiary font-mono">superapp</span>
               </div>
             </Link>
@@ -299,7 +299,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               Build on <span className="gradient-text">Sui</span>
             </h1>
             <p className="text-xl md:text-2xl text-text-secondary mb-10 leading-relaxed max-w-3xl">
-              Integrate your Sui Move dApp into Sui One SuperApp and reach thousands of users. 
+              Integrate your Sui Move dApp into Scroll One SuperApp and reach thousands of users. 
               Simple SDK v1.0.0, powerful tools, endless possibilities on Sui&apos;s object-centric Layer 1.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -353,7 +353,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               {
                 step: "01",
                 title: "Add to Registry",
-                description: "Add your dApp to the Sui One SuperApp registry",
+                description: "Add your dApp to the Scroll One SuperApp registry",
                 icon: FileCode,
                 color: "from-blue-500 to-cyan-500"
               },
@@ -411,7 +411,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               Add Your <span className="gradient-text">dApp</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-3xl mb-12">
-              To add your dApp to Sui One SuperApp, follow these steps:
+              To add your dApp to Scroll One SuperApp, follow these steps:
             </p>
           </motion.div>
 
@@ -446,7 +446,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 details: [
                   "Added to miniapps/registry.ts",
                   "Appears in Explore tab",
-                  "Available to all Sui One SuperApp users"
+                  "Available to all Scroll One SuperApp users"
                 ]
               },
               {
@@ -508,7 +508,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               Available <span className="gradient-text">Methods</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-3xl mb-12">
-              Sui One SuperApp SDK v1.0.0 provides the following methods for dApp integration on Sui:
+              Scroll One SuperApp SDK v1.0.0 provides the following methods for dApp integration on Sui:
             </p>
           </motion.div>
 
@@ -617,7 +617,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
             {[
               {
                 title: "Add Your dApp to Registry",
-                description: "Register your dApp in the Sui One SuperApp MiniApp registry",
+                description: "Register your dApp in the Scroll One SuperApp MiniApp registry",
                 code: codeExamples.integration,
                 id: "integration"
               },
@@ -629,7 +629,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               },
               {
                 title: "Bridge Integration",
-                description: "Complete example of integrating with the Sui One SuperApp bridge",
+                description: "Complete example of integrating with the Scroll One SuperApp bridge",
                 code: codeExamples.sdk,
                 id: "sdk"
               },
@@ -803,7 +803,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               {
                 icon: Webhook,
                 title: "ScrollOne Bridge",
-                description: "Seamless communication between your Sui dApp and the Sui One wallet",
+                description: "Seamless communication between your Sui dApp and the Scroll One wallet",
                 features: ["Wallet integration", "Transaction signing", "Event handling", "Notification support", "8 core methods"]
               },
               {
@@ -889,14 +889,14 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               },
               {
                 title: "SDK Documentation",
-                description: "Complete Sui One SuperApp SDK v1.0.0 documentation and API reference",
+                description: "Complete Scroll One SuperApp SDK v1.0.0 documentation and API reference",
                 href: "#",
                 icon: Code,
                 external: false
               },
               {
                 title: "Bridge Integration Guide",
-                description: "Complete guide to integrating with the Sui One SuperApp Bridge API v1.0.0",
+                description: "Complete guide to integrating with the Scroll One SuperApp Bridge API v1.0.0",
                 href: "#",
                 icon: Webhook,
                 external: false
@@ -949,7 +949,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
               Ready to <span className="gradient-text">Build</span>?
             </h2>
             <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-              Join the Sui One SuperApp ecosystem and bring your Sui Move dApp to thousands of users. 
+              Join the Scroll One SuperApp ecosystem and bring your Sui Move dApp to thousands of users. 
               Built with SDK v1.0.0 - simple, secure, and powerful on Sui.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -983,14 +983,14 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-accent-primary/30">
                   <Image 
                     src="/logo.png" 
-                    alt="Sui One Logo" 
+                    alt="Scroll One Logo" 
                     width={40} 
                     height={40}
                     className="object-contain"
                   />
                 </div>
                 <div>
-                  <span className="text-2xl font-bold gradient-text block">Sui One</span>
+                  <span className="text-2xl font-bold gradient-text block">Scroll One</span>
                   <span className="text-[10px] text-text-tertiary font-mono">superapp</span>
                 </div>
               </div>
@@ -1018,7 +1018,7 @@ if (typeof window !== 'undefined' && window.scrollOne?.isScrollOne) {
             </div>
           </div>
           <div className="border-t border-border-subtle pt-8 text-center text-sm text-text-tertiary">
-            <p>&copy; {new Date().getFullYear()} Sui One SuperApp. Built on Sui blockchain.</p>
+            <p>&copy; {new Date().getFullYear()} Scroll One SuperApp. Built on Sui blockchain.</p>
           </div>
         </div>
       </footer>

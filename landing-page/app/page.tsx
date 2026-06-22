@@ -143,7 +143,7 @@ export default function Home() {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Sui One SuperApp",
+    "name": "Scroll One SuperApp",
     "url": siteUrl,
     "logo": `${siteUrl}/logo.png`,
     "description": "A comprehensive super app ecosystem built on the Sui blockchain",
@@ -161,7 +161,7 @@ export default function Home() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Sui One SuperApp",
+    "name": "Scroll One SuperApp",
     "url": siteUrl,
     "description": "Your Gateway to the Sui Ecosystem",
     "potentialAction": {
@@ -177,7 +177,7 @@ export default function Home() {
   const softwareApplicationSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Sui One SuperApp",
+    "name": "Scroll One SuperApp",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "iOS, Android, Web",
     "offers": {
@@ -281,7 +281,7 @@ export default function Home() {
               >
                 <Image 
                   src="/logo.png" 
-                  alt="Sui One Logo" 
+                  alt="Scroll One Logo" 
                   width={40} 
                   height={40}
                   className="object-contain"
@@ -289,7 +289,7 @@ export default function Home() {
                 />
               </motion.div>
               <div>
-                <span className="text-2xl font-bold gradient-text block">Sui One</span>
+                <span className="text-2xl font-bold gradient-text block">Scroll One</span>
                 <span className="text-[10px] text-text-tertiary font-mono">superapp</span>
               </div>
             </motion.div>
@@ -430,7 +430,7 @@ export default function Home() {
                 transition={{ delay: 0.4 }}
                 className="text-xl md:text-2xl text-text-secondary mb-10 leading-relaxed max-w-xl"
               >
-                The Sui ecosystem, reimagined. Sui One brings wallet, identity, and 20+ mini-apps together in one unified experience on the Sui network.
+                The Sui ecosystem, reimagined. Wallet, identity, and 20+ mini-apps in one beautifully crafted experience—powered by Sui&apos;s object-centric architecture and parallel execution.
               </motion.p>
 
               <motion.div
@@ -517,7 +517,7 @@ export default function Home() {
                           {/* App Screenshot */}
                           <Image
                             src="/app-screenshot.png"
-                            alt="Sui One SuperApp Screenshot"
+                            alt="Scroll One SuperApp Screenshot"
                             fill
                             className="object-cover object-top rounded-[2.4rem]"
                             priority
@@ -591,8 +591,8 @@ export default function Home() {
               {
                 icon: Fingerprint,
                 title: "Identity You Own",
-                description: "Sui One ID isn&apos;t just a username. It&apos;s your reputation, your achievements, your portable digital self across the Sui network.",
-                features: ["Unique Sui ID", "Reputation system", "Portable identity", "Badges & achievements"],
+                description: "Scroll ID isn&apos;t just a username. It&apos;s your reputation, your achievements, your portable digital self across the Sui network.",
+                features: ["Unique Scroll ID", "Reputation system", "Portable identity", "Badges & achievements"],
                 color: "from-purple-500 to-pink-500",
                 position: "right"
               },
@@ -743,7 +743,7 @@ export default function Home() {
               See It in <span className="gradient-text">Action</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              Watch how Sui One SuperApp transforms your Web3 experience on Sui
+              Watch how Scroll One SuperApp transforms your Web3 experience on Sui
             </p>
           </motion.div>
 
@@ -789,7 +789,7 @@ export default function Home() {
               ( will be ) Loved by <span className="gradient-text">Users</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              See what our community is saying about Sui One SuperApp
+              See what our community is saying about Scroll One SuperApp
             </p>
           </motion.div>
 
@@ -800,7 +800,7 @@ export default function Home() {
                 role: "DeFi Trader",
                 avatar: "👤",
                 rating: 5,
-                text: "Sui One SuperApp changed how I interact with DeFi on Sui. Having everything in one app is a game-changer. The wallet integration is seamless!",
+                text: "Scroll One SuperApp changed how I interact with DeFi on Sui. Having everything in one app is a game-changer. The wallet integration is seamless!",
                 verified: true
               },
               {
@@ -1057,47 +1057,51 @@ export default function Home() {
               Common <span className="gradient-text">Questions</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              Everything you need to know about Sui One SuperApp
+              Everything you need to know about Scroll One SuperApp
             </p>
           </motion.div>
 
           <div className="space-y-4">
             {[
               {
-                question: "What is Sui One SuperApp?",
-                answer: "Sui One SuperApp is a comprehensive super app built on the Sui blockchain. It combines a secure crypto wallet, decentralized identity management, and an extensive marketplace of 20+ mini-applications. It's your all-in-one gateway to the Sui ecosystem, leveraging Sui's object-centric model, Sui Move smart contracts, and parallel transaction execution."
+                question: "What is Scroll One SuperApp?",
+                answer: "Scroll One SuperApp is a comprehensive super app built on the Sui blockchain. It combines a secure crypto wallet, decentralized identity management, and an extensive marketplace of 20+ mini-applications. It's your all-in-one gateway to the Sui ecosystem, leveraging Sui's object-centric model, Sui Move smart contracts, and parallel transaction execution."
               },
               {
-                question: "Is Sui One SuperApp free to use?",
-                answer: "Yes! Sui One SuperApp will be completely free to download and use once it launches. You'll only pay network gas fees for on-chain transactions, which are typically very low on Sui. There are no subscription fees or hidden costs. We're currently in active development and putting on the final touches before launch."
+                question: "Is Scroll One SuperApp free to use?",
+                answer: "Yes! Scroll One SuperApp will be completely free to download and use once it launches. You'll only pay network gas fees for on-chain transactions, which are typically very low on Sui. There are no subscription fees or hidden costs. We're currently in active development and putting on the final touches before launch."
               },
               {
                 question: "How secure is my wallet?",
                 answer: "Security is our top priority. Your private keys are encrypted and stored locally on your device using your device's secure keychain. We never have access to your keys, and all transactions require your explicit approval. We also support biometric authentication for added security."
               },
               {
-                question: "What is Sui ID?",
-                answer: "Sui One ID is your decentralized identity on the Sui network. It's a unique identifier that you own and control, complete with a reputation system, badges, and achievements. Your Sui One ID is portable and can be used across different applications in the Sui ecosystem."
+                question: "What is Scroll ID?",
+                answer: "Scroll ID is your decentralized identity on the Sui network. It's a unique identifier that you own and control, complete with a reputation system, badges, and achievements. Your Scroll ID is portable and can be used across different applications in the Sui ecosystem."
               },
               {
                 question: "Can I use my existing wallet?",
-                answer: "Yes! You can import your existing Sui wallet using your recovery phrase. Sui One SuperApp supports standard Sui wallets, so you can bring your existing SUI and on-chain objects and continue using them seamlessly."
+                answer: "Yes! You can import your existing Sui wallet using your recovery phrase. Scroll One SuperApp supports standard Sui wallets, so you can bring your existing SUI and on-chain objects and continue using them seamlessly."
               },
               {
                 question: "What mini-apps are available?",
-                answer: "Sui One SuperApp features 20+ mini-apps across categories including DeFi (trading, lending, swapping), NFTs (marketplaces, galleries), Gaming, Social networking, Governance, AI tools, and more. New Sui-native apps are added regularly based on community feedback."
+                answer: "Scroll One SuperApp features 20+ mini-apps across categories including DeFi (trading, lending, swapping), NFTs (marketplaces, galleries), Gaming, Social networking, Governance, AI tools, and more. New Sui-native apps are added regularly based on community feedback."
               },
               {
-                question: "Is Sui One SuperApp available on all platforms?",
-                answer: "Sui One SuperApp will be available on iOS, Android, and Web when we launch. Your data will sync across all platforms, so you can access your wallet and identity from any device. The experience will be consistent across all platforms. We're currently in final development and will announce launch dates soon."
+                question: "Is Scroll One SuperApp available on all platforms?",
+                answer: "Scroll One SuperApp will be available on iOS, Android, and Web when we launch. Your data will sync across all platforms, so you can access your wallet and identity from any device. The experience will be consistent across all platforms. We're currently in final development and will announce launch dates soon."
               },
               {
                 question: "How do I integrate my dApp?",
                 answer: "We provide a comprehensive SDK and bridge API for developers building on Sui Move. Check out our Developers page for documentation, code examples, and integration guides. The process is straightforward and well-documented."
               },
               {
-                question: "Why is Sui One built on Sui?",
-                answer: "Sui One is built on the Sui Layer 1 blockchain. Sui is a high-performance network designed for scale. Unlike account-based blockchains, Sui stores every asset as a programmable object with a unique on-chain ID. Simple transfers of owned objects bypass global consensus and finalize in sub-seconds, while complex interactions use the Bullshark consensus protocol. Sui Move—a safe, asset-centric dialect of Move—powers the smart contracts behind our mini-app ecosystem."
+                question: "Why is Scroll One built on Sui?",
+                answer: "Sui is a high-performance Layer 1 designed for scale. Unlike account-based blockchains, Sui stores every asset as a programmable object with a unique on-chain ID. Simple transfers of owned objects bypass global consensus and finalize in sub-seconds, while complex interactions use the Bullshark consensus protocol. Sui Move—a safe, asset-centric dialect of Move—powers the smart contracts behind our mini-app ecosystem."
+              },
+              {
+                question: "Is Scroll One related to the Scroll blockchain?",
+                answer: "No. Despite the name, Scroll One is not affiliated with or built on the Scroll blockchain (scroll.io). Scroll One is a super app powered exclusively by the Sui network. The name reflects our vision of scrolling through a unified Web3 experience—not any connection to Scroll L2."
               },
             ].map((faq, index) => (
               <motion.div
@@ -1166,7 +1170,7 @@ export default function Home() {
               Get notified when we launch and receive early access
             </p>
             <p className="text-sm text-text-tertiary mb-10 max-w-2xl mx-auto">
-              Join our waitlist to be among the first to experience Sui One SuperApp
+              Join our waitlist to be among the first to experience Scroll One SuperApp
             </p>
 
             {!emailSubmitted ? (
@@ -1218,7 +1222,7 @@ export default function Home() {
                   </div>
                   <h3 className="text-2xl font-bold text-text-primary">Thanks for subscribing!</h3>
                   <p className="text-text-secondary text-center">
-                    Check your email to confirm your subscription. We&apos;ll keep you updated with the latest from Sui One SuperApp.
+                    Check your email to confirm your subscription. We&apos;ll keep you updated with the latest from Scroll One SuperApp.
                   </p>
                   <button
                     onClick={() => setEmailSubmitted(false)}
@@ -1252,7 +1256,7 @@ export default function Home() {
               Built for the <span className="gradient-text">future</span>
             </h2>
             <p className="text-xl md:text-2xl text-text-primary leading-relaxed mb-16">
-              Sui One SuperApp isn&apos;t just another app. It&apos;s a complete reimagining of what a super app can be on Sui. 
+              Scroll One SuperApp isn&apos;t just another app. It&apos;s a complete reimagining of what a super app can be on Sui. 
               We&apos;ve taken Sui&apos;s object-centric architecture, parallel execution, and Sui Move smart contracts, wrapped them in beautiful design, and made Web3 accessible to everyone.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1304,7 +1308,7 @@ export default function Home() {
               Meet the <span className="gradient-text">Team</span>
             </h2>
             <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              The passionate people behind Sui One SuperApp
+              The passionate people behind Scroll One SuperApp
             </p>
           </motion.div>
 
@@ -1321,14 +1325,14 @@ export default function Home() {
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-accent-primary/30">
                   <Image 
                     src="/logo.png" 
-                    alt="Sui One Logo" 
+                    alt="Scroll One Logo" 
                     width={40} 
                     height={40}
                     className="object-contain"
                   />
                 </div>
                 <div>
-                  <span className="text-2xl font-bold gradient-text block">Sui One</span>
+                  <span className="text-2xl font-bold gradient-text block">Scroll One</span>
                   <span className="text-[10px] text-text-tertiary font-mono">superapp</span>
                 </div>
               </div>
@@ -1372,7 +1376,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-border-subtle pt-8 text-center text-sm text-text-tertiary">
-            <p>&copy; {new Date().getFullYear()} Sui One SuperApp. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Scroll One SuperApp. All rights reserved.</p>
           </div>
         </div>
       </footer>
