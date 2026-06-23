@@ -1,8 +1,4 @@
-import { SuiJsonRpcClient } from '@mysten/sui/jsonRpc';
-import { walrus, WalrusFile } from '@mysten/walrus';
 import { getWalrusEndpoints, WALRUS_DEFAULT_EPOCHS } from './config';
-import { suiProvider } from '../sui/provider';
-import { getKeypairOrThrow } from '../sui/wallet';
 
 export interface WalrusUploadResult {
   blobId: string;
@@ -26,19 +22,6 @@ function parseBlobIdFromResponse(json: WalrusStoreResponse): string | null {
   );
 }
 
-function createWalrusClient(isTestnet: boolean) {
-  const config = suiProvider.getConfig();
-  const endpoints = getWalrusEndpoints(isTestnet);
-  return new SuiJsonRpcClient({ url: config.rpcUrl, network: config.network }).$extend(
-    walrus({
-      uploadRelay: {
-        host: endpoints.uploadRelay,
-        sendTip: { max: 5_000_000 },
-      },
-    })
-  );
-}
-
 /** Upload via public Walrus publisher HTTP API (testnet). */
 export async function uploadBlobHttp(
   data: Uint8Array,
@@ -48,7 +31,9 @@ export async function uploadBlobHttp(
 ): Promise<WalrusUploadResult> {
   const endpoints = getWalrusEndpoints(isTestnet);
   if (!endpoints.publisher) {
-    throw new Error('HTTP Walrus publisher is only available on testnet. Use SDK upload on mainnet.');
+    throw new Error(
+      'Walrus HTTP publisher is only available on testnet. Mainnet uploads are not supported in the mobile app.'
+    );
   }
 
   const url = `${endpoints.publisher}/v1/blobs?epochs=${epochs}&deletable=true&send_object_to=${encodeURIComponent(ownerAddress)}`;
@@ -75,54 +60,14 @@ export async function uploadBlobHttp(
   };
 }
 
-/** Upload via Walrus SDK + upload relay (mainnet and testnet). */
-export async function uploadBlobSdk(
-  data: Uint8Array,
-  identifier: string,
-  isTestnet: boolean,
-  epochs: number = WALRUS_DEFAULT_EPOCHS
-): Promise<WalrusUploadResult> {
-  const keypair = await getKeypairOrThrow();
-  const address = keypair.toSuiAddress();
-  const client = createWalrusClient(isTestnet);
-
-  const file = WalrusFile.from({
-    contents: data,
-    identifier,
-    tags: { 'content-type': 'application/octet-stream' },
-  });
-
-  const results = await client.walrus.writeFiles({
-    files: [file],
-    epochs,
-    deletable: true,
-    signer: keypair,
-  });
-
-  const blobId = results[0]?.blobId;
-  if (!blobId) {
-    throw new Error('Walrus SDK upload failed: no blobId');
-  }
-
-  return { blobId, suiRef: address };
-}
-
-/** Smart upload: HTTP on testnet when publisher available, SDK otherwise. */
+/** Upload blob via Walrus HTTP publisher (React Native–compatible). */
 export async function uploadBlob(
   data: Uint8Array,
   ownerAddress: string,
   isTestnet: boolean,
-  identifier: string = 'blob.bin'
+  _identifier: string = 'blob.bin'
 ): Promise<WalrusUploadResult> {
-  const endpoints = getWalrusEndpoints(isTestnet);
-  if (isTestnet && endpoints.publisher) {
-    try {
-      return await uploadBlobHttp(data, ownerAddress, isTestnet);
-    } catch (error) {
-      console.warn('[Walrus] HTTP upload failed, falling back to SDK:', error);
-    }
-  }
-  return uploadBlobSdk(data, identifier, isTestnet);
+  return uploadBlobHttp(data, ownerAddress, isTestnet);
 }
 
 /** Read blob via Walrus aggregator HTTP API. */

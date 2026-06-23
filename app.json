@@ -29,10 +29,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.scroll_one_superapp",
+      "package": "app.rork.scroll_one_sui_superapp",
       "permissions": [
         "android.permission.VIBRATE",
-        "android.permission.CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ],
       "minSdkVersion": 24,
       "compileSdkVersion": 36,
@@ -74,8 +75,9 @@
         "origin": "https://rork.com/"
       },
       "eas": {
-        "projectId": "b2fa4db8-c89c-4d2a-aeea-a1b0970de501"
+        "projectId": "a69bb508-82fa-48c4-9258-f6899e819ca1"
       }
-    }
+    },
+    "owner": "kevinisom9000"
   }
 }
