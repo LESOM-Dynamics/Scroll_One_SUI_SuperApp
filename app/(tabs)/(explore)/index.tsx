@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,11 @@ import { Stack, useRouter } from 'expo-router';
 import { Search, List, Grid, Shield } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
-import { MINIAPPS, getFeaturedMiniApps, getCategories } from '@/miniapps/registry';
+import {
+  getActiveMiniApps,
+  hydrateMiniAppsFromWalrus,
+} from '@/miniapps/registry';
+import { useSettingsStore } from '@/store/settingsStore';
 import { type MiniApp, useMiniAppStore } from '@/store/miniAppStore';
 import { CategoryTabs } from '@/components/ui/CategoryTabs';
 import { MiniAppListCard } from '@/components/ui/MiniAppListCard';
@@ -87,6 +91,8 @@ function FeaturedCarouselItem({ item, onPress }: FeaturedCarouselItemProps) {
 
 export default function ExploreScreen() {
   const router = useRouter();
+  const { isTestnet } = useSettingsStore();
+  const [miniApps, setMiniApps] = useState(getActiveMiniApps());
   const [searchQuery, setSearchQuery] = useState('');
   const [loadingMore, setLoadingMore] = useState(false);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
@@ -101,13 +107,22 @@ export default function ExploreScreen() {
     resetPagination,
   } = useMiniAppStore();
 
-  const featuredApps = getFeaturedMiniApps();
-  const categories = getCategories();
+  const featuredApps = useMemo(() => miniApps.filter((app) => app.featured), [miniApps]);
+  const categories = useMemo(
+    () => Array.from(new Set(miniApps.map((app) => app.category))),
+    [miniApps]
+  );
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
   const featuredCarouselRef = useRef<FlatList>(null);
 
+  useEffect(() => {
+    hydrateMiniAppsFromWalrus(isTestnet)
+      .then(setMiniApps)
+      .catch((error) => console.warn('[Explore] Walrus manifest load failed:', error));
+  }, [isTestnet]);
+
   const filteredApps = useMemo(() => {
-    let apps = MINIAPPS.filter((app) => {
+    let apps = miniApps.filter((app) => {
       const matchesSearch =
         app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         app.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -116,9 +131,9 @@ export default function ExploreScreen() {
     });
 
     return apps.slice(0, page * ITEMS_PER_PAGE);
-  }, [searchQuery, selectedCategory, page]);
+  }, [searchQuery, selectedCategory, page, miniApps]);
 
-  const hasMore = filteredApps.length < MINIAPPS.length;
+  const hasMore = filteredApps.length < miniApps.length;
 
   const handleCategoryChange = (category: string | null) => {
     Animated.sequence([

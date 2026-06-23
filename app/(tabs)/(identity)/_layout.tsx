@@ -31,6 +31,14 @@ export default function IdentityLayout() {
           title: 'Developer Settings',
         }}
       />
+      <Stack.Screen
+        name="edit-profile"
+        options={{
+          headerShown: true,
+          presentation: 'card',
+          title: 'Edit Profile',
+        }}
+      />
     </Stack>
   );
 }

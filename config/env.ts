@@ -14,4 +14,24 @@ export const env = {
   api: {
     baseUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000',
   },
+  walrus: {
+    publisherTestnet:
+      process.env.EXPO_PUBLIC_WALRUS_PUBLISHER_TESTNET ||
+      'https://publisher.walrus-testnet.walrus.space',
+    aggregatorTestnet:
+      process.env.EXPO_PUBLIC_WALRUS_AGGREGATOR_TESTNET ||
+      'https://aggregator.walrus-testnet.walrus.space',
+    aggregatorMainnet:
+      process.env.EXPO_PUBLIC_WALRUS_AGGREGATOR_MAINNET ||
+      'https://aggregator.walrus-mainnet.walrus.space',
+    uploadRelayTestnet:
+      process.env.EXPO_PUBLIC_WALRUS_UPLOAD_RELAY_TESTNET ||
+      'https://upload-relay.testnet.walrus.space',
+    uploadRelayMainnet:
+      process.env.EXPO_PUBLIC_WALRUS_UPLOAD_RELAY_MAINNET ||
+      'https://upload-relay.mainnet.walrus.space',
+    /** Optional: Walrus blob ID for the mini-app manifest (set after first publish). */
+    manifestBlobId:
+      process.env.EXPO_PUBLIC_WALRUS_MANIFEST_BLOB_ID || '',
+  },
 } as const;

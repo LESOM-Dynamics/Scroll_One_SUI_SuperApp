@@ -1,25 +1,59 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { User, Shield, Settings, LogOut, Code } from 'lucide-react-native';
+import { User, Shield, Settings, LogOut, Code, Pencil, Cloud } from 'lucide-react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '@/theme';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { useUserStore } from '@/store/userStore';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useWalletStore } from '@/store/walletStore';
+import {
+  bundleToBadges,
+  bundleToUserProfile,
+  getCachedProfileBlobId,
+  loadProfileFromWalrus,
+} from '@/services/walrus/profile';
 
 export default function IdentityScreen() {
-  const { profile } = useUserStore();
+  const { profile, badges, setProfile, setBadges } = useUserStore();
+  const { address } = useWalletStore();
+  const { isTestnet } = useSettingsStore();
   const router = useRouter();
   const { themeMode } = useSettingsStore();
   const styles = React.useMemo(() => createStyles(), [themeMode]);
+  const [isLoadingWalrus, setIsLoadingWalrus] = useState(false);
 
-  const badges = [
-    { id: '1', icon: '🏆', name: 'Early Adopter', earned: true },
-    { id: '2', icon: '⚡', name: 'Power User', earned: true },
-    { id: '3', icon: '🎯', name: 'Accuracy Master', earned: false },
-    { id: '4', icon: '🔥', name: 'Streak Champion', earned: false },
-  ];
+  useEffect(() => {
+    let cancelled = false;
+
+    const hydrateFromWalrus = async () => {
+      if (!address) return;
+      setIsLoadingWalrus(true);
+      try {
+        const blobId = await getCachedProfileBlobId(address);
+        if (!blobId || cancelled) return;
+
+        const bundle = await loadProfileFromWalrus(address, isTestnet, blobId);
+        if (!bundle || cancelled) return;
+
+        setProfile({
+          ...bundleToUserProfile(bundle, profile?.id),
+          walrusBlobId: blobId,
+        });
+        setBadges(bundleToBadges(bundle));
+      } catch (error) {
+        console.error('[Identity] Walrus profile load failed:', error);
+      } finally {
+        if (!cancelled) setIsLoadingWalrus(false);
+      }
+    };
+
+    hydrateFromWalrus();
+    return () => {
+      cancelled = true;
+    };
+  }, [address, isTestnet, setProfile, setBadges]);
 
   return (
     <>
@@ -27,11 +61,30 @@ export default function IdentityScreen() {
       <Screen padding={false}>
         <View style={styles.header}>
           <View style={styles.profileSection}>
-            <View style={styles.avatar}>
-              <User color={colors.text.primary} size={48} />
-            </View>
+            <TouchableOpacity
+              style={styles.avatar}
+              onPress={() => router.push('/(tabs)/(identity)/edit-profile')}
+            >
+              {profile?.avatar ? (
+                <Image source={{ uri: profile.avatar }} style={styles.avatarImage} />
+              ) : (
+                <User color={colors.text.primary} size={48} />
+              )}
+            </TouchableOpacity>
             <Text style={styles.name}>{profile?.displayName || 'Sui User'}</Text>
             <Text style={styles.suiId}>@{profile?.suiId || 'suiuser123'}</Text>
+            {profile?.bio ? (
+              <Text style={styles.bio}>{profile.bio}</Text>
+            ) : null}
+            {profile?.walrusBlobId ? (
+              <View style={styles.walrusBadge}>
+                <Cloud color={colors.accent.primary} size={14} />
+                <Text style={styles.walrusBadgeText}>Stored on Walrus</Text>
+              </View>
+            ) : null}
+            {isLoadingWalrus && (
+              <ActivityIndicator size="small" color={colors.accent.primary} style={styles.loader} />
+            )}
             <View style={styles.stats}>
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>{profile?.reputation || 0}</Text>
@@ -43,10 +96,17 @@ export default function IdentityScreen() {
                 <Text style={styles.statLabel}>Level</Text>
               </View>
             </View>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => router.push('/(tabs)/(identity)/edit-profile')}
+            >
+              <Pencil color={colors.accent.primary} size={16} />
+              <Text style={styles.editButtonText}>Edit Profile</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <ScrollView 
+        <ScrollView
           style={styles.content}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -72,7 +132,7 @@ export default function IdentityScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Settings</Text>
             <Card style={styles.menuCard}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => router.push('/(tabs)/(identity)/privacy-security')}
               >
@@ -81,10 +141,10 @@ export default function IdentityScreen() {
                   <Text style={styles.menuText}>Privacy & Security</Text>
                 </View>
               </TouchableOpacity>
-              
+
               <View style={styles.menuDivider} />
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => router.push('/(tabs)/(identity)/preferences')}
               >
@@ -93,10 +153,10 @@ export default function IdentityScreen() {
                   <Text style={styles.menuText}>Preferences</Text>
                 </View>
               </TouchableOpacity>
-              
+
               <View style={styles.menuDivider} />
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => router.push('/(tabs)/(identity)/developer-settings')}
               >
@@ -105,9 +165,9 @@ export default function IdentityScreen() {
                   <Text style={styles.menuText}>Developer Settings</Text>
                 </View>
               </TouchableOpacity>
-              
+
               <View style={styles.menuDivider} />
-              
+
               <TouchableOpacity style={styles.menuItem}>
                 <View style={styles.menuLeft}>
                   <LogOut color={colors.status.error} size={20} />
@@ -141,7 +201,12 @@ const createStyles = () =>
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: spacing.base,
+      overflow: 'hidden',
       ...shadows.sm,
+    },
+    avatarImage: {
+      width: 96,
+      height: 96,
     },
     name: {
       fontSize: typography.fontSize.xl,
@@ -153,11 +218,37 @@ const createStyles = () =>
       fontSize: typography.fontSize.base,
       color: colors.text.secondary,
       fontFamily: typography.fontFamily.mono,
-      marginBottom: spacing.lg,
+      marginBottom: spacing.sm,
+    },
+    bio: {
+      fontSize: typography.fontSize.sm,
+      color: colors.text.secondary,
+      textAlign: 'center',
+      marginBottom: spacing.sm,
+      paddingHorizontal: spacing.lg,
+    },
+    walrusBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      backgroundColor: colors.surface,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: borderRadius.full,
+      marginBottom: spacing.sm,
+    },
+    walrusBadgeText: {
+      fontSize: typography.fontSize.xs,
+      color: colors.accent.primary,
+      fontWeight: typography.fontWeight.medium,
+    },
+    loader: {
+      marginBottom: spacing.sm,
     },
     stats: {
       flexDirection: 'row',
       alignItems: 'center',
+      marginBottom: spacing.md,
     },
     statItem: {
       alignItems: 'center',
@@ -177,6 +268,21 @@ const createStyles = () =>
       width: 1,
       height: 40,
       backgroundColor: colors.border.medium,
+    },
+    editButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderRadius: borderRadius.full,
+      borderWidth: 1,
+      borderColor: colors.accent.primary,
+    },
+    editButtonText: {
+      color: colors.accent.primary,
+      fontWeight: typography.fontWeight.semibold,
+      fontSize: typography.fontSize.sm,
     },
     content: {
       flex: 1,

@@ -20,6 +20,9 @@ export interface UserProfile {
   reputation: number;
   level: number;
   joinedAt: number;
+  walrusBlobId?: string;
+  walrusAvatarBlobId?: string;
+  profileContentHash?: string;
 }
 
 interface UserState {
@@ -34,6 +37,7 @@ interface UserState {
   earnBadge: (badgeId: string) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
+  incrementReputation: (points: number) => void;
   reset: () => void;
 }
 
@@ -64,6 +68,14 @@ export const useUserStore = create<UserState>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   
   setError: (error) => set({ error }),
+
+  incrementReputation: (points) =>
+    set((state) => {
+      if (!state.profile) return state;
+      const reputation = state.profile.reputation + points;
+      const level = Math.floor(Math.sqrt(reputation / 100)) + 1;
+      return { profile: { ...state.profile, reputation, level } };
+    }),
   
   reset: () => set({
     profile: null,

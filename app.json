@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Sui One SuperApp",
-    "slug": "sui-one-superapp",
+    "name": "Scroll One Sui SuperApp",
+    "slug": "scroll-one-sui-superapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.rork.scroll-one-superapp",
+      "bundleIdentifier": "app.rork.scroll-one-sui-superapp",
       "infoPlist": {
         "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to access your Face ID biometric data.",
         "NSUserNotificationsUsageDescription": "This app uses notifications to alert you about transaction status updates."

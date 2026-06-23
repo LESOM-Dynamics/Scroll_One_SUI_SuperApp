@@ -5,6 +5,7 @@ import type { MiniAppPermission } from './types';
  * feature logic while still enforcing least privilege.
  */
 export const MINIAPP_PERMISSION_REGISTRY: Record<string, MiniAppPermission[]> = {
+  deepbook: ['wallet:read', 'network:read', 'tx:sign'],
   cetus: ['wallet:read', 'network:read', 'tx:sign'],
   scallop: ['wallet:read', 'network:read', 'tx:sign'],
   turbos: ['wallet:read', 'network:read', 'tx:sign'],

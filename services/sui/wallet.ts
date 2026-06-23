@@ -326,6 +326,27 @@ export async function sendSuiTransaction(
   }
 }
 
+export async function getKeypairOrThrow(): Promise<Ed25519Keypair> {
+  const keypair = await getKeypairInstance();
+  if (!keypair) {
+    throw new Error('Wallet is locked or not available');
+  }
+  return keypair;
+}
+
+export async function signAndExecuteTransaction(tx: Transaction): Promise<{ digest: string }> {
+  const keypair = await getKeypairOrThrow();
+  const client = suiProvider.getClient();
+  const result = await keypair.signAndExecuteTransaction({
+    transaction: tx,
+    client: client.core,
+  });
+  if (!result.digest) {
+    throw new Error('Transaction failed: no digest returned');
+  }
+  return { digest: result.digest };
+}
+
 export function shortenAddress(address: string, chars: number = 4): string {
   if (!address) return '';
   return `${address.substring(0, chars + 2)}...${address.substring(address.length - chars)}`;

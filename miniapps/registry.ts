@@ -1,7 +1,17 @@
 import { type MiniApp } from '@/store/miniAppStore';
+import { loadMiniAppsFromWalrus } from '@/services/walrus/manifest';
 
 // Curated dApps from the Sui ecosystem
-export const MINIAPPS: MiniApp[] = [
+export const MINIAPPS: MiniApp[] = [  {
+    id: 'deepbook',
+    name: 'DeepBook',
+    url: 'https://deepbook.tech',
+    icon: '📖',
+    description: 'Native on-chain orderbook DEX on Sui — swap via DeepBook V3.',
+    category: 'DeFi',
+    featured: true,
+    verified: true,
+  },
   {
     id: 'cetus',
     name: 'Cetus',
@@ -104,19 +114,30 @@ export const MINIAPPS: MiniApp[] = [
   },
 ];
 
+let activeMiniApps: MiniApp[] = MINIAPPS;
+
+export function getActiveMiniApps(): MiniApp[] {
+  return activeMiniApps;
+}
+
+export async function hydrateMiniAppsFromWalrus(isTestnet: boolean): Promise<MiniApp[]> {
+  activeMiniApps = await loadMiniAppsFromWalrus(isTestnet);
+  return activeMiniApps;
+}
+
 export function getMiniAppById(id: string): MiniApp | undefined {
-  return MINIAPPS.find((app) => app.id === id);
+  return activeMiniApps.find((app) => app.id === id);
 }
 
 export function getMiniAppsByCategory(category: string): MiniApp[] {
-  return MINIAPPS.filter((app) => app.category === category);
+  return activeMiniApps.filter((app) => app.category === category);
 }
 
 export function getFeaturedMiniApps(): MiniApp[] {
-  return MINIAPPS.filter((app) => app.featured);
+  return activeMiniApps.filter((app) => app.featured);
 }
 
 export function getCategories(): string[] {
-  const categories = new Set(MINIAPPS.map((app) => app.category));
+  const categories = new Set(activeMiniApps.map((app) => app.category));
   return Array.from(categories);
 }

@@ -7,10 +7,12 @@ import notificationRoutes from './notifications';
 import analyticsRoutes from './analytics';
 import authRoutes from './auth';
 import adminRoutes from './admin';
+import walrusRoutes from './walrus';
 
 const router = Router();
 
 router.use('/users', userRoutes);
+router.use('/walrus', walrusRoutes);
 router.use('/miniapps', miniappRoutes);
 router.use('/transactions', transactionRoutes);
 router.use('/tokens', tokenRoutes);

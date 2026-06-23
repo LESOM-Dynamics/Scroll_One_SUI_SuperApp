@@ -6,6 +6,12 @@ import { useUserStore } from '@/store/userStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { loadWallet } from '@/services/sui/wallet';
 import { suiProvider } from '@/services/sui/provider';
+import {
+  getCachedProfileBlobId,
+  loadProfileFromWalrus,
+  bundleToUserProfile,
+  bundleToBadges,
+} from '@/services/walrus/profile';
 
 export function useAppInitialization() {
   const { address, setAddress, setBalance, setUnlocked } = useWalletStore();
@@ -104,9 +110,27 @@ export function useAppInitialization() {
             setBadges([
               { id: '1', name: 'Early Adopter', description: 'Joined in beta', icon: '🏆', earned: true, rarity: 'epic', earnedAt: Date.now() - 30 * 24 * 60 * 60 * 1000 },
               { id: '2', name: 'Power User', description: 'Made 100 transactions', icon: '⚡', earned: true, rarity: 'rare', earnedAt: Date.now() - 15 * 24 * 60 * 60 * 1000 },
-              { id: '3', name: 'Accuracy Master', description: 'Complete 50 swaps', icon: '🎯', earned: false, rarity: 'epic' },
+              { id: 'deepbook-trader', name: 'DeepBook Trader', description: 'Completed a DeepBook swap', icon: '📖', earned: false, rarity: 'epic' },
+              { id: 'walrus-pioneer', name: 'Walrus Pioneer', description: 'Saved profile to Walrus', icon: '☁️', earned: false, rarity: 'rare' },
               { id: '4', name: 'Streak Champion', description: 'Active for 30 days', icon: '🔥', earned: false, rarity: 'legendary' },
             ]);
+          }
+
+          // Hydrate profile from Walrus if a blob ID is cached
+          try {
+            const blobId = await getCachedProfileBlobId(wallet.address);
+            if (blobId) {
+              const bundle = await loadProfileFromWalrus(wallet.address, isTestnet, blobId);
+              if (bundle) {
+                setProfile({
+                  ...bundleToUserProfile(bundle, profile?.id ?? wallet.address),
+                  walrusBlobId: blobId,
+                });
+                setBadges(bundleToBadges(bundle));
+              }
+            }
+          } catch (walrusError) {
+            console.warn('[App] Walrus profile hydration skipped:', walrusError);
           }
         } else {
           // Wallet is locked - don't load balance or unlock
