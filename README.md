@@ -232,7 +232,7 @@ This project is private and proprietary. All rights reserved.
 
 - **Documentation**: See [Documentation Index](./docs/README.md)
 - **Issues**: Open an issue on GitHub
-- **Community**: Join the Scroll community
+- **Community**: Join the BlockChain community
 
 ---
 
