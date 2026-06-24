@@ -24,8 +24,10 @@ import {
   getDeepBookSwapTokens,
   resolveDeepBookPair,
 } from '@/services/sui/deepbook';
-import { getTokenBalance } from '@/services/sui/tokens';
-import { getTokenInfo } from '@/services/sui/tokens';
+import { awardBackendBadge } from '@/services/api/users';
+import { trackSwapComplete } from '@/services/api/analytics';
+import { getTokenBalance , getTokenInfo } from '@/services/sui/tokens';
+
 import { suiProvider } from '@/services/sui/provider';
 
 export default function SwapScreen() {
@@ -146,7 +148,22 @@ export default function SwapScreen() {
       const traderBadge = badges.find((b) => b.id === 'deepbook-trader');
       if (!traderBadge?.earned) {
         earnBadge('deepbook-trader');
+        if (address) {
+          try {
+            await awardBackendBadge(address, 'deepbook-trader');
+          } catch {
+            // badge may already exist
+          }
+        }
       }
+
+      await trackSwapComplete({
+        from: result.fromSymbol,
+        to: result.toSymbol,
+        fromAmount: result.fromAmount,
+        toAmount: result.toAmount,
+        digest: result.digest,
+      });
 
       Alert.alert(
         'Swap successful',

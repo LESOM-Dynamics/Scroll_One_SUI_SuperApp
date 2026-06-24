@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/Button';
 import { useUserStore } from '@/store/userStore';
 import { useWalletStore } from '@/store/walletStore';
 import { useSettingsStore } from '@/store/settingsStore';
+import { awardBackendBadge, updateBackendProfile } from '@/services/api/users';
 import {
   buildProfileBundle,
   uploadProfileBundle,
@@ -106,7 +107,19 @@ export default function EditProfileScreen() {
         profileContentHash: contentHash,
       });
 
+      await updateBackendProfile(address, {
+        displayName: updatedProfile.displayName,
+        bio: updatedProfile.bio,
+        suiId: updatedProfile.suiId,
+        avatar: updatedProfile.avatar,
+      });
+
       earnBadge('walrus-pioneer');
+      try {
+        await awardBackendBadge(address, 'walrus-pioneer');
+      } catch {
+        // badge may already exist
+      }
 
       Alert.alert(
         'Profile saved to Walrus',
