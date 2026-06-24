@@ -68,11 +68,13 @@ docker-compose up -d postgres redis
 5. **Run database migrations:**
 
 ```bash
-# Apply main schema
-psql -U postgres -d scroll_one -f database/schema.sql
+# Apply schema, admin extensions, and seed data
+npm run db:setup
 
-# Apply admin dashboard schema
-psql -U postgres -d scroll_one -f database/admin_schema.sql
+# Or manually with psql:
+# psql -U postgres -d sui_one -f database/schema.sql
+# psql -U postgres -d sui_one -f database/admin_schema.sql
+# psql -U postgres -d sui_one -f database/seed_miniapps.sql
 ```
 
 6. **Start development server:**
@@ -286,7 +288,7 @@ The backend includes a comprehensive Super Admin Dashboard for platform manageme
 
 ### Quick Admin Setup
 
-1. Apply admin schema: `psql -U postgres -d scroll_one -f database/admin_schema.sql`
+1. Apply admin schema: `npm run db:setup` or `psql -U postgres -d sui_one -f database/admin_schema.sql`
 2. Create Super Admin: `node scripts/create-super-admin.js 0xYourWalletAddress`
 3. Access dashboard at: `http://localhost:3001/admin-super` (frontend must be running)
 

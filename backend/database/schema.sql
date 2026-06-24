@@ -7,7 +7,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  wallet_address VARCHAR(42) UNIQUE NOT NULL,
+  wallet_address VARCHAR(66) UNIQUE NOT NULL,
   scroll_id VARCHAR(255) UNIQUE,
   username VARCHAR(50) UNIQUE,
   display_name VARCHAR(100),
@@ -107,8 +107,8 @@ CREATE INDEX idx_app_usage_session_start ON app_usage(session_start);
 CREATE TABLE IF NOT EXISTS transactions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   hash VARCHAR(66) UNIQUE NOT NULL,
-  from_address VARCHAR(42) NOT NULL,
-  to_address VARCHAR(42),
+  from_address VARCHAR(66) NOT NULL,
+  to_address VARCHAR(66),
   value NUMERIC(78, 0) NOT NULL,
   gas_used NUMERIC(78, 0),
   gas_price NUMERIC(78, 0),
@@ -211,7 +211,7 @@ CREATE INDEX idx_notification_preferences_user_id ON notification_preferences(us
 CREATE TABLE IF NOT EXISTS sessions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  wallet_address VARCHAR(42) NOT NULL,
+  wallet_address VARCHAR(66) NOT NULL,
   device_id VARCHAR(255),
   token_hash VARCHAR(255) NOT NULL,
   expires_at TIMESTAMP NOT NULL,
