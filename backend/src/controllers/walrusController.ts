@@ -10,7 +10,12 @@ export class WalrusController {
       const user = await userService.getUserByWalletAddress(walletAddress);
 
       if (!user) {
-        res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'User not found' } });
+        res.json(
+          createResponse({
+            walrusBlobId: null,
+            contentHash: null,
+          })
+        );
         return;
       }
 
@@ -37,10 +42,9 @@ export class WalrusController {
         contentHash?: string;
       };
 
-      const user = await userService.getUserByWalletAddress(walletAddress);
+      let user = await userService.getUserByWalletAddress(walletAddress);
       if (!user) {
-        res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'User not found' } });
-        return;
+        user = await userService.createUser({ walletAddress });
       }
 
       const updated = await userService.updateUser(walletAddress, {

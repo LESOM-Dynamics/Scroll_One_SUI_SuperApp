@@ -3,22 +3,23 @@ import { authController } from '../controllers/authController';
 import { authenticateToken } from '../middleware/auth';
 import { validate } from '../middleware/validator';
 import { body } from 'express-validator';
+import { suiSignatureBody, suiWalletAddressBody } from '../utils/suiValidators';
 
 const router = Router();
 
 router.post(
   '/wallet/verify',
   validate([
-    body('walletAddress').isString().matches(/^0x[a-fA-F0-9]{40}$/),
+    suiWalletAddressBody('walletAddress'),
     body('message').isString().notEmpty(),
-    body('signature').isString().matches(/^0x[a-fA-F0-9]{130}$/),
+    suiSignatureBody('signature'),
   ]),
   authController.verifyWallet.bind(authController)
 );
 
 router.post(
   '/wallet/message',
-  validate([body('walletAddress').isString().matches(/^0x[a-fA-F0-9]{40}$/)]),
+  validate([suiWalletAddressBody('walletAddress')]),
   authController.generateAuthMessage.bind(authController)
 );
 
@@ -35,4 +36,3 @@ router.delete(
 );
 
 export default router;
-

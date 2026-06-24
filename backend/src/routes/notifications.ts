@@ -45,6 +45,42 @@ router.put('/:id/read', authenticateToken, async (req, res) => {
   }
 });
 
+router.post('/register-device', authenticateToken, async (req, res) => {
+  try {
+    if (!req.user) {
+      res.status(401).json(createErrorResponse('UNAUTHORIZED', 'Authentication required'));
+      return;
+    }
+
+    const { pushToken, platform } = req.body as { pushToken?: string; platform?: string };
+    if (!pushToken) {
+      res.status(400).json(createErrorResponse('VALIDATION_ERROR', 'Push token required'));
+      return;
+    }
+
+    const { userService } = await import('../services/user/userService');
+    const user = await userService.getUserByWalletAddress(req.user.walletAddress);
+    if (!user) {
+      res.status(404).json(createErrorResponse('NOT_FOUND', 'User not found'));
+      return;
+    }
+
+    await userService.updateUser(req.user.walletAddress, {
+      preferences: {
+        ...user.preferences,
+        expoPushToken: pushToken,
+        pushPlatform: platform ?? 'unknown',
+        pushTokenUpdatedAt: new Date().toISOString(),
+      },
+    });
+
+    res.json(createResponse({ success: true }));
+  } catch (error: any) {
+    logger.error('Register push device error', error);
+    res.status(500).json(createErrorResponse('INTERNAL_ERROR', error.message));
+  }
+});
+
 router.post('/preferences', authenticateToken, async (req, res) => {
   try {
     if (!req.user) {
